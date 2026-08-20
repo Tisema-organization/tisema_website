@@ -1,5 +1,5 @@
 import type { RefObject } from 'react'
-import { GALLERY_IMAGES } from '../lib/assets'
+import { buildGalleryVictims } from '../lib/assets'
 import { buildLayout } from '../lib/layout'
 
 type GalleryPanelProps = {
@@ -8,22 +8,24 @@ type GalleryPanelProps = {
   wrapRef: RefObject<HTMLDivElement | null>
 }
 
+const GALLERY = buildGalleryVictims(12)
+
 export function GalleryPanel({ cols, panelRef, wrapRef }: GalleryPanelProps) {
-  const rows = buildLayout(GALLERY_IMAGES.length, cols)
+  const rows = buildLayout(GALLERY.length, cols)
 
   return (
     <div
       ref={panelRef}
-      className="fixed inset-0 z-10 bg-black"
+      className="fixed inset-0 z-10 bg-field"
       style={{ transform: 'translateY(100vh)' }}
     >
       <div
         ref={wrapRef}
-        className="w-full px-2 sm:px-4 lg:px-6"
-        style={{ paddingTop: 'min(400px, 40vh)' }}
+        className="w-full px-3 sm:px-5 lg:px-8"
+        style={{ paddingTop: 'min(280px, 32vh)', paddingBottom: '40vh' }}
       >
         <div
-          className="grid"
+          className="grid gap-3 sm:gap-4 lg:gap-5"
           style={{
             gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
           }}
@@ -36,25 +38,30 @@ export function GalleryPanel({ cols, panelRef, wrapRef }: GalleryPanelProps) {
               }
 
               const origin = col < cols / 2 ? 'right bottom' : 'left bottom'
-              const src = GALLERY_IMAGES[imageIndex]
+              const victim = GALLERY[imageIndex]
 
               return (
                 <div key={key} className="bp-cell aspect-[2/3]">
                   <div
-                    className="bp-card h-full w-full overflow-hidden"
+                    className="bp-card flex h-full w-full flex-col"
                     style={{
                       transform: 'scale(0)',
                       transformOrigin: origin,
                     }}
                   >
-                    <img
-                      src={src}
-                      alt={`Archive look ${imageIndex + 1}`}
-                      draggable={false}
-                      decoding="async"
-                      loading={imageIndex < 4 ? 'eager' : 'lazy'}
-                      className="h-full w-full object-cover"
-                    />
+                    <div className="relative min-h-0 flex-1 overflow-hidden border-2 border-lime bg-lime">
+                      <img
+                        src={victim.src}
+                        alt={`${victim.name} — ${victim.tag}`}
+                        draggable={false}
+                        decoding="async"
+                        loading={imageIndex < 4 ? 'eager' : 'lazy'}
+                        className="h-full w-full object-cover object-top"
+                      />
+                    </div>
+                    <p className="font-ethiopic mt-2 truncate text-[11px] font-semibold text-lime sm:text-[12px] lg:text-[13px]">
+                      {victim.tag}
+                    </p>
                   </div>
                 </div>
               )

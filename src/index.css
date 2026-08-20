@@ -1,7 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter Tight", sans-serif;
+  --color-lime: #b6f500;
+  --color-oxblood: #6b241a;
+  --color-field: #2d0c05;
+  --color-paper: #fbf8f3;
+  --font-sans: "Archivo", "Noto Sans Ethiopic", sans-serif;
+  --font-ethiopic: "Noto Sans Ethiopic", "Archivo", sans-serif;
+  --font-display: "Archivo Narrow", "Archivo", sans-serif;
 }
 
 html,
@@ -9,7 +15,7 @@ body,
 #root {
   margin: 0;
   min-height: 100%;
-  background: #fff;
+  background: var(--color-lime);
 }
 
 html {
@@ -22,15 +28,33 @@ html::-webkit-scrollbar {
 }
 
 body {
-  font-family: "Inter Tight", sans-serif;
+  font-family: var(--font-sans);
   font-weight: 500;
+  color: var(--color-oxblood);
   overscroll-behavior: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+.font-ethiopic {
+  font-family: var(--font-ethiopic);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
 .bp-card {
   will-change: transform;
+}
+
+/* Fixed chrome flips to lime when the dark gallery panel covers the hero. */
+html[data-phase='gallery'] .phase-ink {
+  color: var(--color-lime);
+}
+
+html[data-phase='gallery'] .phase-frame > span {
+  border-color: var(--color-lime);
 }
 
 @media (prefers-reduced-motion: reduce) {

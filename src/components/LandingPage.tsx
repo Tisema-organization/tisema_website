@@ -2,20 +2,21 @@ import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useEffect, useRef, useState } from 'react'
-import { CIRCLE_SYMBOLS } from '../lib/assets'
+import { VIDEO_SCROLL_VH } from '../lib/assets'
 import { getColumnCount } from '../lib/layout'
 import { CustomCursor } from './CustomCursor'
 import { GalleryPanel } from './GalleryPanel'
+import { HeroVideo } from './HeroVideo'
 import {
+  CampaignInfo,
   Caption,
+  CornerFrame,
   HeaderNav,
-  Logo,
+  LimeOverlay,
   OutroFooter,
-  ProductInfo,
-  ViewButton,
-  WhiteOverlay,
+  PetitionButton,
+  SiteTitle,
 } from './Overlays'
-import { VideoStage } from './VideoStage'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -27,9 +28,10 @@ export function LandingPage() {
   const spacerRef = useRef<HTMLDivElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
+  const videoRef = useRef<HTMLVideoElement | null>(null)
   const maxScrollRef = useRef(0)
+  const videoScrollRef = useRef(0)
   const [cols, setCols] = useState(() => getColumnCount(window.innerWidth))
-  const [isTouch, setIsTouch] = useState(() => isCoarsePointer())
   const [customCursor, setCustomCursor] = useState(
     () => window.innerWidth >= 1024 && !isCoarsePointer(),
   )
@@ -37,13 +39,12 @@ export function LandingPage() {
   useEffect(() => {
     const sync = () => {
       const touch = isCoarsePointer()
-      setIsTouch(touch)
       setCols(getColumnCount(window.innerWidth))
       setCustomCursor(window.innerWidth >= 1024 && !touch)
 
       const info = document.getElementById('outro-info')
       if (info) {
-        info.dataset.outroOffset = window.innerWidth >= 1024 ? '166' : '132'
+        info.dataset.outroOffset = window.innerWidth >= 1024 ? '160' : '120'
       }
     }
 
@@ -61,9 +62,12 @@ export function LandingPage() {
 
       const applySize = () => {
         const vh = window.innerHeight
+        const videoScroll = vh * VIDEO_SCROLL_VH
         const maxScroll = Math.max(0, wrap.offsetHeight - vh)
+        videoScrollRef.current = videoScroll
         maxScrollRef.current = maxScroll
-        spacer.style.height = `${vh + maxScroll + 2 * vh}px`
+        // video scrub + panel slide + gallery + outro
+        spacer.style.height = `${videoScroll + vh + maxScroll + 2 * vh}px`
       }
 
       applySize()
@@ -76,8 +80,9 @@ export function LandingPage() {
           ease: 'none',
           scrollTrigger: {
             trigger: spacer,
-            start: 'top top',
-            end: () => `+=${window.innerHeight}`,
+            start: () => `top+=${window.innerHeight * VIDEO_SCROLL_VH} top`,
+            end: () =>
+              `top+=${window.innerHeight * VIDEO_SCROLL_VH + window.innerHeight} top`,
             scrub: true,
             invalidateOnRefresh: true,
           },
@@ -102,27 +107,47 @@ export function LandingPage() {
   )
 
   useEffect(() => {
-    let lastSymbol = 0
-    let lastY = window.scrollY
     let frame = 0
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    const seekVideo = (video: HTMLVideoElement, time: number) => {
+      if (!video.duration || video.seeking) return
+      const next = Math.min(Math.max(time, 0), video.duration)
+      if (Math.abs(video.currentTime - next) < 0.02) return
+      video.currentTime = next
+    }
 
     const tick = () => {
       const y = window.scrollY
       const vh = window.innerHeight
+      const videoScroll = videoScrollRef.current || vh * VIDEO_SCROLL_VH
       const maxScroll = maxScrollRef.current
+      const galleryStart = videoScroll
+      const galleryPinned = videoScroll + vh
       const wrap = wrapRef.current
       const canvas = document.getElementById('main-canvas')
       const overlay = document.getElementById('outro-overlay')
       const info = document.getElementById('outro-info')
       const buy = document.getElementById('outro-buy')
       const footer = document.getElementById('outro-footer')
-      const symbol = document.getElementById('circle-symbol')
+      const video = videoRef.current
 
+      // Scroll-scrub the hero video across the first segment
+      if (video && video.duration) {
+        if (reduced) {
+          seekVideo(video, 0)
+        } else {
+          const progress = Math.min(1, Math.max(0, y / Math.max(1, videoScroll)))
+          seekVideo(video, progress * video.duration)
+        }
+      }
+
+      // Gallery inner scroll only after the panel has finished sliding up
       if (wrap) {
-        if (y <= vh) {
+        if (y <= galleryPinned) {
           wrap.style.transform = 'translateY(0px)'
         } else {
-          const phase2 = Math.min(y - vh, maxScroll)
+          const phase2 = Math.min(y - galleryPinned, maxScroll)
           wrap.style.transform = `translateY(${-phase2}px)`
         }
       }
@@ -143,10 +168,21 @@ export function LandingPage() {
       }
 
       if (canvas) {
-        canvas.style.visibility = y >= vh ? 'hidden' : 'visible'
+        // Hold full opacity through video scrub; fade as the panel arrives
+        if (y <= galleryStart) {
+          canvas.style.opacity = '1'
+          canvas.style.visibility = 'visible'
+        } else {
+          const fade = Math.max(0, 1 - (y - galleryStart) / (vh * 0.85))
+          canvas.style.opacity = String(fade)
+          canvas.style.visibility = y >= galleryPinned ? 'hidden' : 'visible'
+        }
       }
 
-      const outroStart = vh + maxScroll
+      document.documentElement.dataset.phase =
+        y > galleryStart + vh * 0.55 ? 'gallery' : 'hero'
+
+      const outroStart = galleryPinned + maxScroll
       const progress =
         y > outroStart ? Math.min(1, (y - outroStart) / Math.max(1, vh - 100)) : 0
 
@@ -154,18 +190,8 @@ export function LandingPage() {
       if (footer) footer.style.opacity = String(progress)
       if (buy) buy.style.transform = `scale(${progress})`
 
-      const offset = info ? Number(info.dataset.outroOffset || 166) : 166
+      const offset = info ? Number(info.dataset.outroOffset || 160) : 160
       if (info) info.style.transform = `translateY(${-progress * offset}px)`
-
-      if (symbol && y !== lastY) {
-        const now = performance.now()
-        if (now - lastSymbol > 80) {
-          lastSymbol = now
-          const next = CIRCLE_SYMBOLS[Math.floor(Math.random() * CIRCLE_SYMBOLS.length)]
-          symbol.textContent = next
-        }
-      }
-      lastY = y
 
       frame = requestAnimationFrame(tick)
     }
@@ -178,18 +204,19 @@ export function LandingPage() {
     <div
       id="scroll-spacer"
       ref={spacerRef}
-      className={`relative overflow-x-hidden bg-white select-none ${customCursor ? 'cursor-none' : ''}`}
+      className={`relative overflow-x-hidden bg-lime select-none ${customCursor ? 'cursor-none' : ''}`}
       style={{ height: '500vh' }}
     >
+      <CornerFrame />
       <CustomCursor enabled={customCursor} />
-      <Logo />
+      <SiteTitle />
       <Caption />
       <HeaderNav />
-      <ProductInfo />
-      <ViewButton />
-      <WhiteOverlay />
+      <CampaignInfo />
+      <PetitionButton />
+      <LimeOverlay />
       <OutroFooter />
-      <VideoStage isTouch={isTouch} />
+      <HeroVideo videoRef={videoRef} />
       <GalleryPanel cols={cols} panelRef={panelRef} wrapRef={wrapRef} />
     </div>
   )
