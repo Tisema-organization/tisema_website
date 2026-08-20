@@ -40,7 +40,7 @@ export function SiteTitle() {
 export function Caption() {
   return (
     <motion.p
-      className="phase-ink pointer-events-none fixed top-[72px] left-4 z-20 w-[calc(100vw-32px)] max-w-[420px] font-sans text-[12px] leading-[150%] font-medium tracking-[-0.02em] text-oxblood sm:top-[88px] sm:left-8 sm:max-w-[480px] lg:top-[100px] lg:max-w-[560px] lg:text-[13px]"
+      className="phase-ink phase-hide-on-hand pointer-events-none fixed top-[72px] left-4 z-20 w-[calc(100vw-32px)] max-w-[420px] font-sans text-[12px] leading-[150%] font-medium tracking-[-0.02em] text-oxblood sm:top-[88px] sm:left-8 sm:max-w-[480px] lg:top-[100px] lg:max-w-[560px] lg:text-[13px]"
       initial={fadeUp.initial}
       animate={fadeUp.animate}
       transition={{ ...fadeUp.transition, delay: 0.25 }}
@@ -73,7 +73,7 @@ export function CampaignInfo() {
     <motion.div
       id="outro-info"
       data-outro-offset="132"
-      className="pointer-events-none fixed right-0 bottom-16 left-0 z-20 flex flex-col items-center px-4 lg:right-8 lg:bottom-24 lg:left-auto lg:w-[300px] lg:items-end lg:px-0"
+      className="phase-hide-on-hand pointer-events-none fixed right-0 bottom-16 left-0 z-20 flex flex-col items-center px-4 lg:right-8 lg:bottom-24 lg:left-auto lg:w-[300px] lg:items-end lg:px-0"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, ease: EASE_OUT, delay: 0.4 }}
@@ -85,7 +85,7 @@ export function CampaignInfo() {
         ትሰማ
       </p>
       <p className="phase-ink mt-2 max-w-[240px] text-center text-[12px] leading-[140%] font-medium text-oxblood/80 lg:text-right">
-        Names of women and girls lost to violence. Scroll so they are seen.
+        Faces gather. The hand holds them. Scroll until she is heard.
       </p>
     </motion.div>
   )
@@ -93,15 +93,16 @@ export function CampaignInfo() {
 
 export function PetitionButton() {
   return (
-    <div
+    <a
       id="outro-buy"
+      href="#petition"
       className="pointer-events-none fixed right-4 bottom-8 left-4 z-20 flex h-[72px] items-center justify-center bg-oxblood sm:h-[88px] lg:right-8 lg:left-auto lg:h-[110px] lg:w-[360px]"
       style={{ transform: 'scale(0)', transformOrigin: 'right bottom' }}
     >
       <span className="font-display text-[22px] font-bold tracking-[0.08em] text-paper uppercase sm:text-[28px] lg:text-[34px]">
         Sign the petition
       </span>
-    </div>
+    </a>
   )
 }
 

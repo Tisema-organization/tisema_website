@@ -48,17 +48,51 @@ body {
   will-change: transform;
 }
 
-/* Fixed chrome flips to lime when the dark gallery panel covers the hero. */
-html[data-phase='gallery'] .phase-ink {
-  color: var(--color-lime);
+/* Crisp portraits at device pixel ratio — no compositor soft-rasterize. */
+.hero-portrait {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  -webkit-user-drag: none;
 }
 
-html[data-phase='gallery'] .phase-frame > span {
-  border-color: var(--color-lime);
+.hero-grid {
+  display: block;
+}
+
+/*
+  Viewport-locked mosaic. Mask is applied in JS only during the hand phase.
+  --mask-size zooms the cutout; the grid itself never camera-zooms.
+*/
+.hero-mosaic {
+  will-change: opacity;
+  -webkit-mask-size: var(--mask-size);
+  mask-size: var(--mask-size);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  mask-mode: alpha;
+}
+
+.hero-solid {
+  will-change: opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Soften chrome when the hand / logo takes over */
+html[data-phase='hand'] .phase-hide-on-hand,
+html[data-phase='logo'] .phase-hide-on-hand {
+  opacity: 0 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bp-card {
+  .bp-card,
+  .hero-grid,
+  .hero-mosaic {
     will-change: auto;
   }
 }
