@@ -18,9 +18,29 @@ const CENTER = Math.floor(MAX_SIDE / 2)
 const HAND_ASPECT = 819 / 780
 
 const SIDE_AT_MASK = 7
-const START_SIDE = 2
 
-/** Scroll: 2×2 grid → densify → paper closes in (hand defines) → settle → solid. */
+/**
+ * The opening frame is a wall of portraits filling the viewport: 4x2 on a
+ * landscape screen. Narrower viewports take fewer columns — four columns on a
+ * phone would be 97px wide against 422px tall and shred the faces — and the
+ * row count follows from keeping each cell near the poster's own 0.8 ratio.
+ */
+const POSTER_RATIO = 0.8
+
+function openingGrid(vw: number, vh: number) {
+  // Cells straddle the plate's centre, so an axis can only ever resolve to an
+  // even count — asking for three quietly gives two.
+  const cols = vw >= 1024 ? 4 : 2
+  const ideal = (POSTER_RATIO * vh * cols) / vw
+  const rows = Math.max(2, 2 * Math.round(ideal / 2))
+  return { cols, rows }
+}
+
+/** Generous static block for the loading hints, covering every breakpoint. */
+const EAGER_COLS = 4
+const EAGER_ROWS = 3
+
+/** Scroll: 4×2 wall → densify → paper closes in (hand defines) → settle → solid. */
 const GROW_START = 0.08
 const MASK_START = 0.38
 const MASK_REVEAL_END = 0.62
@@ -64,10 +84,17 @@ function smoothstep(edge0: number, edge1: number, x: number) {
   return t * t * (3 - 2 * t)
 }
 
-function ringSide(row: number, col: number) {
-  const anchor = CENTER - 0.5
-  const dist = Math.max(Math.abs(col - anchor), Math.abs(row - anchor))
-  return dist * 2 + 1
+/**
+ * How many cells an axis must hold before the one at `index` is included.
+ * Cells sit on a lattice centred on the plate, so this is always even.
+ */
+function axisNeed(index: number) {
+  return Math.abs(index - (CENTER - 0.5)) * 2 + 1
+}
+
+/** Cells likely to be on screen at rest, so they load eagerly. */
+function inOpening(row: number, col: number) {
+  return axisNeed(col) <= EAGER_COLS && axisNeed(row) <= EAGER_ROWS
 }
 
 type HeroStageProps = {
@@ -110,7 +137,9 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
     }
 
     const root = document.documentElement
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const reduced = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches
     const paperMaskUrl = `url(${HAND_MASK_OUTSIDE})`
 
     let frameId = 0
@@ -127,6 +156,12 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
     /** Viewport-space box the hand glides into, matching the poster slot. */
     let handTarget = { cx: 0, cy: 0, w: 0 }
     let plateW = 1
+    /** Counts across the whole plate that put the opening wall on screen. */
+    let startCols = EAGER_COLS
+    let startRows = EAGER_ROWS
+    /** The wall's own dimensions at the current viewport. */
+    let openCols = EAGER_COLS
+    let openRows = EAGER_ROWS
 
     const layoutShell = () => {
       const vw = window.innerWidth
@@ -163,9 +198,22 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
       const scaleY = vh / h
       coverScale = Math.max(scaleX, scaleY) * 1.12
       if (w * coverScale < vw + 4) coverScale = (vw + 4) / w
-      if (h * coverScale < vh + 4) coverScale = Math.max(coverScale, (vh + 4) / h)
+      if (h * coverScale < vh + 4)
+        coverScale = Math.max(coverScale, (vh + 4) / h)
 
       maskOversizePct = Math.max(6500, coverScale * 2600)
+
+      /*
+       * The plate is bigger than the viewport at cover scale, so asking for
+       * exactly 4 columns across the *plate* would not put 4 across the
+       * *screen*. Scale the counts by how far the plate overhangs, and the
+       * centred lattice then lands 4x2 precisely inside the viewport.
+       */
+      const opening = openingGrid(vw, vh)
+      openCols = opening.cols
+      openRows = opening.rows
+      startCols = (openCols * (w * coverScale)) / vw
+      startRows = (openRows * (h * coverScale)) / vh
 
       const plateBottom = vh * 0.5 + h / 2
       mark.style.top = `${Math.min(vh * 0.91, plateBottom + 14)}px`
@@ -187,7 +235,7 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
       const w = box.width / POSTER_FROM_HAND.width
       const left = box.left - POSTER_FROM_HAND.left * w
       const top = box.top - POSTER_FROM_HAND.top * w
-      handTarget = { cx: left + w / 2, cy: top + (w / HAND_ASPECT) / 2, w }
+      handTarget = { cx: left + w / 2, cy: top + w / HAND_ASPECT / 2, w }
     }
 
     const setPlateTransform = (dx: number, dy: number, scale: number) => {
@@ -210,9 +258,15 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
       paper.style.setProperty('--mask-pos', `${x.toFixed(2)}% ${y.toFixed(2)}%`)
     }
 
-    const layoutGrid = (sideFloat: number) => {
-      const cellPct = 100 / sideFloat
-      const key = `${cellPct.toFixed(3)}:${sideFloat.toFixed(3)}`
+    /*
+     * Columns and rows are tracked separately. The opening frame wants a 4x2
+     * wall filling a landscape viewport, but the hand the grid resolves into is
+     * near-square — so the two axes start on different counts and converge.
+     */
+    const layoutGrid = (colsFloat: number, rowsFloat: number) => {
+      const cellW = 100 / colsFloat
+      const cellH = 100 / rowsFloat
+      const key = `${cellW.toFixed(3)}:${cellH.toFixed(3)}`
       if (key === lastLayoutKey) return
       lastLayoutKey = key
 
@@ -223,12 +277,18 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
         if (!el) continue
         const row = Math.floor(i / MAX_SIDE)
         const col = i % MAX_SIDE
-        const needed = ringSide(row, col)
+        const colNeed = axisNeed(col)
+        const rowNeed = axisNeed(row)
 
-        const op =
-          needed <= START_SIDE
+        const opCol =
+          colNeed <= openCols
             ? 1
-            : smoothstep(needed - 1.05, needed - 0.15, sideFloat)
+            : smoothstep(colNeed - 1.05, colNeed - 0.15, colsFloat)
+        const opRow =
+          rowNeed <= openRows
+            ? 1
+            : smoothstep(rowNeed - 1.05, rowNeed - 0.15, rowsFloat)
+        const op = Math.min(opCol, opRow)
 
         if (op < 0.01) {
           el.style.display = 'none'
@@ -237,10 +297,10 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
 
         el.style.display = 'block'
         el.style.position = 'absolute'
-        el.style.width = `${cellPct}%`
-        el.style.height = `${cellPct}%`
-        el.style.left = `${50 + (col - anchor - 0.5) * cellPct}%`
-        el.style.top = `${50 + (row - anchor - 0.5) * cellPct}%`
+        el.style.width = `${cellW}%`
+        el.style.height = `${cellH}%`
+        el.style.left = `${50 + (col - anchor - 0.5) * cellW}%`
+        el.style.top = `${50 + (row - anchor - 0.5) * cellH}%`
         el.style.opacity = op.toFixed(3)
       }
     }
@@ -248,11 +308,15 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
     const apply = (scrollP: number, fadeP: number, handP: number) => {
       const preT = smoothstep(GROW_START, MASK_START, scrollP)
       const postT = smoothstep(MASK_START, GROW_END, scrollP)
-      const sideFloat =
+      const colsFloat =
         scrollP < MASK_START
-          ? lerp(START_SIDE, SIDE_AT_MASK, preT)
+          ? lerp(startCols, SIDE_AT_MASK, preT)
           : lerp(SIDE_AT_MASK, MAX_SIDE, postT)
-      layoutGrid(sideFloat)
+      const rowsFloat =
+        scrollP < MASK_START
+          ? lerp(startRows, SIDE_AT_MASK, preT)
+          : lerp(SIDE_AT_MASK, MAX_SIDE, postT)
+      layoutGrid(colsFloat, rowsFloat)
 
       /*
        * Grid is never masked. A paper layer on top has an oversized hand-shaped
@@ -296,6 +360,9 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
         setPaperMaskSize(100)
         baseScale = lerp(coverScale, 1, plateT)
       }
+
+      // The opening lattice is centred and sized to the viewport, so the plate
+      // needs no vertical bias to keep faces in frame.
       setPlateTransform(dx, dy, lerp(baseScale, targetScale, glide))
 
       const mosaicOut = smoothstep(0.82, 0.92, fadeP)
@@ -463,9 +530,7 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
             {GRID.map((victim, i) => {
               const row = Math.floor(i / MAX_SIDE)
               const col = i % MAX_SIDE
-              const isStartFour =
-                (row === CENTER || row === CENTER - 1) &&
-                (col === CENTER || col === CENTER - 1)
+              const opening = inOpening(row, col)
               const ring = Math.max(
                 Math.abs(row - CENTER),
                 Math.abs(col - CENTER),
@@ -477,26 +542,16 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
                     cellRefs.current[i] = el
                   }}
                   className="absolute overflow-hidden bg-lime"
-                  style={{
-                    display: isStartFour ? 'block' : 'none',
-                    width: '50%',
-                    height: '50%',
-                    opacity: 1,
-                    ...(isStartFour
-                      ? {
-                          left: col === CENTER - 1 ? '0%' : '50%',
-                          top: row === CENTER - 1 ? '0%' : '50%',
-                        }
-                      : { left: '0%', top: '0%' }),
-                  }}
+                  /* layoutGrid owns every cell's box from the first frame. */
+                  style={{ display: 'none', left: '0%', top: '0%' }}
                 >
                   <img
                     src={victim.src}
                     alt=""
                     draggable={false}
                     decoding="async"
-                    loading={ring <= 3 ? 'eager' : 'lazy'}
-                    fetchPriority={isStartFour ? 'high' : 'auto'}
+                    loading={opening || ring <= 3 ? 'eager' : 'lazy'}
+                    fetchPriority={opening ? 'high' : 'auto'}
                     width={1636}
                     height={2048}
                     className="hero-portrait"
@@ -549,7 +604,7 @@ function HeroCopy() {
         <span className="text-oxblood italic">Women and Girls </span>
         <span>a National Crisis</span>
       </h1>
-      <p className="max-w-[644px] text-[clamp(1rem,1.56vw,23.625px)] leading-[1.4444] font-normal text-field">
+      <p className="max-w-[644px] text-[clamp(1rem,1.56vw,23.625px)] leading-[1.4444] font-normal text-field/70">
         {HERO_SUBTITLE}
       </p>
     </div>

@@ -137,6 +137,71 @@ body {
   }
 }
 
+/*
+  A full-bleed horizontal rail. Its first card lines up with the band heading
+  above it, but the track runs on to the viewport edge so the next card is
+  visibly cut off — that overhang is what tells you there is more to scroll.
+  The left inset therefore has to reproduce `.section-shell`'s centring maths
+  rather than just borrowing its padding.
+*/
+.section-rail {
+  --shell-pad: clamp(20px, 5.55vw, 84px);
+  --shell-w: min(100%, 1512px);
+  --band-w: 1253.875px;
+  /*
+    Three insets stacked: the shell's own centring above 1512px, its padding,
+    and the band container the heading sits in inside that padding. Miss the
+    third and the first card sits ~45px left of the heading at desktop width.
+  */
+  --gutter: calc(
+    max(0px, (100% - 1512px) / 2) + var(--shell-pad) +
+      max(0px, (var(--shell-w) - 2 * var(--shell-pad) - var(--band-w)) / 2)
+  );
+  padding-left: var(--gutter);
+  padding-right: var(--shell-pad);
+  scroll-padding-left: var(--gutter);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior-x: contain;
+}
+
+.section-rail::-webkit-scrollbar {
+  display: none;
+}
+
+/*
+  Typewriter caret. Drawn as an absolutely positioned pseudo-element so it
+  takes no layout space — a border on the character would widen it and nudge
+  the rest of the line along by a pixel on every keystroke.
+*/
+.typing-caret {
+  position: relative;
+}
+
+.typing-caret::after {
+  content: '';
+  position: absolute;
+  top: 0.08em;
+  right: -0.07em;
+  bottom: 0.08em;
+  width: 0.06em;
+  background: currentColor;
+  animation: typing-blink 1s steps(2, start) infinite;
+}
+
+@keyframes typing-blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typing-caret::after {
+    animation: none;
+  }
+}
+
 /* The nav only takes clicks once it has actually arrived. */
 html[data-nav='off'] header {
   pointer-events: none;

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { domAnimation, LazyMotion, MotionConfig } from 'motion/react'
 import { CustomCursor } from './CustomCursor'
 import { HeroStage } from './HeroStage'
 import { SiteNav } from './SiteNav'
@@ -34,39 +35,52 @@ export function LandingPage() {
   }, [])
 
   return (
-    <div id="home" className="relative bg-paper [overflow-x:clip]">
-      <SiteNav />
-
+    /*
+     * One feature bundle for the whole page. `strict` keeps every call site on
+     * `m.*`, so the full `motion` build can never be pulled back in by accident.
+     */
+    <LazyMotion features={domAnimation} strict>
       {/*
+        `reducedMotion="user"` makes Motion drop transform animations for anyone
+        who asks the OS for less movement, while still letting things fade — so
+        the reveals never have to check the media query themselves.
+      */}
+      <MotionConfig reducedMotion="user">
+        <div id="home" className="relative bg-paper [overflow-x:clip]">
+          <SiteNav />
+
+          {/*
         The hero owns its own scroll length and pins a sticky stage inside it.
         When that length runs out the stage scrolls away on its own and the
         bands below simply follow — no pin/unpin swap, no cross-cut.
       */}
-      <div
-        id="hero-scroll"
-        ref={heroScrollRef}
-        className={`relative select-none ${customCursor ? 'cursor-none' : ''}`}
-        style={{
-          height: `${(HERO_SCROLL_VH + HANDOFF_VH + HERO_REST_VH + 1) * 100}vh`,
-        }}
-      >
-        <HeroStage scrollRef={heroScrollRef} />
-      </div>
+          <div
+            id="hero-scroll"
+            ref={heroScrollRef}
+            className={`relative select-none ${customCursor ? 'cursor-none' : ''}`}
+            style={{
+              height: `${(HERO_SCROLL_VH + HANDOFF_VH + HERO_REST_VH + 1) * 100}vh`,
+            }}
+          >
+            <HeroStage scrollRef={heroScrollRef} />
+          </div>
 
-      <CustomCursor enabled={customCursor} />
+          <CustomCursor enabled={customCursor} />
 
-      <main>
-        <Stat />
-        <AboutCampaign />
-        <WholeOfGovernment />
-        <WhoCanDeclare />
-        <DemandDeclaration />
-        <Timeline />
-        <CampaignGallery />
-        <CampaignFeed />
-      </main>
+          <main>
+            <Stat />
+            <AboutCampaign />
+            <WholeOfGovernment />
+            <WhoCanDeclare />
+            <DemandDeclaration />
+            <Timeline />
+            <CampaignGallery />
+            <CampaignFeed />
+          </main>
 
-      <SiteFooter />
-    </div>
+          <SiteFooter />
+        </div>
+      </MotionConfig>
+    </LazyMotion>
   )
 }

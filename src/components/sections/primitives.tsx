@@ -1,51 +1,43 @@
-type RuleTone = 'dark' | 'lime' | 'paper'
-
-const RULE_SRC: Record<RuleTone, string> = {
-  dark: '/design/rule-dark.svg',
-  lime: '/design/rule-lime.svg',
-  paper: '/design/rule-paper.svg',
-}
+import { m } from 'motion/react'
+import { DrawRule, EASE_OUT, VIEWPORT, Words } from '../motion'
 
 /** The 35×2.625 rule + label pair that opens most bands in the design. */
 export function Eyebrow({
   children,
-  tone,
   className = '',
 }: {
   children: React.ReactNode
-  tone: RuleTone
   className?: string
 }) {
   return (
     <div className={`flex items-center gap-[8.75px] py-[8.75px] ${className}`}>
-      <img
-        src={RULE_SRC[tone]}
-        alt=""
-        width={35}
-        height={2.625}
-        className="block w-[35px] shrink-0"
-        style={{ height: '2.625px' }}
-      />
-      <p className="font-serif text-[clamp(1.125rem,1.62vw,24.5px)] leading-[28px] whitespace-nowrap">
+      <DrawRule />
+      <m.p
+        className="font-serif text-[clamp(1.125rem,1.62vw,24.5px)] leading-[28px] whitespace-nowrap"
+        initial={{ opacity: 0, x: -8 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={VIEWPORT}
+        transition={{ duration: 0.55, ease: EASE_OUT, delay: 0.12 }}
+      >
         {children}
-      </p>
+      </m.p>
     </div>
   )
 }
 
 /** Band heading — 52px display type at the design's 1512px width. */
 export function BandTitle({
-  children,
+  text,
   className = '',
 }: {
-  children: React.ReactNode
+  text: string
   className?: string
 }) {
   return (
     <h2
       className={`font-serif text-[clamp(2rem,3.44vw,52px)] leading-[1.2] ${className}`}
     >
-      {children}
+      <Words segments={[{ text }]} />
     </h2>
   )
 }

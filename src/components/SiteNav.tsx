@@ -9,7 +9,7 @@ import { POSTER } from '../lib/assets'
 export function SiteNav() {
   return (
     <header
-      className="fixed top-0 right-0 left-0 z-40 bg-lime"
+      className="fixed top-0 right-0 left-0 z-40 bg-oxblood"
       style={{
         opacity: 'var(--hero-nav-in, 0)',
         transform: 'translateY(calc((1 - var(--hero-nav-in, 0)) * -100%))',
@@ -32,7 +32,7 @@ export function SiteNav() {
               <li key={link.label}>
                 <a
                   href={link.href}
-                  className="text-[15.75px] leading-[28px] whitespace-nowrap text-field transition-opacity hover:opacity-70"
+                  className="text-[14px] leading-[28px] whitespace-nowrap text-paper transition-colors hover:text-lime"
                 >
                   {link.label}
                 </a>
@@ -42,7 +42,7 @@ export function SiteNav() {
 
           <a
             href={PETITION_HREF}
-            className="flex items-center justify-center rounded-[3.5px] bg-oxblood px-[18px] py-[8px] text-[13px] font-semibold whitespace-nowrap text-lime transition-opacity hover:opacity-90 lg:px-[24.5px] lg:py-[7.656px] lg:text-[13.78px] lg:leading-[24.5px]"
+            className="flex items-center justify-center rounded-[3.5px] bg-lime px-[18px] py-[8px] text-[13px] font-semibold whitespace-nowrap text-clay-shadow transition-opacity hover:opacity-90 lg:px-[24.5px] lg:py-[7.656px] lg:text-[13.78px] lg:leading-[24.5px]"
           >
             Sign the Petition
           </a>
