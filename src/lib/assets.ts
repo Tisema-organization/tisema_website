@@ -56,7 +56,6 @@ export const HAND_MASK_SOLID = '/hand-mask-solid-alpha.png?v=4'
 /** Inverted mask — opaque outside, transparent hand hole (paper closes in on scroll). */
 export const HAND_MASK_OUTSIDE = '/hand-mask-outside-alpha.png?v=2'
 export const HAND_SOLID = '/hand-solid.png'
-export const HERO_VIDEO = '/victims/tisema-vid.mp4'
 
 /** Viewport-heights of scroll driving the hero mosaic → hand reveal. */
 export const HERO_SCROLL_VH = 6

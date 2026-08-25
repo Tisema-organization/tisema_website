@@ -10,30 +10,28 @@ import { TIMELINE } from '../../lib/content'
 import { BandTitle } from './primitives'
 
 /**
- * Horizontal timeline. The design fixes each point at an x on the 1512px frame,
- * so those x's are kept as fractions and the whole rail scrolls sideways under
- * lg rather than reflowing into something the comp never shows.
+ * Horizontal timeline, read through a fixed lens.
  *
- * The comp only draws the August 2023 entry expanded. Read as an interaction
- * rather than a static picture, that is the *selected* state — so every point
- * can take it, and picking one slides the stem and swaps the panel.
+ * The comp draws August 2023 expanded at x=164 with a stem down to the axis.
+ * Rather than move that furniture around, it is treated as a *reading
+ * position*: the panel and the stem never move, and the track of dots and
+ * dates slides so the selected point comes to rest under the stem. Points
+ * ahead of the selection sit off to the right and are revealed as it advances.
  */
 
-/** Left edge of each point's 16px dot, as a fraction of the rail. */
-const POINT_LEFT = [
-  164 / 1512,
-  442 / 1512,
-  742 / 1512,
-  1042 / 1512,
-  1342 / 1512,
-]
+/** Reading position on the 1512px frame — the comp's first point. */
+const READ_FRAC = 164 / 1512
+const READ_MIN = 20
+const READ_MAX = 164
+
+/** Gap between points. Wider than the comp so there is always more to reveal. */
+const SPACING_LG = 340
+const SPACING_SM = 260
 
 /** Design widths: the panel column, and stem + gap above the axis. */
 const PANEL_W = 684
 const STEM_H = 116
 const PANEL_GAP = 48
-/** Gutter the panel keeps from the rail's right edge when it has to shift. */
-const PANEL_INSET = 86
 
 const EASE: [number, number, number, number] = [0.25, 0.1, 0.25, 1]
 
@@ -42,12 +40,11 @@ function clamp(n: number, min: number, max: number) {
 }
 
 export function Timeline() {
-  const scrollerRef = useRef<HTMLDivElement>(null)
   const railRef = useRef<HTMLDivElement>(null)
   const dotRefs = useRef<(HTMLButtonElement | null)[]>([])
   const [railW, setRailW] = useState(0)
   const [active, setActive] = useState(0)
-  const [pinned, setPinned] = useState(false)
+  const [revealed, setRevealed] = useState(false)
   const reduced = useReducedMotion()
 
   useEffect(() => {
@@ -60,43 +57,20 @@ export function Timeline() {
     return () => ro.disconnect()
   }, [])
 
-  /*
-   * Above lg the panel rides inside the rail, anchored over its dot the way the
-   * comp draws it. Below lg the rail is wider than the screen and scrolls, so a
-   * panel pinned to a dot would be half off-screen — there it sits above the
-   * rail at full width instead, and only the axis scrolls.
-   */
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 64rem)')
-    const sync = () => setPinned(mq.matches)
-    sync()
-    mq.addEventListener('change', sync)
-    return () => mq.removeEventListener('change', sync)
-  }, [])
-
+  const wide = railW >= 1024
+  const readX =
+    railW > 0 ? clamp(railW * READ_FRAC, READ_MIN, READ_MAX) : READ_MAX
+  const spacing = wide ? SPACING_LG : SPACING_SM
+  const rightInset = wide ? 86 : 20
   const panelW =
     railW > 0
-      ? Math.min(PANEL_W, Math.max(240, railW - PANEL_INSET * 2))
+      ? Math.max(240, Math.min(PANEL_W, railW - readX - rightInset))
       : PANEL_W
-  const dotX = railW * POINT_LEFT[active]
-  const panelX = clamp(dotX, 0, Math.max(0, railW - panelW - PANEL_INSET))
 
-  /** Under lg the rail overflows, so a pick off-screen has to be brought in. */
-  const select = useCallback(
-    (i: number) => {
-      setActive(i)
-      const scroller = scrollerRef.current
-      if (!scroller || railW === 0) return
-      const target = railW * POINT_LEFT[i] + 8 - scroller.clientWidth / 2
-      const max = scroller.scrollWidth - scroller.clientWidth
-      if (max <= 0) return
-      scroller.scrollTo({
-        left: clamp(target, 0, max),
-        behavior: reduced ? 'auto' : 'smooth',
-      })
-    },
-    [railW, reduced],
-  )
+  /** The track carries every point; sliding it parks the live one at readX. */
+  const trackX = -spacing * active
+
+  const select = useCallback((i: number) => setActive(i), [])
 
   const onKeyDown = (event: React.KeyboardEvent) => {
     const last = TIMELINE.length - 1
@@ -114,32 +88,12 @@ export function Timeline() {
   const entry = TIMELINE[active]
   const glide = reduced
     ? { duration: 0 }
-    : { type: 'spring' as const, stiffness: 170, damping: 26, mass: 0.9 }
+    : { type: 'spring' as const, stiffness: 150, damping: 24, mass: 0.9 }
   const swap = { duration: reduced ? 0 : 0.28, ease: EASE }
 
-  const panel = (
-    <AnimatePresence mode="wait" initial={false}>
-      <m.div
-        key={active}
-        id={`timeline-panel-${active}`}
-        role="tabpanel"
-        aria-labelledby={`timeline-tab-${active}`}
-        className="flex flex-col gap-[16px] text-field"
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        transition={swap}
-      >
-        <p className="font-serif text-[24px] leading-[34.125px]">
-          {entry.title}
-        </p>
-        <p className="text-[18px] leading-[34.125px]">{entry.body}</p>
-        <p className="font-serif text-[40px] leading-[47px] whitespace-nowrap">
-          {entry.date}
-        </p>
-      </m.div>
-    </AnimatePresence>
-  )
+  /* Points fade at the edges instead of being guillotined by the clip. */
+  const trackMask =
+    'linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 130px), transparent 100%)'
 
   return (
     <LazyMotion features={domAnimation} strict>
@@ -153,87 +107,111 @@ export function Timeline() {
           </BandTitle>
         </div>
 
-        {/* min-height holds the ground while AnimatePresence swaps entries. */}
-        {!pinned && (
-          <div className="section-shell mt-[40px] min-h-[260px] sm:min-h-[220px]">
-            {panel}
-          </div>
-        )}
+        <m.div
+          ref={railRef}
+          className="relative mx-auto h-[560px] overflow-hidden lg:h-[640px] lg:w-[1512px]"
+          initial="hidden"
+          /*
+           * The reveal is held in state rather than left to `whileInView`, so
+           * anything that mounts after it has fired still lands on `shown`
+           * instead of being stranded at `hidden`.
+           */
+          animate={revealed ? 'shown' : 'hidden'}
+          viewport={{ once: true, amount: 0.3 }}
+          onViewportEnter={() => setRevealed(true)}
+        >
+          {/* Axis — full bleed and still; a uniform line reads the same either
+              way, so only the points actually need to travel. */}
+          <m.img
+            src="/design/timeline-axis.svg"
+            alt=""
+            className="absolute left-0 h-px w-full origin-left"
+            style={{ top: '86%' }}
+            variants={{ hidden: { scaleX: 0 }, shown: { scaleX: 1 } }}
+            transition={{ duration: reduced ? 0 : 0.9, ease: 'easeOut' }}
+          />
 
-        <div ref={scrollerRef} className="overflow-x-auto">
+          {/* Panel — parked at the reading position, swapping in place. */}
           <m.div
-            ref={railRef}
-            className="relative mx-auto h-[240px] min-w-[1200px] lg:h-[640px] lg:w-[1512px] lg:min-w-0"
-            initial="hidden"
-            whileInView="shown"
-            viewport={{ once: true, amount: 0.3 }}
+            className="pointer-events-none absolute"
+            style={{
+              left: readX,
+              width: panelW,
+              bottom: `calc(14% + ${STEM_H + PANEL_GAP}px)`,
+            }}
+            variants={{ hidden: { opacity: 0 }, shown: { opacity: 1 } }}
+            transition={{
+              duration: reduced ? 0 : 0.5,
+              delay: reduced ? 0 : 0.35,
+            }}
           >
-            {/* Axis draws itself in from the left as the band arrives. */}
-            <m.img
-              src="/design/timeline-axis.svg"
-              alt=""
-              className="absolute left-0 h-px w-full origin-left"
-              style={{ top: '86%' }}
-              variants={{ hidden: { scaleX: 0 }, shown: { scaleX: 1 } }}
-              transition={{ duration: reduced ? 0 : 0.9, ease: 'easeOut' }}
-            />
-
-            {/* Panel — bottom-anchored, so a taller entry grows up, not down. */}
-            {pinned && (
+            <AnimatePresence mode="wait" initial={false}>
               <m.div
-                className="pointer-events-none absolute right-0 left-0"
-                style={{ bottom: `calc(14% + ${STEM_H + PANEL_GAP}px)` }}
-                variants={{ hidden: { opacity: 0 }, shown: { opacity: 1 } }}
-                transition={{
-                  duration: reduced ? 0 : 0.5,
-                  delay: reduced ? 0 : 0.35,
-                }}
+                key={active}
+                id={`timeline-panel-${active}`}
+                role="tabpanel"
+                aria-labelledby={`timeline-tab-${active}`}
+                className="flex flex-col justify-end gap-[16px] text-field"
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={swap}
               >
-                <m.div
-                  className="flex flex-col justify-end"
-                  style={{ width: panelW }}
-                  animate={{ x: panelX }}
-                  transition={glide}
-                >
-                  {panel}
-                </m.div>
+                <p className="font-serif text-[24px] leading-[34.125px]">
+                  {entry.title}
+                </p>
+                <p className="text-[18px] leading-[34.125px]">{entry.body}</p>
+                <p className="font-serif text-[40px] leading-[47px] whitespace-nowrap">
+                  {entry.date}
+                </p>
               </m.div>
-            )}
+            </AnimatePresence>
+          </m.div>
 
-            {/* Stem — slides between dots, and its circle lands on the live one. */}
+          {/* Stem — also parked; the live point comes to it. */}
+          <m.div
+            className="pointer-events-none absolute"
+            style={{ left: readX, bottom: '14%' }}
+            variants={{ hidden: { opacity: 0 }, shown: { opacity: 1 } }}
+            transition={{
+              duration: reduced ? 0 : 0.5,
+              delay: reduced ? 0 : 0.45,
+            }}
+          >
+            <img
+              src="/design/timeline-marker.svg"
+              alt=""
+              width={16}
+              height={116}
+              className="block h-[116px] w-[16px] -scale-y-100"
+            />
+          </m.div>
+
+          {/*
+            The edge mask has to sit on a STILL wrapper. On the track itself it
+            travels with the translation, so its opaque window slides away and
+            points that are plainly on screen end up masked out — and since a
+            masked-out area does not hit-test, they stop being clickable too.
+          */}
+          <div
+            role="tablist"
+            aria-label="Timeline of the movement"
+            aria-orientation="horizontal"
+            className="pointer-events-none absolute inset-0"
+            style={{ maskImage: trackMask, WebkitMaskImage: trackMask }}
+            onKeyDown={onKeyDown}
+          >
             <m.div
-              className="pointer-events-none absolute left-0"
-              style={{ bottom: '14%' }}
-              variants={{ hidden: { opacity: 0 }, shown: { opacity: 1 } }}
-              transition={{
-                duration: reduced ? 0 : 0.5,
-                delay: reduced ? 0 : 0.45,
-              }}
-            >
-              <m.img
-                src="/design/timeline-marker.svg"
-                alt=""
-                width={16}
-                height={116}
-                className="block h-[116px] w-[16px] -scale-y-100"
-                animate={{ x: dotX }}
-                transition={glide}
-              />
-            </m.div>
-
-            <div
-              role="tablist"
-              aria-label="Timeline of the movement"
-              aria-orientation="horizontal"
-              className="pointer-events-none absolute inset-0"
-              onKeyDown={onKeyDown}
+              className="absolute inset-0"
+              animate={{ x: trackX }}
+              transition={glide}
             >
               {TIMELINE.map((point, i) => (
                 <div
                   key={point.date}
                   role="presentation"
                   className="absolute"
-                  style={{ left: `${POINT_LEFT[i] * 100}%`, bottom: '14%' }}
+                  style={{ left: readX + spacing * i, bottom: '14%' }}
                 >
                   <m.button
                     ref={(el) => {
@@ -251,6 +229,9 @@ export function Timeline() {
                       hidden: { opacity: 0, y: 10 },
                       shown: { opacity: 1, y: 0 },
                     }}
+                    /* Stated outright rather than inherited — the track between
+                     here and the rail carries its own `animate`. */
+                    animate={revealed ? 'shown' : 'hidden'}
                     transition={{
                       duration: reduced ? 0 : 0.45,
                       delay: reduced ? 0 : 0.25 + i * 0.09,
@@ -296,9 +277,53 @@ export function Timeline() {
                   </m.button>
                 </div>
               ))}
-            </div>
+            </m.div>
+          </div>
+
+          {/* Past points slide out of reach, so stepping needs its own control. */}
+          <m.div
+            className="absolute right-[20px] flex gap-[12px] lg:right-[71px]"
+            style={{ bottom: `calc(14% + 46px)` }}
+            variants={{ hidden: { opacity: 0 }, shown: { opacity: 1 } }}
+            transition={{
+              duration: reduced ? 0 : 0.5,
+              delay: reduced ? 0 : 0.55,
+            }}
+          >
+            {(
+              [
+                ['Previous entry', -1, '-rotate-90'],
+                ['Next entry', 1, 'rotate-90'],
+              ] as const
+            ).map(([label, step, spin]) => {
+              const target = active + step
+              const disabled = target < 0 || target > TIMELINE.length - 1
+              return (
+                <button
+                  key={label}
+                  type="button"
+                  aria-label={label}
+                  disabled={disabled}
+                  onClick={() => select(target)}
+                  className={`flex size-[40px] items-center justify-center overflow-hidden rounded-[90px] bg-clay-highlight/36 p-[12px] shadow-[4px_4px_31px_0px_rgba(19,19,19,0.3)] transition-opacity ${spin} ${
+                    disabled
+                      ? 'cursor-default opacity-25'
+                      : 'cursor-pointer hover:opacity-80'
+                  }`}
+                >
+                  <img
+                    src="/design/arrow-bold.svg"
+                    alt=""
+                    width={12.444}
+                    height={18.07}
+                    className="block w-[12.444px]"
+                    style={{ height: '18.07px' }}
+                  />
+                </button>
+              )
+            })}
           </m.div>
-        </div>
+        </m.div>
       </section>
     </LazyMotion>
   )
