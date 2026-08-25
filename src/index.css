@@ -1,11 +1,20 @@
 @import "tailwindcss";
 
 @theme {
+  /* Design tokens — Figma "Landing Page - V2" (129:259) */
   --color-lime: #b6f500;
   --color-oxblood: #6b241a;
   --color-field: #2d0c05;
-  --color-paper: #fbf8f3;
-  --font-sans: "Archivo", "Noto Sans Ethiopic", sans-serif;
+  --color-paper: #fbfbf3;
+  --color-clay-core: #7b3521;
+  --color-clay-flat: #733721;
+  --color-clay-highlight: #a55b47;
+  --color-clay-deep: #652314;
+  --color-clay-shadow: #441a07;
+  --color-body-rose: #dabfb9;
+
+  --font-sans: "Inter", "Archivo", "Noto Sans Ethiopic", sans-serif;
+  --font-serif: "DM Serif Display", "Archivo Narrow", serif;
   --font-ethiopic: "Noto Sans Ethiopic", "Archivo", sans-serif;
   --font-display: "Archivo Narrow", "Archivo", sans-serif;
 }
@@ -15,7 +24,7 @@ body,
 #root {
   margin: 0;
   min-height: 100%;
-  background: var(--color-lime);
+  background: var(--color-paper);
 }
 
 html {
@@ -29,9 +38,9 @@ html::-webkit-scrollbar {
 
 body {
   font-family: var(--font-sans);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-oxblood);
-  overscroll-behavior: none;
+  overscroll-behavior-y: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -54,7 +63,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: center 8%;
   -webkit-user-drag: none;
 }
 
@@ -63,30 +72,87 @@ body {
 }
 
 /*
-  Viewport-locked mosaic. Mask is applied in JS only during the hand phase.
-  --mask-size zooms the cutout; the grid itself never camera-zooms.
+  Mosaic + solid share one centered plate. The grid stays unmasked; a paper
+  overlay closes in through an inverted hand hole as the user scrolls.
+  During the handoff the same plate is translated/scaled toward the poster
+  slot in the settled Home layout, so nothing ever cross-cuts.
 */
+.hero-plate {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  overflow: hidden;
+  transform: translate(-50%, -50%);
+  transform-origin: center center;
+  will-change: transform;
+}
+
 .hero-mosaic {
   will-change: opacity;
-  -webkit-mask-size: var(--mask-size);
-  mask-size: var(--mask-size);
+}
+
+.hero-paper-cutout {
+  z-index: 1;
+  will-change: -webkit-mask-size, mask-size, opacity;
+  -webkit-mask-size: var(--mask-size, 6500%) auto;
+  mask-size: var(--mask-size, 6500%) auto;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
+  -webkit-mask-position: var(--mask-pos, 34% 44%);
+  mask-position: var(--mask-pos, 34% 44%);
+  -webkit-mask-mode: alpha;
   mask-mode: alpha;
 }
 
 .hero-solid {
+  z-index: 2;
   will-change: opacity;
-  transform: translateZ(0);
-  backface-visibility: hidden;
+  display: block;
 }
 
-/* Soften chrome when the hand / logo takes over */
-html[data-phase='hand'] .phase-hide-on-hand,
-html[data-phase='logo'] .phase-hide-on-hand {
-  opacity: 0 !important;
+/*
+  The poster asset that the hand hands off to. hand-solid.png and
+  assets/tisema.png carry the same hand artwork at the same width fraction
+  (measured: centroid x 0.47506 vs 0.47526, rms radius ratio 1.002), so the
+  poster aligns to the hand box at equal width, lifted by 2.5% of that width.
+*/
+.hero-poster {
+  z-index: 3;
+  will-change: opacity;
+  display: block;
+}
+
+/*
+  Under lg the hero restacks: copy on top, poster below. Centring is therefore
+  a breakpoint concern, but the shift has to live in the same `transform` the
+  handoff animates, so it travels as a variable rather than a utility class.
+*/
+.hero-copy {
+  --hero-copy-shift: 0px;
+}
+
+@media (min-width: 64rem) {
+  .hero-copy {
+    --hero-copy-shift: -50%;
+  }
+}
+
+/* The nav only takes clicks once it has actually arrived. */
+html[data-nav='off'] header {
+  pointer-events: none;
+}
+
+/* Once the site has settled, hand the pointer back to the browser. */
+html[data-phase='settled'] .custom-cursor {
+  opacity: 0;
+}
+
+/* Section rhythm shared by every band below the hero. */
+.section-shell {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 1512px;
+  padding-inline: clamp(20px, 5.55vw, 84px);
 }
 
 @media (prefers-reduced-motion: reduce) {

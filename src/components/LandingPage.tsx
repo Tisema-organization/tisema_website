@@ -1,36 +1,31 @@
 import { useEffect, useRef, useState } from 'react'
 import { CustomCursor } from './CustomCursor'
-import { HeroReveal } from './HeroReveal'
-import {
-  CampaignInfo,
-  Caption,
-  CornerFrame,
-  HeaderNav,
-  LimeOverlay,
-  OutroFooter,
-  PetitionButton,
-  SiteTitle,
-} from './Overlays'
+import { HeroStage } from './HeroStage'
+import { SiteNav } from './SiteNav'
+import { AboutCampaign } from './sections/AboutCampaign'
+import { CampaignFeed } from './sections/CampaignFeed'
+import { CampaignGallery } from './sections/CampaignGallery'
+import { DemandDeclaration } from './sections/DemandDeclaration'
+import { SiteFooter } from './sections/SiteFooter'
+import { Stat } from './sections/Stat'
+import { Timeline } from './sections/Timeline'
+import { WhoCanDeclare } from './sections/WhoCanDeclare'
+import { WholeOfGovernment } from './sections/WholeOfGovernment'
+import { HANDOFF_VH, HERO_REST_VH, HERO_SCROLL_VH } from '../lib/assets'
 
 function isCoarsePointer() {
   return window.matchMedia('(pointer: coarse)').matches
 }
 
 export function LandingPage() {
-  const spacerRef = useRef<HTMLDivElement>(null)
+  const heroScrollRef = useRef<HTMLDivElement>(null)
   const [customCursor, setCustomCursor] = useState(
     () => window.innerWidth >= 1024 && !isCoarsePointer(),
   )
 
   useEffect(() => {
     const sync = () => {
-      const touch = isCoarsePointer()
-      setCustomCursor(window.innerWidth >= 1024 && !touch)
-
-      const info = document.getElementById('outro-info')
-      if (info) {
-        info.dataset.outroOffset = window.innerWidth >= 1024 ? '160' : '120'
-      }
+      setCustomCursor(window.innerWidth >= 1024 && !isCoarsePointer())
     }
 
     sync()
@@ -39,22 +34,39 @@ export function LandingPage() {
   }, [])
 
   return (
-    <div
-      id="scroll-spacer"
-      ref={spacerRef}
-      className={`relative overflow-x-hidden bg-lime select-none ${customCursor ? 'cursor-none' : ''}`}
-      style={{ height: '700vh' }}
-    >
-      <CornerFrame />
+    <div id="home" className="relative bg-paper [overflow-x:clip]">
+      <SiteNav />
+
+      {/*
+        The hero owns its own scroll length and pins a sticky stage inside it.
+        When that length runs out the stage scrolls away on its own and the
+        bands below simply follow — no pin/unpin swap, no cross-cut.
+      */}
+      <div
+        id="hero-scroll"
+        ref={heroScrollRef}
+        className={`relative select-none ${customCursor ? 'cursor-none' : ''}`}
+        style={{
+          height: `${(HERO_SCROLL_VH + HANDOFF_VH + HERO_REST_VH + 1) * 100}vh`,
+        }}
+      >
+        <HeroStage scrollRef={heroScrollRef} />
+      </div>
+
       <CustomCursor enabled={customCursor} />
-      <SiteTitle />
-      <Caption />
-      <HeaderNav />
-      <CampaignInfo />
-      <PetitionButton />
-      <LimeOverlay />
-      <OutroFooter />
-      <HeroReveal spacerRef={spacerRef} />
+
+      <main>
+        <Stat />
+        <AboutCampaign />
+        <WholeOfGovernment />
+        <WhoCanDeclare />
+        <DemandDeclaration />
+        <Timeline />
+        <CampaignGallery />
+        <CampaignFeed />
+      </main>
+
+      <SiteFooter />
     </div>
   )
 }

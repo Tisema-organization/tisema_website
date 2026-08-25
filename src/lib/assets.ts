@@ -51,13 +51,36 @@ export const LOGO_TRANSPARENT = '/logo-transparent.png'
 export const HAND_MASK = '/hand-mask.png'
 /** Filled palm (no face cutout) — legacy luminance mask. */
 export const HAND_MASK_FILL = '/hand-mask-fill.png'
-/** Solid hand silhouette as alpha — fixed CSS mask (do not animate mask-size). */
-export const HAND_MASK_SOLID = '/hand-mask-solid-alpha.png'
+/** Solid hand silhouette as alpha — derived from hand-solid.png. */
+export const HAND_MASK_SOLID = '/hand-mask-solid-alpha.png?v=4'
+/** Inverted mask — opaque outside, transparent hand hole (paper closes in on scroll). */
+export const HAND_MASK_OUTSIDE = '/hand-mask-outside-alpha.png?v=2'
 export const HAND_SOLID = '/hand-solid.png'
 export const HERO_VIDEO = '/victims/tisema-vid.mp4'
 
 /** Viewport-heights of scroll driving the hero mosaic → hand reveal. */
 export const HERO_SCROLL_VH = 6
+
+/** Viewport-heights spent gliding the hand into the settled Home layout. */
+export const HANDOFF_VH = 2
+
+/** Viewport-heights the settled Home holds before it scrolls away. */
+export const HERO_REST_VH = 1
+
+/** The campaign poster the hand hands off to — the Home hero image. */
+export const POSTER = '/assets/tisema.png'
+
+/**
+ * Alignment between hand-solid.png (819x780) and assets/tisema.png (1080x1350).
+ * Measured by fitting the two hand masks: centroid x 0.47506 vs 0.47526 and an
+ * rms-radius ratio of 1.002, so the poster sits at the hand box's width, nudged
+ * up by 2.5% of it. Ratios are multiples of the displayed hand WIDTH.
+ */
+export const POSTER_FROM_HAND = {
+  width: 1.00187,
+  left: -0.00109,
+  top: -0.02502,
+} as const
 
 /** @deprecated kept for asset path; hero is now scroll-mosaic, not video */
 export const VIDEO_SCROLL_VH = 3

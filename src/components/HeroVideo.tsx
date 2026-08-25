@@ -31,7 +31,7 @@ export function HeroVideo({ videoRef }: HeroVideoProps) {
   return (
     <motion.div
       id="main-canvas"
-      className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-lime"
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-paper"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, ease: EASE_OUT, delay: 0.1 }}
