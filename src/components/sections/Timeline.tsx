@@ -26,7 +26,7 @@ const READ_MAX = 164
 
 /** Gap between points. Wider than the comp so there is always more to reveal. */
 const SPACING_LG = 340
-const SPACING_SM = 260
+const SPACING_SM = 200
 
 /** Design widths: the panel column, and stem + gap above the axis. */
 const PANEL_W = 684
@@ -91,9 +91,14 @@ export function Timeline() {
     : { type: 'spring' as const, stiffness: 150, damping: 24, mass: 0.9 }
   const swap = { duration: reduced ? 0 : 0.28, ease: EASE }
 
-  /* Points fade at the edges instead of being guillotined by the clip. */
-  const trackMask =
-    'linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 130px), transparent 100%)'
+  /*
+   * Points fade at the edges instead of being guillotined by the clip. The
+   * faded tail is shorter on narrow screens, where every pixel of reachable
+   * track counts — a masked-out point is not clickable.
+   */
+  const trackMask = `linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - ${
+    wide ? 130 : 56
+  }px), transparent 100%)`
 
   return (
     <LazyMotion features={domAnimation} strict>
@@ -109,7 +114,13 @@ export function Timeline() {
 
         <m.div
           ref={railRef}
-          className="relative mx-auto h-[560px] overflow-hidden lg:h-[640px] lg:w-[1512px]"
+          /*
+           * `clip`, not `hidden`. `hidden` is still a scroll container, so
+           * focusing a tab that is off to the right makes the browser scroll
+           * the rail — dragging the parked panel and stem off with it. `clip`
+           * cannot be scrolled at all.
+           */
+          className="relative mx-auto h-[560px] [overflow:clip] lg:h-[640px] lg:w-[1512px]"
           initial="hidden"
           /*
            * The reveal is held in state rather than left to `whileInView`, so
@@ -243,7 +254,7 @@ export function Timeline() {
                   */}
                     <m.span
                       aria-hidden
-                      className="block font-serif text-[20px] leading-[24px] whitespace-nowrap text-field"
+                      className="block font-serif text-[14px] leading-[20px] whitespace-nowrap text-field lg:text-[20px] lg:leading-[24px]"
                       animate={{ opacity: i === active ? 0 : 1 }}
                       transition={swap}
                     >
@@ -283,7 +294,9 @@ export function Timeline() {
           {/* Past points slide out of reach, so stepping needs its own control. */}
           <m.div
             className="absolute right-[20px] flex gap-[12px] lg:right-[71px]"
-            style={{ bottom: `calc(14% + 46px)` }}
+            /* Above the stem's full height, so a date label arriving at the
+               right edge never slides underneath the controls. */
+            style={{ bottom: `calc(14% + ${STEM_H + 20}px)` }}
             variants={{ hidden: { opacity: 0 }, shown: { opacity: 1 } }}
             transition={{
               duration: reduced ? 0 : 0.5,
