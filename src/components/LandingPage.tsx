@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { domAnimation, LazyMotion, MotionConfig } from 'motion/react'
 import { CustomCursor } from './CustomCursor'
-import { HeroScrollHint } from './HeroScrollHint'
 import { HeroStage } from './HeroStage'
 import { SiteNav } from './SiteNav'
 import { AboutCampaign } from './sections/AboutCampaign'
@@ -13,7 +12,6 @@ import { Stat } from './sections/Stat'
 import { Timeline } from './sections/Timeline'
 import { WhoCanDeclare } from './sections/WhoCanDeclare'
 import { WholeOfGovernment } from './sections/WholeOfGovernment'
-import { HANDOFF_VH, HERO_REST_VH, HERO_SCROLL_VH } from '../lib/assets'
 
 function isCoarsePointer() {
   return window.matchMedia('(pointer: coarse)').matches
@@ -62,7 +60,6 @@ export function LandingPage() {
       <MotionConfig reducedMotion="user">
         <div id="home" className="relative bg-paper [overflow-x:clip]">
           <SiteNav />
-          <HeroScrollHint />
 
           {/*
         The hero owns its own scroll length and pins a sticky stage inside it.
@@ -73,9 +70,6 @@ export function LandingPage() {
             id="hero-scroll"
             ref={heroScrollRef}
             className={`relative select-none ${customCursor ? 'cursor-none' : ''}`}
-            style={{
-              height: `${(HERO_SCROLL_VH + HANDOFF_VH + HERO_REST_VH + 1) * 100}vh`,
-            }}
           >
             <HeroStage scrollRef={heroScrollRef} />
           </div>

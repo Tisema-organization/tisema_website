@@ -45,7 +45,7 @@ export function HeroScrollHint() {
     const onScroll = () => {
       const atStart = window.scrollY <= GRID_START_MAX_Y;
       if (!atStart) everScrolled.current = true;
-      setAtGridStart(atStart);
+      setAtGridStart((prev) => (prev === atStart ? prev : atStart));
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });

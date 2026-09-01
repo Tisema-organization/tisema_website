@@ -175,10 +175,14 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
     const reduced = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
     ).matches
+    const touchLike = window.matchMedia('(pointer: coarse)').matches
     const paperMaskUrl = `url(${HAND_MASK_OUTSIDE})`
 
     let frameId = 0
     let smoothProgress = 0
+    let lockedVw = window.innerWidth
+    /** Locked so mobile browser chrome changing `vh` mid-scroll cannot rewind progress. */
+    let lockedVh = window.innerHeight
     let lastPhase = ''
     let lastTransform = ''
     let lastMaskPct = -1
@@ -198,9 +202,18 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
     let openCols = EAGER_COLS
     let openRows = EAGER_ROWS
 
-    const layoutShell = () => {
+    const maybeRelockViewport = () => {
       const vw = window.innerWidth
-      const vh = window.innerHeight
+      if (Math.abs(vw - lockedVw) > 1) {
+        lockedVw = vw
+        lockedVh = window.innerHeight
+      }
+    }
+
+    const layoutShell = () => {
+      maybeRelockViewport()
+      const vw = window.innerWidth
+      const vh = lockedVh
 
       /*
        * A sticky child stops pinning once the parent has only its own height
@@ -470,7 +483,7 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
     }
 
     const tick = () => {
-      const vh = window.innerHeight
+      const vh = lockedVh
       const heroMax = Math.max(1, vh * HERO_SCROLL_VH)
       const y = window.scrollY
       const target = reduced ? 1 : clamp(y / heroMax)
@@ -480,6 +493,8 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
 
       if (reduced) {
         smoothProgress = 1
+      } else if (touchLike) {
+        smoothProgress = target
       } else {
         smoothProgress += (target - smoothProgress) * SCROLL_EASE
         if (Math.abs(target - smoothProgress) < 0.0004) smoothProgress = target
@@ -518,7 +533,7 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
       })
     } else if (skipIntro) {
       smoothProgress = 1
-      window.scrollTo(0, settledHeroScrollY())
+      window.scrollTo(0, settledHeroScrollY(lockedVh))
       apply(1, 1, 1)
       requestAnimationFrame(() => {
         layoutShell()
