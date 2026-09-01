@@ -9,28 +9,29 @@ import {
 } from '../../lib/content'
 
 /**
- * Matches the published site rather than the Figma frame: one oxblood field
- * with no inner border, the appeal on a single centred line, and the petition
- * button stacked underneath it instead of sitting inline beside "Today."
+ * Field Dark band carrying an Oxblood panel (160:51/160:52). The appeal and
+ * the petition button share one grid cell so the button sits beside "Today."
+ * on the second line, which is how the comp overlays them.
  */
 export function SiteFooter() {
   return (
     <footer
       id="petition"
-      className="w-full scroll-mt-[105px] bg-oxblood py-[72px] lg:py-[120px]"
+      className="w-full scroll-mt-[105px] overflow-clip bg-field"
     >
-      <div className="mx-auto flex w-full max-w-[1014px] flex-col gap-[72px] px-5 lg:gap-[150px]">
-        <div className="flex flex-col items-center gap-[32px] lg:gap-[40px]">
-          {/* The page's closing appeal — the other place worth landing a
-              word at a time. */}
-          <h2 className="text-center font-serif text-[clamp(2.25rem,4.3vw,65px)] leading-[1.2] text-paper">
+      <div className="flex w-full flex-col items-center justify-center gap-[72px] border-[0.875px] border-solid border-clay-flat bg-oxblood p-[32px] lg:gap-[177px]">
+        <div className="w-full lg:grid lg:w-auto lg:place-items-start">
+          <h2 className="text-center font-serif text-[clamp(2.25rem,5.42vw,82px)] leading-[1.293] text-paper lg:col-start-1 lg:row-start-1 lg:w-[1090px] lg:text-left lg:leading-[106px]">
             <Words segments={[{ text: FOOTER_CTA }]} gap={0.05} />
           </h2>
 
-          <Reveal delay={0.35}>
+          <Reveal
+            className="mt-8 flex justify-center lg:col-start-1 lg:row-start-1 lg:mt-[129.08px] lg:ml-[274.85px] lg:block"
+            delay={0.35}
+          >
             <a
               href={PETITION_HREF}
-              className="flex items-center justify-center rounded-[4px] bg-lime px-[32px] py-[12px] font-serif text-[clamp(1.125rem,1.65vw,25px)] leading-[1.6] whitespace-nowrap text-clay-shadow transition-opacity hover:opacity-90 lg:px-[40px] lg:py-[13px]"
+              className="flex items-center justify-center rounded-[4px] bg-lime px-[32px] py-[12px] font-serif text-[clamp(1.25rem,2.48vw,37.44px)] whitespace-nowrap text-clay-shadow transition-opacity hover:opacity-90 lg:px-[46.154px] lg:py-[14.423px] lg:leading-[66.568px]"
             >
               Sign the Petition
             </a>
@@ -38,58 +39,68 @@ export function SiteFooter() {
         </div>
 
         <Stagger
-          className="flex flex-col gap-[56px] lg:flex-row lg:justify-between lg:gap-[120px]"
+          className="flex w-full max-w-[1516px] flex-col gap-[56px] lg:flex-row lg:gap-[384px] lg:px-[120px]"
           gap={0.14}
         >
-          <Item className="flex max-w-[520px] flex-col gap-[24px]">
-            <div className="flex items-center gap-[10px]">
+          <Item className="flex flex-col gap-[24px] lg:w-[607px]">
+            <div className="flex w-[175px] items-center gap-[8.75px]">
               <img
                 src={POSTER}
                 alt=""
                 width={1080}
                 height={1350}
-                className="h-[56px] w-[48px] shrink-0 object-cover"
+                className="h-[68.75px] w-[55px] shrink-0 object-cover"
               />
-              <p className="font-serif text-[17px] leading-[28px] whitespace-nowrap text-paper">
+              <p className="font-serif text-[19.25px] leading-[28px] whitespace-nowrap text-paper">
                 #Tisema
               </p>
             </div>
 
-            <p className="text-[16px] leading-[28px] text-paper capitalize">
-              {FOOTER_BLURB}
-            </p>
+            <div className="flex flex-col gap-[32px] pr-[24px] lg:w-[600px]">
+              <p className="max-w-[592px] text-[18px] leading-[34.125px] text-paper capitalize">
+                {FOOTER_BLURB}
+              </p>
 
-            <ul className="flex flex-wrap items-center gap-[10px]">
-              {FOOTER_SOCIALS.map((social) => (
-                <li key={social.label}>
-                  <a
-                    href="#"
-                    aria-label={social.label}
-                    className="flex size-[32px] items-center justify-center overflow-hidden rounded-[8px] bg-white/15 transition-opacity hover:opacity-80"
-                  >
-                    <img
-                      src={social.src}
-                      alt=""
-                      width={social.w}
-                      height={social.h}
-                      className="block h-[18px] w-[18px] object-contain"
-                    />
-                  </a>
-                </li>
-              ))}
-            </ul>
+              <ul className="flex flex-wrap items-start gap-[14.045px]">
+                {FOOTER_SOCIALS.map((social) => (
+                  <li key={social.label}>
+                    <a
+                      href="#"
+                      aria-label={social.label}
+                      className={
+                        social.boxed
+                          ? 'flex h-[39px] w-[38px] items-center justify-center overflow-hidden rounded-[7.022px] bg-white/20 p-[7.022px] transition-opacity hover:opacity-80'
+                          : 'block transition-opacity hover:opacity-80'
+                      }
+                    >
+                      <img
+                        src={social.src}
+                        alt=""
+                        width={social.w}
+                        height={social.h}
+                        className="block"
+                        style={{
+                          width: `${social.w}px`,
+                          height: `${social.h}px`,
+                        }}
+                      />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </Item>
 
-          <Item className="flex flex-col gap-[20px]">
-            <p className="font-serif text-[21px] leading-normal whitespace-nowrap text-paper">
+          <Item className="flex flex-col gap-[24px] lg:h-[316px]">
+            <p className="font-serif text-[24px] leading-normal whitespace-nowrap text-paper">
               Quick links
             </p>
-            <ul className="flex flex-col gap-[12px]">
+            <ul className="flex flex-col gap-[16px]">
               {FOOTER_LINKS.map((link) => (
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="text-[17px] leading-normal whitespace-nowrap text-body-rose transition-opacity hover:opacity-80"
+                    className="text-[20px] leading-normal whitespace-nowrap text-body-rose transition-opacity hover:opacity-80"
                   >
                     {link.label}
                   </a>

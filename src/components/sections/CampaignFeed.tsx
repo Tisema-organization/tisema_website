@@ -67,35 +67,37 @@ export function CampaignFeed() {
       className="relative w-full scroll-mt-[105px] bg-paper py-[96px] lg:py-[120px]"
     >
       <div className="section-shell">
-        <div className="mx-auto flex w-full max-w-[1253.875px] flex-col gap-6 text-field lg:flex-row lg:items-center lg:gap-[233px]">
-          <BandTitle
-            text="Campaign Feed"
-            className="whitespace-nowrap text-oxblood lg:leading-[97.125px]"
-          />
-          <Reveal className="flex-1" delay={0.2}>
-            <p className="text-[18px] leading-[34.125px]">{FEED_INTRO}</p>
-          </Reveal>
-        </div>
-      </div>
+        <div className="mx-auto w-full max-w-[1253.875px]">
+          <div className="flex flex-col gap-6 text-field lg:flex-row lg:items-center lg:gap-[233px]">
+            <BandTitle
+              text="Campaign Feed"
+              className="whitespace-nowrap lg:leading-[60px]"
+            />
+            <Reveal className="flex-1" delay={0.2}>
+              <p className="text-[18px] leading-[34.125px]">{FEED_INTRO}</p>
+            </Reveal>
+          </div>
 
-      <div
-        ref={rail.ref}
-        className="section-rail mt-[56px] snap-x snap-mandatory lg:mt-[80px]"
-        tabIndex={0}
-        role="region"
-        aria-label="Campaign feed posts"
-      >
-        <ul className="flex list-none" style={{ gap: `${GAP}px` }}>
-          {FEED_POSTS.map((post, index) => (
-            <li
-              key={index}
-              data-feed-card
-              className="w-[78vw] max-w-[340px] shrink-0 snap-start sm:w-[320px] sm:max-w-none lg:w-[360px]"
-            >
-              <Post post={post} delay={(index % 3) * 0.08} />
-            </li>
-          ))}
-        </ul>
+          <div
+            ref={rail.ref}
+            className="section-rail mt-[56px] snap-x snap-mandatory lg:mt-[80px]"
+            tabIndex={0}
+            role="region"
+            aria-label="Campaign feed posts"
+          >
+            <ul className="flex list-none" style={{ gap: `${GAP}px` }}>
+              {FEED_POSTS.map((post, index) => (
+                <li
+                  key={index}
+                  data-feed-card
+                  className="w-[78vw] max-w-[340px] shrink-0 snap-start sm:w-[340px] sm:max-w-none lg:w-[403.958px]"
+                >
+                  <Post post={post} delay={(index % 3) * 0.08} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
 
       <CarouselArrow

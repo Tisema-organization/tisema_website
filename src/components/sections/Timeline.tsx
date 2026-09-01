@@ -6,26 +6,36 @@ import { BandTitle } from './primitives'
 /**
  * Horizontal timeline, read through a fixed lens.
  *
- * The comp draws August 2023 expanded at x=164 with a stem down to the axis.
- * Rather than move that furniture around, it is treated as a *reading
- * position*: the panel and the stem never move, and the track of dots and
- * dates slides so the selected point comes to rest under the stem. Points
- * ahead of the selection sit off to the right and are revealed as it advances.
+ * The comp draws August 2023 expanded with a stem down to the axis. That is
+ * treated as a *reading position*: the track of dots and dates slides so the
+ * selected point comes to rest under the stem.
+ *
+ * The reading position sits one slot in from the left rather than hard against
+ * it, so the preceding entry stays on screen and stepping back is a click on a
+ * visible date. That is also why there are no stepper arrows — the only reason
+ * they existed was to reach a point the track had carried off-screen.
  */
 
-/** Reading position on the 1512px frame — the comp's first point. */
-const READ_FRAC = 164 / 1512
-const READ_MIN = 20
-const READ_MAX = 164
+/** Where the preceding point rests — the comp's first point on the frame. */
+const BASE_FRAC = 164 / 1512
+const BASE_MIN = 20
+const BASE_MAX = 164
 
-/** Gap between points. Wider than the comp so there is always more to reveal. */
-const SPACING_LG = 340
+/**
+ * Two gaps, not one. The step back to the previous point is deliberately
+ * shorter than the step forward to the next, so the pair reads as "where you
+ * just were" rather than as one more evenly spaced tick.
+ */
+const PREV_GAP_LG = 200
+const PREV_GAP_SM = 130
+const SPACING_LG = 300
 const SPACING_SM = 200
 
 /** Design widths: the panel column, and stem + gap above the axis. */
 const PANEL_W = 684
 const STEM_H = 116
 const PANEL_GAP = 48
+const DOT = 16
 
 const EASE: [number, number, number, number] = [0.25, 0.1, 0.25, 1]
 
@@ -44,30 +54,51 @@ export function Timeline() {
   useEffect(() => {
     const rail = railRef.current
     if (!rail) return
-    const ro = new ResizeObserver(([entry]) =>
-      setRailW(entry.contentRect.width),
-    )
+    const ro = new ResizeObserver(([entry]) => setRailW(entry.contentRect.width))
     ro.observe(rail)
     return () => ro.disconnect()
   }, [])
 
+  const last = TIMELINE.length - 1
   const wide = railW >= 1024
-  const readX =
-    railW > 0 ? clamp(railW * READ_FRAC, READ_MIN, READ_MAX) : READ_MAX
+  const baseX = railW > 0 ? clamp(railW * BASE_FRAC, BASE_MIN, BASE_MAX) : BASE_MAX
   const spacing = wide ? SPACING_LG : SPACING_SM
   const rightInset = wide ? 86 : 20
+
+  /*
+   * `slot` is which column the live point occupies: the first entry has no
+   * predecessor so it sits at the left edge, everything after it sits one slot
+   * in with its predecessor showing to the left.
+   */
+  const prevGap = wide ? PREV_GAP_LG : PREV_GAP_SM
+
+  /*
+   * The reading position steps in by one short gap only once there is a
+   * previous point to park there. On the first entry nothing precedes it, so
+   * holding that space open just leaves a dead margin down the left.
+   */
+  const readOffset = active === 0 ? 0 : prevGap
+
+  /*
+   * Offsets from the reading position. Points ahead march away at `spacing`;
+   * the one behind sits a shorter `prevGap` back, and anything before that
+   * continues at the normal spacing and slides out of view.
+   */
+  const offsetFor = (i: number) => {
+    if (i === active) return 0
+    if (i > active) return (i - active) * spacing
+    return -prevGap - (active - 1 - i) * spacing
+  }
+
+  /* Sized for the stepped-in position so the width never changes underfoot. */
   const panelW =
     railW > 0
-      ? Math.max(240, Math.min(PANEL_W, railW - readX - rightInset))
+      ? Math.max(240, Math.min(PANEL_W, railW - baseX - prevGap - rightInset))
       : PANEL_W
-
-  /** The track carries every point; sliding it parks the live one at readX. */
-  const trackX = -spacing * active
 
   const select = useCallback((i: number) => setActive(i), [])
 
   const onKeyDown = (event: React.KeyboardEvent) => {
-    const last = TIMELINE.length - 1
     let next = -1
     if (event.key === 'ArrowRight') next = active === last ? 0 : active + 1
     else if (event.key === 'ArrowLeft') next = active === 0 ? last : active - 1
@@ -102,7 +133,7 @@ export function Timeline() {
       <div className="section-shell">
         <BandTitle
           text="Timeline of the Movement"
-          className="text-oxblood lg:pt-[75.63px] lg:leading-[76.1px]"
+          className="text-field lg:pt-[75.63px] lg:leading-[76.1px]"
         />
       </div>
 
@@ -136,19 +167,18 @@ export function Timeline() {
           transition={{ duration: reduced ? 0 : 0.9, ease: 'easeOut' }}
         />
 
-        {/* Panel — parked at the reading position, swapping in place. */}
+        {/* Panel — parked at the reading position, swapping in place. It only
+            shifts between the two slots, never further. */}
         <m.div
           className="pointer-events-none absolute"
           style={{
-            left: readX,
+            left: baseX - DOT / 2,
             width: panelW,
             bottom: `calc(14% + ${STEM_H + PANEL_GAP}px)`,
           }}
           variants={{ hidden: { opacity: 0 }, shown: { opacity: 1 } }}
-          transition={{
-            duration: reduced ? 0 : 0.5,
-            delay: reduced ? 0 : 0.35,
-          }}
+          animate={{ x: readOffset }}
+          transition={glide}
         >
           <AnimatePresence mode="wait" initial={false}>
             <m.div
@@ -162,26 +192,27 @@ export function Timeline() {
               exit={{ opacity: 0, y: -10 }}
               transition={swap}
             >
-              <p className="font-serif text-[24px] leading-[34.125px] text-oxblood">
+              <p className="font-serif text-[24px] leading-[34.125px]">
                 {entry.title}
               </p>
-              <p className="text-[18px] leading-[34.125px]">{entry.body}</p>
-              <p className="font-serif text-[40px] leading-[47px] whitespace-nowrap text-oxblood">
+              {/* The final milestone is a headline and a date only. */}
+              {entry.body ? (
+                <p className="text-[18px] leading-[34.125px]">{entry.body}</p>
+              ) : null}
+              <p className="font-serif text-[40px] leading-[47px] whitespace-nowrap">
                 {entry.date}
               </p>
             </m.div>
           </AnimatePresence>
         </m.div>
 
-        {/* Stem — also parked; the live point comes to it. */}
+        {/* Stem — the live point comes to it. */}
         <m.div
           className="pointer-events-none absolute"
-          style={{ left: readX, bottom: '14%' }}
+          style={{ left: baseX - DOT / 2, bottom: '14%' }}
           variants={{ hidden: { opacity: 0 }, shown: { opacity: 1 } }}
-          transition={{
-            duration: reduced ? 0 : 0.5,
-            delay: reduced ? 0 : 0.45,
-          }}
+          animate={{ x: readOffset }}
+          transition={glide}
         >
           <img
             src="/design/timeline-marker.svg"
@@ -206,17 +237,15 @@ export function Timeline() {
           style={{ maskImage: trackMask, WebkitMaskImage: trackMask }}
           onKeyDown={onKeyDown}
         >
-          <m.div
-            className="absolute inset-0"
-            animate={{ x: trackX }}
-            transition={glide}
-          >
+          <>
             {TIMELINE.map((point, i) => (
-              <div
+              <m.div
                 key={point.date}
                 role="presentation"
                 className="absolute"
-                style={{ left: readX + spacing * i, bottom: '14%' }}
+                style={{ left: baseX - DOT / 2, bottom: '14%' }}
+                animate={{ x: readOffset + offsetFor(i) }}
+                transition={glide}
               >
                 <m.button
                   ref={(el) => {
@@ -248,7 +277,7 @@ export function Timeline() {
                   */}
                   <m.span
                     aria-hidden
-                    className="block font-serif text-[14px] leading-[20px] whitespace-nowrap text-oxblood lg:text-[20px] lg:leading-[24px]"
+                    className="block font-serif text-[14px] leading-[20px] whitespace-nowrap text-field lg:text-[20px] lg:leading-[24px]"
                     animate={{ opacity: i === active ? 0 : 1 }}
                     transition={swap}
                   >
@@ -278,56 +307,10 @@ export function Timeline() {
                     {point.title ? `${point.date}: ${point.title}` : point.date}
                   </span>
                 </m.button>
-              </div>
+              </m.div>
             ))}
-          </m.div>
+          </>
         </div>
-
-        {/* Past points slide out of reach, so stepping needs its own control. */}
-        <m.div
-          className="absolute right-[20px] flex gap-[12px] lg:right-[71px]"
-          /* Above the stem's full height, so a date label arriving at the
-               right edge never slides underneath the controls. */
-          style={{ bottom: `calc(14% + ${STEM_H + 20}px)` }}
-          variants={{ hidden: { opacity: 0 }, shown: { opacity: 1 } }}
-          transition={{
-            duration: reduced ? 0 : 0.5,
-            delay: reduced ? 0 : 0.55,
-          }}
-        >
-          {(
-            [
-              ['Previous entry', -1, '-rotate-90'],
-              ['Next entry', 1, 'rotate-90'],
-            ] as const
-          ).map(([label, step, spin]) => {
-            const target = active + step
-            const disabled = target < 0 || target > TIMELINE.length - 1
-            return (
-              <button
-                key={label}
-                type="button"
-                aria-label={label}
-                disabled={disabled}
-                onClick={() => select(target)}
-                className={`flex size-[40px] items-center justify-center overflow-hidden rounded-[90px] bg-clay-highlight/36 p-[12px] shadow-[4px_4px_31px_0px_rgba(19,19,19,0.3)] transition-opacity ${spin} ${
-                  disabled
-                    ? 'cursor-default opacity-25'
-                    : 'cursor-pointer hover:opacity-80'
-                }`}
-              >
-                <img
-                  src="/design/arrow-bold.svg"
-                  alt=""
-                  width={12.444}
-                  height={18.07}
-                  className="block w-[12.444px]"
-                  style={{ height: '18.07px' }}
-                />
-              </button>
-            )
-          })}
-        </m.div>
       </m.div>
     </section>
   )

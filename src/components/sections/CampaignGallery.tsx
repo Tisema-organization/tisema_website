@@ -29,7 +29,7 @@ export function CampaignGallery() {
           <div className="flex flex-col gap-6 text-field lg:flex-row lg:items-center lg:gap-[233px]">
             <BandTitle
               text="Campaign Gallery"
-              className="whitespace-nowrap text-oxblood lg:leading-[97.125px]"
+              className="whitespace-nowrap lg:leading-[60px]"
             />
             <Reveal className="flex-1" delay={0.2}>
               <p className="text-[18px] leading-[34.125px]">{GALLERY_INTRO}</p>
@@ -81,7 +81,9 @@ function Tile({ item, delay }: { item: GalleryItem; delay: number }) {
           <div className="pointer-events-none absolute inset-0 grid place-items-center bg-field/65 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-within:opacity-100">
             <a
               href={item.file}
-              download
+              /* Names the saved file after the story rather than the asset
+                 path, so "heaven.png" lands as "Heaven.png". */
+              download={`${item.title}${item.file.slice(item.file.lastIndexOf('.'))}`}
               aria-label={`Download ${item.title}`}
               className="pointer-events-auto flex items-center justify-center gap-[8.75px] rounded-[8px] border-[0.438px] border-solid border-lime px-[21px] py-[5.25px] transition-colors hover:bg-lime/10 focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-field focus-visible:outline-none"
             >
@@ -100,7 +102,7 @@ function Tile({ item, delay }: { item: GalleryItem; delay: number }) {
         </div>
 
         <figcaption className="flex flex-col gap-[7px] px-[14px] text-field">
-          <p className="font-serif text-[17.5px] leading-[34.125px] text-oxblood">
+          <p className="font-serif text-[17.5px] leading-[34.125px]">
             {item.title}
           </p>
           <p className="text-[12.25px] leading-[19.25px]">{item.body}</p>

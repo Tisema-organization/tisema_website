@@ -276,9 +276,12 @@ export function Typewriter({
  */
 export function Count({
   to,
+  suffix = '',
   duration = 1.6,
 }: {
   to: number
+  /** Trails the number so "300" can settle as the design's "300K". */
+  suffix?: string
   duration?: number
 }) {
   const ref = useRef<HTMLSpanElement>(null)
@@ -290,7 +293,7 @@ export function Count({
     if (!el || !inView) return
 
     if (reduced) {
-      el.textContent = to.toLocaleString()
+      el.textContent = to.toLocaleString() + suffix
       return
     }
 
@@ -298,14 +301,14 @@ export function Count({
       duration,
       ease: EASE_OUT,
       onUpdate: (value) => {
-        el.textContent = Math.round(value).toLocaleString()
+        el.textContent = Math.round(value).toLocaleString() + suffix
       },
     })
 
     return () => controls.stop()
-  }, [inView, to, duration, reduced])
+  }, [inView, to, suffix, duration, reduced])
 
-  return <span ref={ref}>0</span>
+  return <span ref={ref}>{`0${suffix}`}</span>
 }
 
 /**

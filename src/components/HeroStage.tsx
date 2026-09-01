@@ -591,20 +591,20 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
 function HeroCopy() {
   return (
     <div
-      className="hero-copy pointer-events-none absolute top-[9%] left-[5.55%] z-[2] flex w-[89%] max-w-[630px] flex-col gap-7 lg:top-1/2 lg:w-[52%] lg:gap-[56px]"
+      className="hero-copy pointer-events-none absolute top-[9%] left-[5.55%] z-[2] flex w-[89%] max-w-[630px] flex-col gap-7 lg:top-1/2 lg:left-[6.48%] lg:w-[52%] lg:gap-[56px]"
       style={{
         opacity: 'var(--hero-text-in, 0)',
         transform:
           'translateY(var(--hero-copy-shift, 0px)) translateX(calc((1 - var(--hero-text-in, 0)) * -40px))',
       }}
     >
-      <h1 className="font-serif text-[clamp(2rem,4.63vw,70px)] leading-[1.093] text-field">
+      <h1 className="max-w-[572px] font-serif text-[clamp(2rem,4.63vw,70px)] leading-[1.093] text-field">
         <span>Declaring </span>
         <span className="text-oxblood">Violence Against </span>
         <span className="text-oxblood italic">Women and Girls </span>
         <span>a National Crisis</span>
       </h1>
-      <p className="max-w-[644px] text-[clamp(1rem,1.56vw,23.625px)] leading-[1.4444] font-normal text-field/70">
+      <p className="max-w-[644px] text-[clamp(1rem,1.56vw,23.625px)] leading-[1.4444] font-normal text-field">
         {HERO_SUBTITLE}
       </p>
     </div>

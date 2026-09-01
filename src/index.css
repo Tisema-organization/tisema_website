@@ -138,28 +138,11 @@ body {
 }
 
 /*
-  A full-bleed horizontal rail. Its first card lines up with the band heading
-  above it, but the track runs on to the viewport edge so the next card is
-  visibly cut off — that overhang is what tells you there is more to scroll.
-  The left inset therefore has to reproduce `.section-shell`'s centring maths
-  rather than just borrowing its padding.
+  Horizontal card rail. It sits inside the band container rather than running
+  full width, so the track clips at the section's own edges and the cut-off
+  next card reads as "there is more" without touching the viewport edge.
 */
 .section-rail {
-  --shell-pad: clamp(20px, 5.55vw, 84px);
-  --shell-w: min(100%, 1512px);
-  --band-w: 1253.875px;
-  /*
-    Three insets stacked: the shell's own centring above 1512px, its padding,
-    and the band container the heading sits in inside that padding. Miss the
-    third and the first card sits ~45px left of the heading at desktop width.
-  */
-  --gutter: calc(
-    max(0px, (100% - 1512px) / 2) + var(--shell-pad) +
-      max(0px, (var(--shell-w) - 2 * var(--shell-pad) - var(--band-w)) / 2)
-  );
-  padding-left: var(--gutter);
-  padding-right: var(--shell-pad);
-  scroll-padding-left: var(--gutter);
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
