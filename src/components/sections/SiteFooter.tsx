@@ -6,8 +6,10 @@ import {
   FOOTER_CTA,
   FOOTER_LINKS,
   FOOTER_SOCIALS,
-  PETITION_HREF,
+  petitionUrl,
 } from '../../lib/content'
+import { handleHomeNavClick } from '../../lib/heroSession'
+import { clientNavigate, useRouter } from '../../lib/router'
 
 /**
  * Field Dark band carrying an Oxblood panel (160:51/160:52). The appeal and
@@ -15,24 +17,28 @@ import {
  * on the second line, which is how the comp overlays them.
  */
 export function SiteFooter({ base = '' }: { base?: string } = {}) {
+  const { navigate } = useRouter()
+  const petition = petitionUrl(base)
+  const petitionExternal = petition.startsWith('http')
+
   return (
     <footer
       id="petition"
       className="w-full scroll-mt-[105px] overflow-clip bg-field"
     >
       <div className="flex w-full flex-col items-center justify-center gap-[72px] border-[0.875px] border-solid border-clay-flat bg-oxblood p-[32px] lg:gap-[177px]">
-        <div className="w-full lg:grid lg:w-auto lg:place-items-start">
-          <h2 className="text-center font-serif text-[clamp(2.25rem,5.42vw,82px)] leading-[1.293] text-paper lg:col-start-1 lg:row-start-1 lg:w-[1090px] lg:text-left lg:leading-[106px]">
+        <div className="flex w-full flex-col items-center gap-8 lg:gap-10">
+          <h2 className="max-w-[900px] text-center font-serif text-[clamp(1.75rem,4vw,56px)] leading-[1.25] text-paper">
             <Words segments={[{ text: FOOTER_CTA }]} gap={0.05} />
           </h2>
 
-          <Reveal
-            className="mt-8 flex justify-center lg:col-start-1 lg:row-start-1 lg:mt-[129.08px] lg:ml-[274.85px] lg:block"
-            delay={0.35}
-          >
+          <Reveal className="flex justify-center" delay={0.35}>
             <a
-              href={`${base}${PETITION_HREF}`}
-              className="flex items-center justify-center rounded-[4px] bg-lime px-[32px] py-[12px] font-serif text-[clamp(1.25rem,2.48vw,37.44px)] whitespace-nowrap text-clay-shadow transition-opacity hover:opacity-90 lg:px-[46.154px] lg:py-[14.423px] lg:leading-[66.568px]"
+              href={petition}
+              {...(petitionExternal
+                ? { target: '_blank', rel: 'noopener noreferrer' }
+                : {})}
+              className="flex items-center justify-center rounded-[4px] bg-lime px-6 py-2.5 font-serif text-[clamp(1rem,1.75vw,24px)] whitespace-nowrap text-clay-shadow transition-opacity hover:opacity-90 lg:px-8 lg:py-3"
             >
               Sign the Petition
             </a>
@@ -110,19 +116,26 @@ export function SiteFooter({ base = '' }: { base?: string } = {}) {
               Quick links
             </p>
             <ul className="flex flex-col gap-[16px]">
-              {FOOTER_LINKS.map((link) => (
+              {FOOTER_LINKS.map((link) => {
+                const href = link.href.startsWith('#')
+                  ? `${base}${link.href}`
+                  : link.href
+
+                return (
                 <li key={link.label}>
                   <a
-                    /* Anchors need the base; a real path is already absolute. */
-                    href={
-                      link.href.startsWith('#') ? `${base}${link.href}` : link.href
-                    }
+                    href={href}
+                    onClick={(e) => {
+                      if (clientNavigate(e, href, navigate)) return
+                      if (link.label === 'Home') handleHomeNavClick(e, base, href)
+                    }}
                     className="text-[20px] leading-normal whitespace-nowrap text-body-rose transition-opacity hover:opacity-80"
                   >
                     {link.label}
                   </a>
                 </li>
-              ))}
+                )
+              })}
             </ul>
           </Item>
         </Stagger>

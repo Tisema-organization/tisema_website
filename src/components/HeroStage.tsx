@@ -10,6 +10,11 @@ import {
   POSTER_FROM_HAND,
 } from '../lib/assets'
 import { HERO_SUBTITLE } from '../lib/content'
+import {
+  markHeroIntroSeen,
+  settledHeroScrollY,
+  shouldSkipHeroIntro,
+} from '../lib/heroSession'
 
 /** Odd max — keep growing through the hand phase so the mosaic never sits still. */
 const MAX_SIDE = 17
@@ -211,8 +216,9 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
         : `${vh * (HERO_SCROLL_VH + HANDOFF_VH + HERO_REST_VH + 1)}px`
       sticky.style.height = `${vh}px`
 
-      const maxW = vw * 0.58
-      const maxH = vh * 0.64
+      const isNarrow = vw < 1024
+      const maxW = vw * (isNarrow ? 0.82 : 0.58)
+      const maxH = vh * (isNarrow ? 0.56 : 0.64)
       let w = maxH * HAND_ASPECT
       let h = maxH
       if (w > maxW) {
@@ -457,6 +463,10 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
         root.dataset.phase = phase
         lastPhase = phase
       }
+
+      if (!reduced && handP >= 1) {
+        markHeroIntroSeen()
+      }
     }
 
     const tick = () => {
@@ -487,16 +497,17 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
     layoutShell()
     setPaperMaskSize(maskOversizePct)
     setPaperMaskPosition(MASK_POS_START_X, MASK_POS_START_Y)
-    apply(0, 0, 0)
 
     /*
      * ?scrub=heroP,handP freezes the stage on one frame so a screenshot can be
      * taken of an exact moment in the sequence. Dev only, and it deliberately
-     * never starts the rAF loop.
+     * never starts the rAF loop when frozen.
      */
     const frozen = import.meta.env.DEV
       ? new URLSearchParams(window.location.search).get('scrub')
       : null
+
+    const skipIntro = shouldSkipHeroIntro() && !reduced && !frozen
 
     if (frozen) {
       const [heroP = 1, handP = 0] = frozen.split(',').map(Number)
@@ -505,7 +516,18 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
         measureHandTarget()
         apply(heroP, heroP, handP)
       })
+    } else if (skipIntro) {
+      smoothProgress = 1
+      window.scrollTo(0, settledHeroScrollY())
+      apply(1, 1, 1)
+      requestAnimationFrame(() => {
+        layoutShell()
+        measureHandTarget()
+        apply(1, 1, 1)
+        frameId = requestAnimationFrame(tick)
+      })
     } else {
+      apply(0, 0, 0)
       frameId = requestAnimationFrame(tick)
     }
 
@@ -558,7 +580,7 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
         draggable={false}
         width={1080}
         height={1350}
-        className="hero-poster pointer-events-none absolute top-[68%] left-1/2 h-[36vh] w-auto -translate-x-1/2 -translate-y-1/2 opacity-0 lg:top-[52.016%] lg:left-[74.537%] lg:h-[71.953vh]"
+        className="hero-poster pointer-events-none absolute top-[70%] left-1/2 h-[52vh] w-auto max-w-[94vw] -translate-x-1/2 -translate-y-1/2 opacity-0 lg:top-[52.016%] lg:left-[74.537%] lg:h-[71.953vh] lg:max-w-none"
       />
 
       <div ref={plateRef} className="hero-plate pointer-events-none">
@@ -628,7 +650,7 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
 function HeroCopy() {
   return (
     <div
-      className="hero-copy pointer-events-none absolute top-[9%] left-[5.55%] z-[2] flex w-[89%] max-w-[630px] flex-col gap-7 lg:top-1/2 lg:left-[6.48%] lg:w-[52%] lg:gap-[56px]"
+      className="hero-copy pointer-events-none absolute top-[calc(72px+0.5rem)] left-[5.55%] z-[2] flex w-[89%] max-w-[630px] flex-col gap-4 sm:gap-5 lg:top-1/2 lg:left-[6.48%] lg:w-[52%] lg:gap-[56px]"
       style={{
         opacity: 'var(--hero-text-in, 0)',
         transform:

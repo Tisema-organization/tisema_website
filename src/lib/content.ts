@@ -10,7 +10,12 @@ export const NAV_LINKS = [
   { label: 'Campaign Feed', href: '#campaign-feed' },
 ] as const
 
-export const PETITION_HREF = '#petition'
+export const PETITION_HREF = 'https://c.org/zKH2wvVRdr'
+
+/** Resolves petition link — external URLs ignore the page base prefix. */
+export function petitionUrl(base = '') {
+  return PETITION_HREF.startsWith('http') ? PETITION_HREF : `${base}${PETITION_HREF}`
+}
 
 export const HERO_SUBTITLE =
   "A movement grounded in solidarity, data, and action to protect women's lives and rights."
@@ -157,9 +162,6 @@ export const TIMELINE: TimelineEntry[] = [
   },
 ]
 
-const LOREM_LONG =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-
 export const GALLERY_INTRO =
   'This gallery holds the stories behind Tisema women lost to violence, whose cases still call for justice.'
 export const FEED_INTRO =
@@ -171,6 +173,7 @@ export const FOOTER_BLURB =
   'Have information, a story to share, or want to support this cause? Reach out through any of the channels below.'
 
 export type GalleryItem = {
+  id: string
   src: string
   title: string
   body: string
@@ -178,26 +181,35 @@ export type GalleryItem = {
   file: string
 }
 
+export const GALLERY_PAGE_HREF = '/gallery'
+
+/** How many tiles the landing-page carousel shows before linking to the full gallery. */
+export const GALLERY_LANDING_PREVIEW = 4
+
 const GALLERY_SOURCE: GalleryItem[] = [
   {
+    id: 'tisema',
     src: '/assets/tisema.png',
     title: 'Tisema logo',
     body: 'Tisema means "let her be heard", a promise these stories will not be met with silence.',
     file: '/assets/tisema.png',
   },
   {
+    id: 'heaven',
     src: '/assets/heaven.png',
     title: 'Heaven',
     body: 'She was seven years old when her life was taken through sexual violence. Three years later, her case is still open, and she is still waiting for justice.',
     file: '/assets/heaven.png',
   },
   {
+    id: 'liza',
     src: '/assets/liza.png',
     title: 'Liza',
     body: 'Lost to sexual violence over a year ago, her case remains open.',
     file: '/assets/liza.png',
   },
   {
+    id: 'keneni',
     src: '/assets/keneni.png',
     title: 'Keneni',
     body: 'She was thrown from the fifth floor of a building. No case was ever opened her story stands here because no one else will tell it.',
@@ -205,50 +217,28 @@ const GALLERY_SOURCE: GalleryItem[] = [
   },
 ]
 
-/**
- * Two pages' worth. The design draws one row of four plus a dot indicator, so
- * the four real tiles fill page one exactly; the repeat is what gives the
- * indicator a second page to point at until more stories exist.
- */
-export const GALLERY_ITEMS: GalleryItem[] = [
-  ...GALLERY_SOURCE,
-  ...GALLERY_SOURCE,
-]
+export const GALLERY_ITEMS: GalleryItem[] = GALLERY_SOURCE
+
+export const GALLERY_LANDING_ITEMS: GalleryItem[] = GALLERY_ITEMS.slice(
+  0,
+  GALLERY_LANDING_PREVIEW,
+)
 
 export type FeedPost = {
+  id: string
   src: string
   name: string
   handle: string
   age: string
   body: string
+  url: string
+  avatarSrc?: string
+  /** Unix seconds — used for sorting scraped posts. */
+  createdAt?: number
 }
 
-const FEED_SOURCE: FeedPost[] = [
-  {
-    src: '/assets/keneni.png',
-    name: 'User Name',
-    handle: '@user_name',
-    age: '5h',
-    body: LOREM_LONG,
-  },
-  {
-    src: '/assets/heaven.png',
-    name: 'User Name',
-    handle: '@user_name',
-    age: '5h',
-    body: LOREM_LONG,
-  },
-  {
-    src: '/assets/liza.png',
-    name: 'User Name',
-    handle: '@user_name',
-    age: '5h',
-    body: LOREM_LONG,
-  },
-]
 
-/** Same two-page arrangement as the gallery, for the same reason. */
-export const FEED_POSTS: FeedPost[] = [...FEED_SOURCE, ...FEED_SOURCE]
+export { FEED_POSTS } from './feed'
 
 export const FOOTER_CTA = 'Help Make a Difference Today.'
 
@@ -256,7 +246,7 @@ export const FOOTER_LINKS = [
   { label: 'Home', href: '#home' },
   { label: 'About The Campaign', href: '#about-the-campaign' },
   { label: 'Timeline', href: '#timeline' },
-  { label: 'Campaign Gallery', href: '#campaign-gallery' },
+  { label: 'Campaign Gallery', href: '/gallery' },
   { label: 'Campaign Feed', href: '#campaign-feed' },
   { label: 'Terms and Conditions', href: '/terms.html' },
 ] as const

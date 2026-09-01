@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { domAnimation, LazyMotion, MotionConfig } from 'motion/react'
 import { CustomCursor } from './CustomCursor'
+import { HeroScrollHint } from './HeroScrollHint'
 import { HeroStage } from './HeroStage'
 import { SiteNav } from './SiteNav'
 import { AboutCampaign } from './sections/AboutCampaign'
@@ -34,6 +35,19 @@ export function LandingPage() {
     return () => window.removeEventListener('resize', sync)
   }, [])
 
+  useEffect(() => {
+    const hash = window.location.hash
+    if (!hash || hash === '#home') return
+
+    const scrollToHash = () => {
+      document.querySelector(hash)?.scrollIntoView()
+    }
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(scrollToHash)
+    })
+  }, [])
+
   return (
     /*
      * One feature bundle for the whole page. `strict` keeps every call site on
@@ -48,6 +62,7 @@ export function LandingPage() {
       <MotionConfig reducedMotion="user">
         <div id="home" className="relative bg-paper [overflow-x:clip]">
           <SiteNav />
+          <HeroScrollHint />
 
           {/*
         The hero owns its own scroll length and pins a sticky stage inside it.

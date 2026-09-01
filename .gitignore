@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# TikTok scraper raw output (synced assets are committed separately)
+tools/tiktok-scraper/output/*.json
+tools/tiktok-scraper/node_modules

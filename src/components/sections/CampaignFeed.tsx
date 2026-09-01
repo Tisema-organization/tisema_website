@@ -88,7 +88,7 @@ export function CampaignFeed() {
             <ul className="flex list-none" style={{ gap: `${GAP}px` }}>
               {FEED_POSTS.map((post, index) => (
                 <li
-                  key={index}
+                  key={post.id}
                   data-feed-card
                   className="w-[78vw] max-w-[340px] shrink-0 snap-start sm:w-[340px] sm:max-w-none lg:w-[403.958px]"
                 >
@@ -119,10 +119,18 @@ export function CampaignFeed() {
 }
 
 function Post({ post, delay }: { post: FeedPost; delay: number }) {
+  const initial = post.name.trim().charAt(0).toUpperCase() || 'U'
+
   return (
     <Reveal delay={delay}>
       <article className="flex flex-col items-center gap-[21px] pb-[7px]">
-        <div className="relative w-full">
+        <a
+          href={post.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="relative w-full transition-opacity hover:opacity-90"
+          aria-label={`View ${post.name}'s TikTok post`}
+        >
           <img
             src={post.src}
             alt=""
@@ -131,11 +139,6 @@ function Post({ post, delay }: { post: FeedPost; delay: number }) {
             loading="lazy"
             className="aspect-[403.958/472.5] w-full rounded-[16px] object-cover"
           />
-          {/*
-            The badge's export is the shadowed 64.36x65.07 mark, which the
-            design bleeds outside a 32.365x33.069 box. Keeping both boxes
-            preserves the shadow falloff instead of shrinking the glyph.
-          */}
           <div className="absolute top-[15px] left-[16.5px] h-[33.069px] w-[32.365px]">
             <img
               src="/design/social-5.svg"
@@ -151,28 +154,45 @@ function Post({ post, delay }: { post: FeedPost; delay: number }) {
               }}
             />
           </div>
-        </div>
+        </a>
 
         <div className="flex w-full flex-col gap-[7px] px-[14px]">
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-[7px]">
-              <div className="flex size-[30.625px] items-center justify-center rounded-[20.417px] border-[0.263px] border-solid border-clay-highlight bg-oxblood p-[5.104px]">
-                <p className="font-serif text-[10.719px] leading-normal text-field">
-                  U
-                </p>
-              </div>
-              <div className="flex w-[87.5px] flex-col gap-[1.75px] whitespace-nowrap text-field">
-                <p className="text-[12.25px] leading-[15.75px] font-bold">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-[7px]">
+              {post.avatarSrc ? (
+                <img
+                  src={post.avatarSrc}
+                  alt=""
+                  width={31}
+                  height={31}
+                  className="size-[30.625px] shrink-0 rounded-full object-cover"
+                />
+              ) : (
+                <div className="flex size-[30.625px] shrink-0 items-center justify-center rounded-[20.417px] border-[0.263px] border-solid border-clay-highlight bg-oxblood p-[5.104px]">
+                  <p className="font-serif text-[10.719px] leading-normal text-field">
+                    {initial}
+                  </p>
+                </div>
+              )}
+              <div className="flex min-w-0 flex-col gap-[1.75px] text-field">
+                <p className="truncate text-[12.25px] leading-[15.75px] font-bold">
                   {post.name}
                 </p>
-                <p className="text-[10.5px] leading-[15.75px]">{post.handle}</p>
+                <a
+                  href={post.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="truncate text-[10.5px] leading-[15.75px] transition-opacity hover:opacity-70"
+                >
+                  {post.handle}
+                </a>
               </div>
             </div>
-            <p className="text-[10.5px] leading-[15.75px] whitespace-nowrap text-field">
+            <p className="shrink-0 text-[10.5px] leading-[15.75px] whitespace-nowrap text-field">
               {post.age}
             </p>
           </div>
-          <p className="text-[12.25px] leading-[19.25px] text-field">
+          <p className="line-clamp-4 text-[12.25px] leading-[19.25px] text-field">
             {post.body}
           </p>
         </div>

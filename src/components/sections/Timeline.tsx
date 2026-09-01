@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, m, useReducedMotion } from 'motion/react'
+import { CarouselArrow } from '../Carousel'
 import { TIMELINE } from '../../lib/content'
 import { BandTitle } from './primitives'
 
@@ -61,9 +62,11 @@ export function Timeline() {
 
   const last = TIMELINE.length - 1
   const wide = railW >= 1024
+  const mobile = railW > 0 && !wide
   const baseX = railW > 0 ? clamp(railW * BASE_FRAC, BASE_MIN, BASE_MAX) : BASE_MAX
   const spacing = wide ? SPACING_LG : SPACING_SM
   const rightInset = wide ? 86 : 20
+  const edgePad = mobile ? 16 : 0
 
   /*
    * `slot` is which column the live point occupies: the first entry has no
@@ -76,8 +79,11 @@ export function Timeline() {
    * The reading position steps in by one short gap only once there is a
    * previous point to park there. On the first entry nothing precedes it, so
    * holding that space open just leaves a dead margin down the left.
+   *
+   * On mobile the panel stays full-width — shifting it with readOffset shoved
+   * copy off the right edge of the screen.
    */
-  const readOffset = active === 0 ? 0 : prevGap
+  const readOffset = active === 0 || mobile ? 0 : prevGap
 
   /*
    * Offsets from the reading position. Points ahead march away at `spacing`;
@@ -93,8 +99,13 @@ export function Timeline() {
   /* Sized for the stepped-in position so the width never changes underfoot. */
   const panelW =
     railW > 0
-      ? Math.max(240, Math.min(PANEL_W, railW - baseX - prevGap - rightInset))
+      ? mobile
+        ? railW - edgePad * 2
+        : Math.max(240, Math.min(PANEL_W, railW - baseX - prevGap - rightInset))
       : PANEL_W
+
+  const panelLeft = mobile ? edgePad : baseX - DOT / 2
+  const stemLeft = mobile ? edgePad : baseX - DOT / 2
 
   const select = useCallback((i: number) => setActive(i), [])
 
@@ -109,6 +120,15 @@ export function Timeline() {
     select(next)
     dotRefs.current[next]?.focus()
   }
+
+  const step = useCallback(
+    (delta: -1 | 1) => {
+      const next = active + delta
+      if (next < 0 || next > last) return
+      select(next)
+    },
+    [active, last, select],
+  )
 
   const entry = TIMELINE[active]
   const glide = reduced
@@ -153,7 +173,7 @@ export function Timeline() {
          * the rail — dragging the parked panel and stem off with it. `clip`
          * cannot be scrolled at all.
          */
-        className="relative mx-auto h-[560px] [overflow:clip] lg:h-[640px] lg:w-[1512px]"
+        className="relative mx-auto h-[520px] [overflow:clip] lg:h-[640px] lg:w-[1512px]"
         initial="hidden"
         /*
          * The reveal is held in state rather than left to `whileInView`, so
@@ -180,7 +200,7 @@ export function Timeline() {
         <m.div
           className="pointer-events-none absolute"
           style={{
-            left: baseX - DOT / 2,
+            left: panelLeft,
             width: panelW,
             bottom: `calc(14% + ${STEM_H + PANEL_GAP}px)`,
           }}
@@ -194,20 +214,21 @@ export function Timeline() {
               id={`timeline-panel-${active}`}
               role="tabpanel"
               aria-labelledby={`timeline-tab-${active}`}
-              className="flex flex-col justify-end gap-[16px] text-field"
+              className="flex flex-col justify-end gap-[12px] text-field lg:gap-[16px]"
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={swap}
             >
-              <p className="font-serif text-[24px] leading-[34.125px]">
+              <p className="font-serif text-[20px] leading-[1.35] lg:text-[24px] lg:leading-[34.125px]">
                 {entry.title}
               </p>
-              {/* The final milestone is a headline and a date only. */}
               {entry.body ? (
-                <p className="text-[18px] leading-[34.125px]">{entry.body}</p>
+                <p className="text-[16px] leading-[1.6] lg:text-[18px] lg:leading-[34.125px]">
+                  {entry.body}
+                </p>
               ) : null}
-              <p className="font-serif text-[40px] leading-[47px] whitespace-nowrap">
+              <p className="font-serif text-[28px] leading-[1.15] lg:text-[40px] lg:leading-[47px] lg:whitespace-nowrap">
                 {entry.date}
               </p>
             </m.div>
@@ -217,7 +238,7 @@ export function Timeline() {
         {/* Stem — the live point comes to it. */}
         <m.div
           className="pointer-events-none absolute"
-          style={{ left: baseX - DOT / 2, bottom: '14%' }}
+          style={{ left: stemLeft, bottom: '14%' }}
           variants={{ hidden: { opacity: 0 }, shown: { opacity: 1 } }}
           animate={{ x: readOffset }}
           transition={glide}
@@ -251,7 +272,7 @@ export function Timeline() {
                 key={point.date}
                 role="presentation"
                 className="absolute"
-                style={{ left: baseX - DOT / 2, bottom: '14%' }}
+                style={{ left: stemLeft, bottom: '14%' }}
                 animate={{ x: readOffset + offsetFor(i) }}
                 transition={glide}
               >
@@ -319,6 +340,28 @@ export function Timeline() {
             ))}
           </>
         </div>
+
+        {mobile ? (
+          <div className="pointer-events-none absolute inset-x-0 bottom-[4%] flex items-center justify-between px-4 lg:hidden">
+            <CarouselArrow
+              direction="prev"
+              onClick={() => step(-1)}
+              disabled={active === 0}
+              label="Previous timeline entry"
+              className="pointer-events-auto"
+            />
+            <p className="font-serif text-[14px] text-field/70">
+              {active + 1} / {TIMELINE.length}
+            </p>
+            <CarouselArrow
+              direction="next"
+              onClick={() => step(1)}
+              disabled={active === last}
+              label="Next timeline entry"
+              className="pointer-events-auto"
+            />
+          </div>
+        ) : null}
       </m.div>
     </section>
   )
