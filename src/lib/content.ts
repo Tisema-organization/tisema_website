@@ -248,7 +248,7 @@ export const FOOTER_LINKS = [
   { label: 'Timeline', href: '#timeline' },
   { label: 'Campaign Gallery', href: '/gallery' },
   { label: 'Campaign Feed', href: '#campaign-feed' },
-  { label: 'Terms and Conditions', href: '/terms.html' },
+  { label: 'Terms and Conditions', href: '/terms' },
 ] as const
 
 export type SocialMark = {

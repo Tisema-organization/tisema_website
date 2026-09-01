@@ -3,8 +3,8 @@ import { defineConfig, type Plugin, type PreviewServer, type ViteDevServer } fro
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-/** Client routes served by index.html — same app entry as the landing page. */
-const SPA_ROUTES = ['/gallery', '/gallery.html']
+/** Client routes served by index.html — one SPA entry for the whole site. */
+const SPA_ROUTES = ['/gallery', '/gallery.html', '/terms', '/terms.html']
 
 function attachSpaFallback(server: ViteDevServer | PreviewServer) {
   server.middlewares.use((req, _res, next) => {
@@ -27,11 +27,9 @@ function spaFallback(): Plugin {
 export default defineConfig({
   plugins: [react(), tailwindcss(), spaFallback()],
   build: {
-    // Terms stays a separate document so a legal page never boots the hero rig.
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        terms: resolve(__dirname, 'terms.html'),
       },
     },
   },

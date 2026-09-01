@@ -1,9 +1,7 @@
-import { useEffect, useRef, useState } from "react";
-import { m, useReducedMotion } from "motion/react";
-import { EASE_OUT } from "./motion";
+import { useEffect, useRef, useState } from 'react'
 
 /** Grid is considered "at rest" within this many pixels of the top. */
-const GRID_START_MAX_Y = 16;
+const GRID_START_MAX_Y = 16
 
 function ScrollChevron() {
   return (
@@ -23,68 +21,85 @@ function ScrollChevron() {
         strokeLinejoin="round"
       />
     </svg>
-  );
+  )
 }
 
 /**
  * Scroll cue at the top of the hero mosaic. Shown whenever the page is back at
  * the grid start — first visit or after scrolling up — and hides on scroll.
+ *
+ * Plain CSS only — this sits outside LazyMotion in App, so it cannot use `m.*`.
  */
 export function HeroScrollHint() {
-  const reduced = useReducedMotion();
-  const everScrolled = useRef(window.scrollY > GRID_START_MAX_Y);
+  const everScrolled = useRef(window.scrollY > GRID_START_MAX_Y)
   const [atGridStart, setAtGridStart] = useState(
     () => window.scrollY <= GRID_START_MAX_Y,
-  );
-  const [delayedIn, setDelayedIn] = useState(everScrolled.current);
-  const [coarse, setCoarse] = useState(
-    () => window.matchMedia("(pointer: coarse)").matches,
-  );
+  )
+  const [delayedIn, setDelayedIn] = useState(everScrolled.current)
+  const [coarse, setCoarse] = useState(() =>
+    window.matchMedia('(pointer: coarse)').matches,
+  )
+  const [reducedMotion, setReducedMotion] = useState(() =>
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  )
 
   useEffect(() => {
-    const onScroll = () => {
-      const atStart = window.scrollY <= GRID_START_MAX_Y;
-      if (!atStart) everScrolled.current = true;
-      setAtGridStart((prev) => (prev === atStart ? prev : atStart));
-    };
+    const sync = () => {
+      const atStart = window.scrollY <= GRID_START_MAX_Y
+      if (!atStart) everScrolled.current = true
+      setAtGridStart(atStart)
+    }
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    sync()
+    const raf = requestAnimationFrame(sync)
+
+    window.addEventListener('scroll', sync, { passive: true })
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', sync)
+    }
+  }, [])
 
   useEffect(() => {
     if (!atGridStart || everScrolled.current) {
-      setDelayedIn(true);
-      return;
+      setDelayedIn(true)
+      return
     }
 
-    const timer = window.setTimeout(() => setDelayedIn(true), 750);
-    return () => window.clearTimeout(timer);
-  }, [atGridStart]);
+    const timer = window.setTimeout(() => setDelayedIn(true), 750)
+    return () => window.clearTimeout(timer)
+  }, [atGridStart])
 
   useEffect(() => {
-    const mq = window.matchMedia("(pointer: coarse)");
-    const sync = () => setCoarse(mq.matches);
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
+    const coarseMq = window.matchMedia('(pointer: coarse)')
+    const motionMq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const sync = () => {
+      setCoarse(coarseMq.matches)
+      setReducedMotion(motionMq.matches)
+    }
+    coarseMq.addEventListener('change', sync)
+    motionMq.addEventListener('change', sync)
+    return () => {
+      coarseMq.removeEventListener('change', sync)
+      motionMq.removeEventListener('change', sync)
+    }
+  }, [])
 
-  const show = !reduced && atGridStart && delayedIn;
+  const show = !reducedMotion && atGridStart && delayedIn
 
   return (
-    <m.div
-      className="pointer-events-none fixed inset-x-0 bottom-[max(1.25rem,env(safe-area-inset-bottom))] z-20 flex justify-center"
-      initial={false}
-      animate={{ opacity: show ? 1 : 0, y: show ? 0 : 10 }}
-      transition={{ duration: show ? 0.55 : 0.3, ease: EASE_OUT }}
+    <div
+      className={`pointer-events-none fixed inset-x-0 bottom-[max(1.25rem,env(safe-area-inset-bottom))] z-50 flex justify-center transition-[opacity,transform] duration-500 ease-out ${
+        show ? 'translate-y-0 opacity-100' : 'translate-y-2.5 opacity-0'
+      }`}
       aria-hidden={!show}
     >
       <div className="flex flex-col items-center gap-2.5 rounded-full bg-paper/88 px-5 py-3 shadow-[0_8px_32px_rgba(45,12,5,0.12)] backdrop-blur-sm">
         <span className="text-[11px] font-medium tracking-[0.2em] text-field/85 uppercase">
-          {coarse ? "Swipe up" : "Scroll"}
+          {coarse ? 'Swipe up' : 'Scroll to begin'}
         </span>
         <ScrollChevron />
       </div>
-    </m.div>
-  );
+    </div>
+  )
 }

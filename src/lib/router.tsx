@@ -8,21 +8,29 @@ import {
   type ReactNode,
 } from 'react'
 
-export type AppRoute = 'landing' | 'gallery'
+export type AppRoute = 'landing' | 'gallery' | 'terms'
 
 function normalizePath(pathname: string) {
   const path = pathname.replace(/\/$/, '') || '/'
   if (path.endsWith('/index.html') || path.endsWith('/index.htm')) return '/'
+  if (path.endsWith('/gallery.html')) return '/gallery'
+  if (path.endsWith('/terms.html')) return '/terms'
   return path
+}
+
+function isSpaPath(pathname: string) {
+  const path = normalizePath(pathname)
+  return path === '/' || path === '/gallery' || path === '/terms'
 }
 
 export function getAppRoute(pathname = window.location.pathname): AppRoute {
   const path = normalizePath(pathname)
-  if (path === '/gallery' || path.endsWith('/gallery.html')) return 'gallery'
+  if (path === '/gallery') return 'gallery'
+  if (path === '/terms') return 'terms'
   return 'landing'
 }
 
-/** Same-origin navigations that swap views without reloading the document. */
+/** Same-origin navigations handled inside the SPA shell. */
 export function shouldClientNavigate(href: string) {
   if (
     href.startsWith('http') ||
@@ -35,7 +43,10 @@ export function shouldClientNavigate(href: string) {
   try {
     const url = new URL(href, window.location.origin)
     if (url.origin !== window.location.origin) return false
-    return normalizePath(url.pathname) !== normalizePath(window.location.pathname)
+    const targetPath = normalizePath(url.pathname)
+    const currentPath = normalizePath(window.location.pathname)
+    if (!isSpaPath(targetPath) || !isSpaPath(currentPath)) return false
+    return targetPath !== currentPath
   } catch {
     return false
   }
@@ -71,7 +82,7 @@ export function RouterProvider({ children }: { children: ReactNode }) {
 
       setRoute(next)
 
-      if (next === 'gallery') {
+      if (next === 'gallery' || next === 'terms') {
         window.scrollTo(0, 0)
         return
       }
@@ -100,7 +111,7 @@ export function useRouter() {
   return ctx
 }
 
-/** Intercept in-app links so gallery ↔ home never reloads the page. */
+/** Intercept in-app links so route changes never reload the page. */
 export function clientNavigate(
   event: MouseEvent<HTMLAnchorElement>,
   href: string,
