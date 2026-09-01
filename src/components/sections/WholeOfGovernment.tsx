@@ -7,7 +7,7 @@ export function WholeOfGovernment() {
     <section className="w-full bg-paper py-[96px] lg:h-[593.25px] lg:py-0">
       <div className="section-shell flex h-full items-center">
         <div className="mx-auto flex w-full max-w-[1186.5px] flex-col gap-[35px]">
-          <Eyebrow className="justify-center text-field">
+          <Eyebrow className="text-field">
             What “Whole-of-Government” Means
           </Eyebrow>
 

@@ -144,6 +144,19 @@ body {
 */
 .section-rail {
   overflow-x: auto;
+  /*
+    Declared, not left to compute. With only overflow-x set, the other axis
+    computes from `visible` to `auto` and the rail quietly becomes a VERTICAL
+    scroll container too — so a wheel over the cards scrolled the rail instead
+    of the page, and reading past the section felt stuck.
+  */
+  overflow-y: hidden;
+  /*
+    Room for the reveal's 18px rise (RISE.hidden.y in motion.tsx). Cards still
+    off to the right have never entered view, so they sit translated down and
+    would otherwise be the thing overflowing — and now, clipped.
+  */
+  padding-bottom: 18px;
   scrollbar-width: none;
   -ms-overflow-style: none;
   overscroll-behavior-x: contain;

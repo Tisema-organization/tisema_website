@@ -41,7 +41,12 @@ const EAGER_COLS = 4
 const EAGER_ROWS = 3
 
 /** Scroll: 4×2 wall → densify → paper closes in (hand defines) → settle → solid. */
-const GROW_START = 0.08
+/*
+ * Densifying starts on the very first pixel. It used to wait until 8% of a
+ * six-viewport hero — ~420px, about four wheel notches — during which nothing
+ * on screen moved at all and the page read as frozen.
+ */
+const GROW_START = 0
 const MASK_START = 0.38
 const MASK_REVEAL_END = 0.62
 /** Hold the invisible oversize hole before paper starts closing in. */
@@ -54,6 +59,18 @@ const MASK_POS_START_X = 34
 const MASK_POS_START_Y = 44
 const MASK_POS_END_X = 50
 const MASK_POS_END_Y = 50
+
+/*
+ * The wall opens slightly over-zoomed and eases back to cover.
+ *
+ * Densifying on its own only changes how the plate is subdivided: the frame
+ * stays exactly the same size, and a ~5% change in tile width across a wall of
+ * faces reads as nothing happening. A global scale change is the cue the eye
+ * actually catches. It never drops below coverScale, so the plate stays
+ * full-bleed and no paper edge is ever exposed.
+ */
+const OPEN_ZOOM = 1.28
+const OPEN_SETTLE = 0.24
 
 const SCROLL_EASE = 0.14
 
@@ -82,6 +99,19 @@ function lerp(a: number, b: number, t: number) {
 function smoothstep(edge0: number, edge1: number, x: number) {
   const t = clamp((x - edge0) / (edge1 - edge0))
   return t * t * (3 - 2 * t)
+}
+
+/**
+ * Ease-out with a steep start: slope 2 at t=0, flattening to 0 at t=1.
+ *
+ * Used for the opening densify instead of smoothstep, whose slope is zero at
+ * both ends. Zero slope at the start is exactly what makes the first turn of
+ * the wheel produce no visible change; a fast start means the wall reacts
+ * immediately, and the flat finish still hands over smoothly to the next leg.
+ */
+function easeOutQuad(edge0: number, edge1: number, x: number) {
+  const t = clamp((x - edge0) / (edge1 - edge0))
+  return t * (2 - t)
 }
 
 /**
@@ -306,7 +336,7 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
     }
 
     const apply = (scrollP: number, fadeP: number, handP: number) => {
-      const preT = smoothstep(GROW_START, MASK_START, scrollP)
+      const preT = easeOutQuad(GROW_START, MASK_START, scrollP)
       const postT = smoothstep(MASK_START, GROW_END, scrollP)
       const colsFloat =
         scrollP < MASK_START
@@ -349,13 +379,20 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
       const dx = handTarget.w > 0 ? lerp(0, handTarget.cx - vw / 2, glide) : 0
       const dy = handTarget.w > 0 ? lerp(0, handTarget.cy - vh / 2, glide) : 0
 
+      // Settled well before the mask work begins, so the later legs are unchanged.
+      const openScale = lerp(
+        coverScale * OPEN_ZOOM,
+        coverScale,
+        easeOutQuad(0, OPEN_SETTLE, scrollP),
+      )
+
       let baseScale: number
       if (scrollP < MASK_SHRINK_START) {
         setPaperMaskSize(maskOversizePct)
-        baseScale = coverScale
+        baseScale = openScale
       } else if (scrollP < MASK_REVEAL_END) {
         setPaperMaskSize(currentMaskPct)
-        baseScale = coverScale
+        baseScale = openScale
       } else {
         setPaperMaskSize(100)
         baseScale = lerp(coverScale, 1, plateT)

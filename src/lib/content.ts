@@ -164,6 +164,9 @@ export const GALLERY_INTRO =
   'This gallery holds the stories behind Tisema women lost to violence, whose cases still call for justice.'
 export const FEED_INTRO =
   "Every case page brings together what's being said across social media; posts, comments, and shares from every platform; gathered in one place so no voice speaking up for these women gets lost or scattered."
+/** The one non-social channel the footer blurb points at. */
+export const CONTACT_EMAIL = 'official@tisemaethiopia.com'
+
 export const FOOTER_BLURB =
   'Have information, a story to share, or want to support this cause? Reach out through any of the channels below.'
 
@@ -255,6 +258,7 @@ export const FOOTER_LINKS = [
   { label: 'Timeline', href: '#timeline' },
   { label: 'Campaign Gallery', href: '#campaign-gallery' },
   { label: 'Campaign Feed', href: '#campaign-feed' },
+  { label: 'Terms and Conditions', href: '/terms.html' },
 ] as const
 
 export type SocialMark = {

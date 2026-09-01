@@ -130,11 +130,19 @@ export function Timeline() {
       id="timeline"
       className="w-full scroll-mt-[105px] bg-paper py-[80px] lg:py-0"
     >
+      {/*
+        Sits in the same band container as the Gallery and Feed headings so all
+        three share a left edge. The comp puts this one at x=145 with 76.1px
+        leading while those two sit at 129 with 60px — a 16px drift that reads
+        as a misalignment once they are seen in sequence.
+      */}
       <div className="section-shell">
-        <BandTitle
-          text="Timeline of the Movement"
-          className="text-field lg:pt-[75.63px] lg:leading-[76.1px]"
-        />
+        <div className="mx-auto w-full max-w-[1253.875px]">
+          <BandTitle
+            text="Timeline of the Movement"
+            className="text-field lg:pt-[75.63px] lg:leading-[60px]"
+          />
+        </div>
       </div>
 
       <m.div

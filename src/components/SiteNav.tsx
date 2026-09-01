@@ -6,17 +6,31 @@ import { POSTER } from '../lib/assets'
  * stays for the rest of the page, which is the point at which the piece stops
  * being an intro animation and starts being a website.
  */
-export function SiteNav() {
+export function SiteNav({
+  /* On the landing page the nav rides in on the hero handoff. Anywhere else
+     there is no hero to drive --hero-nav-in, so it has to start visible. */
+  pinned = false,
+  /* Prefix for the in-page anchors, so "#timeline" still resolves from a
+     page that is not the landing page. */
+  base = '',
+}: {
+  pinned?: boolean
+  base?: string
+} = {}) {
   return (
     <header
       className="fixed top-0 right-0 left-0 z-40 bg-lime"
-      style={{
-        opacity: 'var(--hero-nav-in, 0)',
-        transform: 'translateY(calc((1 - var(--hero-nav-in, 0)) * -100%))',
-      }}
+      style={
+        pinned
+          ? undefined
+          : {
+              opacity: 'var(--hero-nav-in, 0)',
+              transform: 'translateY(calc((1 - var(--hero-nav-in, 0)) * -100%))',
+            }
+      }
     >
       <nav className="section-shell flex h-[72px] items-center justify-between lg:h-[105px]">
-        <a href="#home" className="flex items-center gap-[13px] lg:w-[260px]">
+        <a href={`${base}#home`} className="flex items-center gap-[13px] lg:w-[260px]">
           <img
             src={POSTER}
             alt="Tisema"
@@ -31,7 +45,7 @@ export function SiteNav() {
             {NAV_LINKS.map((link) => (
               <li key={link.label}>
                 <a
-                  href={link.href}
+                  href={`${base}${link.href}`}
                   className={`leading-[28px] whitespace-nowrap text-field transition-opacity hover:opacity-70 ${
                     /* The comp sets Timeline a step larger than its siblings. */
                     link.label === 'Timeline'
@@ -46,7 +60,7 @@ export function SiteNav() {
           </ul>
 
           <a
-            href={PETITION_HREF}
+            href={`${base}${PETITION_HREF}`}
             className="flex items-center justify-center rounded-[3.5px] bg-oxblood px-[20px] py-[8.75px] text-[13px] font-semibold whitespace-nowrap text-lime transition-opacity hover:opacity-90 lg:px-[28px] lg:text-[13.78px] lg:leading-[24.5px]"
           >
             Sign the Petition

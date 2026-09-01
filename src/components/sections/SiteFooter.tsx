@@ -1,6 +1,7 @@
 import { POSTER } from '../../lib/assets'
 import { Item, Reveal, Stagger, Words } from '../motion'
 import {
+  CONTACT_EMAIL,
   FOOTER_BLURB,
   FOOTER_CTA,
   FOOTER_LINKS,
@@ -13,7 +14,7 @@ import {
  * the petition button share one grid cell so the button sits beside "Today."
  * on the second line, which is how the comp overlays them.
  */
-export function SiteFooter() {
+export function SiteFooter({ base = '' }: { base?: string } = {}) {
   return (
     <footer
       id="petition"
@@ -30,7 +31,7 @@ export function SiteFooter() {
             delay={0.35}
           >
             <a
-              href={PETITION_HREF}
+              href={`${base}${PETITION_HREF}`}
               className="flex items-center justify-center rounded-[4px] bg-lime px-[32px] py-[12px] font-serif text-[clamp(1.25rem,2.48vw,37.44px)] whitespace-nowrap text-clay-shadow transition-opacity hover:opacity-90 lg:px-[46.154px] lg:py-[14.423px] lg:leading-[66.568px]"
             >
               Sign the Petition
@@ -60,6 +61,19 @@ export function SiteFooter() {
               <p className="max-w-[592px] text-[18px] leading-[34.125px] text-paper capitalize">
                 {FOOTER_BLURB}
               </p>
+
+              {/*
+                Its own element, deliberately outside the blurb above: that
+                paragraph carries `capitalize`, which would render the address
+                as "Official@Tisemaethiopia.Com" on screen while the href
+                stayed lowercase.
+              */}
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="w-fit text-[18px] leading-[34.125px] text-paper underline decoration-paper/40 decoration-[1.5px] underline-offset-[5px] transition-colors hover:decoration-paper focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-4 focus-visible:ring-offset-oxblood focus-visible:outline-none"
+              >
+                {CONTACT_EMAIL}
+              </a>
 
               <ul className="flex flex-wrap items-start gap-[14.045px]">
                 {FOOTER_SOCIALS.map((social) => (
@@ -99,7 +113,10 @@ export function SiteFooter() {
               {FOOTER_LINKS.map((link) => (
                 <li key={link.label}>
                   <a
-                    href={link.href}
+                    /* Anchors need the base; a real path is already absolute. */
+                    href={
+                      link.href.startsWith('#') ? `${base}${link.href}` : link.href
+                    }
                     className="text-[20px] leading-normal whitespace-nowrap text-body-rose transition-opacity hover:opacity-80"
                   >
                     {link.label}
