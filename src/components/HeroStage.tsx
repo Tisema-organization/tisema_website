@@ -1,6 +1,5 @@
 import { useEffect, useRef, type RefObject } from 'react'
 import {
-  buildGalleryVictims,
   HANDOFF_VH,
   HAND_MASK_OUTSIDE,
   HAND_SOLID,
@@ -9,6 +8,7 @@ import {
   POSTER,
   POSTER_FROM_HAND,
 } from '../lib/assets'
+import { buildHeroCells } from '../lib/victims'
 import { HERO_SUBTITLE } from '../lib/content'
 import {
   markHeroIntroSeen,
@@ -18,7 +18,7 @@ import {
 
 /** Odd max — keep growing through the hand phase so the mosaic never sits still. */
 const MAX_SIDE = 17
-const GRID = buildGalleryVictims(MAX_SIDE * MAX_SIDE)
+const GRID = buildHeroCells(MAX_SIDE * MAX_SIDE)
 const CENTER = Math.floor(MAX_SIDE / 2)
 const HAND_ASPECT = 819 / 780
 
@@ -601,7 +601,7 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
       <div ref={plateRef} className="hero-plate pointer-events-none">
         <div ref={mosaicRef} className="hero-mosaic absolute inset-0">
           <div className="hero-grid absolute inset-0">
-            {GRID.map((victim, i) => {
+            {GRID.map((cell, i) => {
               const row = Math.floor(i / MAX_SIDE)
               const col = i % MAX_SIDE
               const opening = inOpening(row, col)
@@ -611,7 +611,7 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
               )
               return (
                 <div
-                  key={victim.id}
+                  key={cell.id}
                   ref={(el) => {
                     cellRefs.current[i] = el
                   }}
@@ -620,14 +620,19 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
                   style={{ display: 'none', left: '0%', top: '0%' }}
                 >
                   <img
-                    src={victim.src}
+                    /*
+                      Only the opening cells are ever seen large. Everything
+                      else appears once the lattice has densified, by which
+                      point a cell is ~130px wide, so it takes the 320 cut.
+                    */
+                    src={opening ? cell.src : cell.srcSmall}
                     alt=""
                     draggable={false}
                     decoding="async"
                     loading={opening || ring <= 3 ? 'eager' : 'lazy'}
                     fetchPriority={opening ? 'high' : 'auto'}
-                    width={1636}
-                    height={2048}
+                    width={640}
+                    height={800}
                     className="hero-portrait"
                   />
                 </div>

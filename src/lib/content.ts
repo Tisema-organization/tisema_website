@@ -3,6 +3,14 @@
  * Placeholder copy in the gallery/feed/footer is reproduced as designed.
  */
 
+import {
+  VICTIM_DOWNLOAD_WIDTH,
+  VICTIM_IMAGE_BASE,
+  VICTIM_STORIES,
+  VICTIM_WIDTHS,
+  VICTIMS,
+} from './victims'
+
 export const NAV_LINKS = [
   { label: 'About The Campaign', href: '#about-the-campaign' },
   { label: 'Timeline', href: '#timeline' },
@@ -175,9 +183,12 @@ export const FOOTER_BLURB =
 export type GalleryItem = {
   id: string
   src: string
+  /** Responsive candidates; the tile pairs these with a `sizes` hint. */
+  srcSet?: string
   title: string
-  body: string
-  /** File the tile's Download action hands over — the image itself. */
+  /** Absent until the campaign supplies the story. */
+  body?: string
+  /** File the tile's Download action hands over. */
   file: string
 }
 
@@ -189,40 +200,40 @@ export const GALLERY_LANDING_PREVIEW = 4
 const GALLERY_SOURCE: GalleryItem[] = [
   {
     id: 'tisema',
-    src: '/assets/tisema.png',
+    src: '/assets/tisema-640.webp',
+    srcSet: '/assets/tisema-256.webp 256w, /assets/tisema-640.webp 640w',
     title: 'Tisema logo',
     body: 'Tisema means "let her be heard", a promise these stories will not be met with silence.',
     file: '/assets/tisema.png',
   },
-  {
-    id: 'heaven',
-    src: '/assets/heaven.png',
-    title: 'Heaven',
-    body: 'She was seven years old when her life was taken through sexual violence. Three years later, her case is still open, and she is still waiting for justice.',
-    file: '/assets/heaven.png',
-  },
-  {
-    id: 'liza',
-    src: '/assets/liza.png',
-    title: 'Liza',
-    body: 'Lost to sexual violence over a year ago, her case remains open.',
-    file: '/assets/liza.png',
-  },
-  {
-    id: 'keneni',
-    src: '/assets/keneni.png',
-    title: 'Keneni',
-    body: 'She was thrown from the fifth floor of a building. No case was ever opened her story stands here because no one else will tell it.',
-    file: '/assets/keneni.png',
-  },
+  /*
+   * The portraits are served as WebP at two widths. A tile renders at roughly
+   * 302x365 CSS px, so 640 already covers 2x DPR; the 1080 variant is only
+   * ever fetched by the Download link, never by the page.
+   */
+  ...VICTIMS.map<GalleryItem>((victim) => ({
+    id: victim.slug,
+    src: `${VICTIM_IMAGE_BASE}/${victim.slug}-640.webp`,
+    srcSet: VICTIM_WIDTHS.map(
+      (w) => `${VICTIM_IMAGE_BASE}/${victim.slug}-${w}.webp ${w}w`,
+    ).join(', '),
+    title: victim.name,
+    body: VICTIM_STORIES[victim.slug],
+    file: `${VICTIM_IMAGE_BASE}/${victim.slug}-${VICTIM_DOWNLOAD_WIDTH}.webp`,
+  })),
 ]
 
 export const GALLERY_ITEMS: GalleryItem[] = GALLERY_SOURCE
 
-export const GALLERY_LANDING_ITEMS: GalleryItem[] = GALLERY_ITEMS.slice(
-  0,
-  GALLERY_LANDING_PREVIEW,
-)
+/**
+ * The landing preview carries only tiles that have a story to tell — slicing
+ * the first few off the front instead would surface whichever portraits happen
+ * to sort earliest, captioned with a bare name. The full list, names and all,
+ * lives on the gallery page behind "View all stories".
+ */
+export const GALLERY_LANDING_ITEMS: GalleryItem[] = GALLERY_ITEMS.filter(
+  (item) => Boolean(item.body),
+).slice(0, GALLERY_LANDING_PREVIEW)
 
 export type FeedPost = {
   id: string

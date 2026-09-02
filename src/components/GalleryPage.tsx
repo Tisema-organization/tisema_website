@@ -66,6 +66,7 @@ export function GalleryPage() {
                       <GalleryTile
                         item={item}
                         delay={(index % 4) * 0.06}
+                        showBody={false}
                       />
                     </li>
                   ))}

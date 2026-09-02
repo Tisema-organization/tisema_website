@@ -1,4 +1,4 @@
-import { POSTER } from '../../lib/assets'
+import { POSTER_MARK } from '../../lib/assets'
 import { Item, Reveal, Stagger, Words } from '../motion'
 import {
   CONTACT_EMAIL,
@@ -52,7 +52,7 @@ export function SiteFooter({ base = '' }: { base?: string } = {}) {
           <Item className="flex flex-col gap-[24px] lg:w-[607px]">
             <div className="flex w-[175px] items-center gap-[8.75px]">
               <img
-                src={POSTER}
+                src={POSTER_MARK}
                 alt=""
                 width={1080}
                 height={1350}

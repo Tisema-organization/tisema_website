@@ -1,6 +1,6 @@
 import { useEffect, useState, type MouseEvent } from 'react'
 import { NAV_LINKS, petitionUrl } from '../lib/content'
-import { POSTER } from '../lib/assets'
+import { POSTER_MARK } from '../lib/assets'
 import { handleHomeNavClick } from '../lib/heroSession'
 import { clientNavigate, useRouter } from '../lib/router'
 
@@ -95,7 +95,7 @@ export function SiteNav({
           }}
         >
           <img
-            src={POSTER}
+            src={POSTER_MARK}
             alt="Tisema"
             width={1080}
             height={1350}

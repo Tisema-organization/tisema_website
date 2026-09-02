@@ -70,6 +70,16 @@ export const HERO_REST_VH = 1
 export const POSTER = '/assets/tisema.png'
 
 /**
+ * Small WebP cuts of the mark for the nav and footer, which draw it at 70px
+ * and 55px. They were loading the 721KB PNG — on the gallery and terms pages,
+ * where there is no hero, that single file outweighed everything else. The
+ * hero deliberately keeps POSTER: it renders the mark ~500px wide and its
+ * cross-fade is aligned against that file.
+ */
+export const POSTER_MARK = '/assets/tisema-256.webp'
+export const POSTER_TILE = '/assets/tisema-640.webp'
+
+/**
  * Alignment between hand-solid.png (819x780) and assets/tisema.png (1080x1350).
  * Measured by fitting the two hand masks: centroid x 0.47506 vs 0.47526 and an
  * rms-radius ratio of 1.002, so the poster sits at the hand box's width, nudged

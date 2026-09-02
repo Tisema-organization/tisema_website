@@ -4,6 +4,13 @@ import type { GalleryItem } from '../lib/content'
 type GalleryTileProps = {
   item: GalleryItem
   delay?: number
+  /**
+   * The full gallery lists every portrait, and only a handful have a story
+   * yet. Showing the description where it exists would leave most tiles with
+   * a bare name beside a few that carry a paragraph, so that page opts out
+   * and reads as one consistent grid of names.
+   */
+  showBody?: boolean
 }
 
 function downloadName(item: GalleryItem) {
@@ -38,7 +45,11 @@ function DownloadButton({
   )
 }
 
-export function GalleryTile({ item, delay = 0 }: GalleryTileProps) {
+export function GalleryTile({
+  item,
+  delay = 0,
+  showBody = true,
+}: GalleryTileProps) {
   return (
     <Reveal delay={delay}>
       {/*
@@ -49,10 +60,19 @@ export function GalleryTile({ item, delay = 0 }: GalleryTileProps) {
         <div className="relative overflow-hidden">
           <img
             src={item.src}
+            srcSet={item.srcSet}
+            /*
+              A tile is ~302px wide at desktop and about 45vw below it. Without
+              this the browser assumes 100vw and picks the largest candidate for
+              every tile, which throws away the point of shipping two widths.
+            */
+            sizes="(min-width: 1024px) 302px, 45vw"
             alt={item.title}
             width={1080}
             height={1350}
             loading="lazy"
+            /* Keeps decode off the main thread — it adds up across 50+ tiles. */
+            decoding="async"
             className="h-[240px] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03] lg:h-[364.875px]"
           />
 
@@ -76,7 +96,9 @@ export function GalleryTile({ item, delay = 0 }: GalleryTileProps) {
           <p className="font-serif text-[17.5px] leading-[34.125px]">
             {item.title}
           </p>
-          <p className="text-[12.25px] leading-[19.25px]">{item.body}</p>
+          {showBody && item.body ? (
+            <p className="text-[12.25px] leading-[19.25px]">{item.body}</p>
+          ) : null}
         </figcaption>
       </figure>
     </Reveal>
