@@ -4,7 +4,7 @@
  */
 
 import {
-  VICTIM_DOWNLOAD_WIDTH,
+  VICTIM_DOWNLOAD_EXT,
   VICTIM_IMAGE_BASE,
   VICTIM_STORIES,
   VICTIM_WIDTHS,
@@ -219,7 +219,7 @@ const GALLERY_SOURCE: GalleryItem[] = [
     ).join(', '),
     title: victim.name,
     body: VICTIM_STORIES[victim.slug],
-    file: `${VICTIM_IMAGE_BASE}/${victim.slug}-${VICTIM_DOWNLOAD_WIDTH}.webp`,
+    file: `${VICTIM_IMAGE_BASE}/${victim.slug}-full.${VICTIM_DOWNLOAD_EXT}`,
   })),
 ]
 

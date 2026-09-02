@@ -21,8 +21,16 @@ export const VICTIM_IMAGE_BASE = '/victims/gallery'
 /** Widths built by the script, smallest first. */
 export const VICTIM_WIDTHS = [320, 640] as const
 
-/** The variant the Download link hands over. */
-export const VICTIM_DOWNLOAD_WIDTH = 1080
+/**
+ * The Download link hands over a JPEG, not the WebP the page displays.
+ *
+ * These are meant to be re-uploaded as social profile pictures, and upload
+ * forms are a much more conservative path than display: browsers all render
+ * WebP, but a platform's photo uploader is where an unusual container gets
+ * rejected. JPEG removes the question, and costs nothing here because the file
+ * is only ever fetched on click — never as part of the page.
+ */
+export const VICTIM_DOWNLOAD_EXT = 'jpg'
 
 export const VICTIMS: Victim[] = [
   { slug: '1-hanna', name: 'Hanna' },
@@ -42,12 +50,12 @@ export const VICTIMS: Victim[] = [
   { slug: '15-banchiayehu', name: 'Banchiayehu' },
   { slug: '16-lewam', name: 'Lewam' },
   { slug: '17-nuhamin', name: 'Nuhamin' },
-  { slug: '18-samrawit-2', name: 'Samrawit 2' },
+  { slug: '18-samrawit-2', name: 'Samrawit' },
   { slug: '19-alemitu', name: 'Alemitu' },
   { slug: '20-boni', name: 'Boni' },
   { slug: '21-firewoini', name: 'Firewoini' },
   { slug: '22-lydia', name: 'Lydia' },
-  { slug: '23-lewam-2', name: 'Lewam 2' },
+  { slug: '23-lewam-2', name: 'Lewam' },
   { slug: '24-mahlet', name: 'Mahlet' },
   { slug: '25-adanech', name: 'Adanech' },
   { slug: '26-bitania', name: 'Bitania' },
@@ -63,7 +71,7 @@ export const VICTIMS: Victim[] = [
   { slug: '36-tizita', name: 'Tizita' },
   { slug: '37-amrot', name: 'Amrot' },
   { slug: '38-ayantu', name: 'Ayantu' },
-  { slug: '39-mahlet-2', name: 'Mahlet 2' },
+  { slug: '39-mahlet-2', name: 'Mahlet' },
   { slug: '40-nolawit', name: 'Nolawit' },
   { slug: '41-tigist', name: 'Tigist' },
   { slug: '42-ruth', name: 'Ruth' },

@@ -55,7 +55,11 @@ export const HAND_MASK_FILL = '/hand-mask-fill.png'
 export const HAND_MASK_SOLID = '/hand-mask-solid-alpha.png?v=4'
 /** Inverted mask — opaque outside, transparent hand hole (paper closes in on scroll). */
 export const HAND_MASK_OUTSIDE = '/hand-mask-outside-alpha.png?v=2'
-export const HAND_SOLID = '/hand-solid.png'
+/*
+ * WebP with a lossless alpha channel — the silhouette's transparency is what
+ * the whole reveal depends on. 416KB PNG down to 40KB at the same dimensions.
+ */
+export const HAND_SOLID = '/hand-solid.webp'
 
 /** Viewport-heights of scroll driving the hero mosaic → hand reveal. */
 export const HERO_SCROLL_VH = 6
@@ -67,7 +71,12 @@ export const HANDOFF_VH = 2
 export const HERO_REST_VH = 1
 
 /** The campaign poster the hand hands off to — the Home hero image. */
-export const POSTER = '/assets/tisema.png'
+/*
+ * WebP. The hero draws this ~500px wide and the PNG was 724KB — the single
+ * heaviest file on the site. Same pixel dimensions, so the cross-fade geometry
+ * that aligns it against the hand silhouette is untouched.
+ */
+export const POSTER = '/assets/tisema-full.webp'
 
 /**
  * Small WebP cuts of the mark for the nav and footer, which draw it at 70px
