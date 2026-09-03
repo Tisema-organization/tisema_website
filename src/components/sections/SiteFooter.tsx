@@ -5,7 +5,7 @@ import {
   FOOTER_BLURB,
   FOOTER_CTA,
   FOOTER_LINKS,
-  FOOTER_SOCIALS,
+  // FOOTER_SOCIALS,
   petitionUrl,
 } from '../../lib/content'
 import { handleHomeNavClick } from '../../lib/heroSession'
@@ -81,6 +81,8 @@ export function SiteFooter({ base = '' }: { base?: string } = {}) {
                 {CONTACT_EMAIL}
               </a>
 
+              {/* Social destinations are not live yet — hide the icons so they
+                  don't look like links that go nowhere.
               <ul className="flex flex-wrap items-start gap-[14.045px]">
                 {FOOTER_SOCIALS.map((social) => (
                   <li key={social.label}>
@@ -108,6 +110,7 @@ export function SiteFooter({ base = '' }: { base?: string } = {}) {
                   </li>
                 ))}
               </ul>
+              */}
             </div>
           </Item>
 

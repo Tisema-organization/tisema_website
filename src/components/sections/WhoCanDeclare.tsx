@@ -29,9 +29,11 @@ export function WhoCanDeclare() {
                 key={item.title}
                 className="flex flex-col gap-[16px] border-l-[0.875px] border-solid border-clay-core py-[21px] pr-[14px] pl-[32px]"
               >
+                {/* Due dates are not final — hide until confirmed.
                 <p className="h-[24px] text-[14px] leading-[26.25px] text-oxblood">
                   {item.due}
                 </p>
+                */}
                 <p className="font-serif text-[21px] leading-[35px] text-field">
                   {item.title}
                 </p>
