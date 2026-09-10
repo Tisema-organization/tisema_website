@@ -4,6 +4,11 @@ import { shouldClientNavigate } from './router'
 
 const HERO_SEEN_KEY = 'tisema:hero-intro-seen'
 
+export const HERO_BEGIN_EVENT = 'tisema:hero-begin'
+export const HERO_INTRO_STATE_EVENT = 'tisema:hero-intro-state'
+
+export type HeroIntroState = 'waiting' | 'playing' | 'done'
+
 export function hasSeenHeroIntro() {
   try {
     return sessionStorage.getItem(HERO_SEEN_KEY) === '1'
@@ -20,8 +25,14 @@ export function markHeroIntroSeen() {
   }
 }
 
-/** Scroll offset where the handoff finishes and the settled Home hero is shown. */
+/**
+ * Where Home sits after the intro.
+ *
+ * Once the cinematic has played (or been skipped), Home is the top of a short
+ * settled hero — not eight viewports into a scrub track.
+ */
 export function settledHeroScrollY(vh = window.innerHeight) {
+  if (hasSeenHeroIntro()) return 0
   return vh * (HERO_SCROLL_VH + HANDOFF_VH)
 }
 
@@ -34,6 +45,16 @@ export function shouldSkipHeroIntro() {
 
 export function scrollToSettledHero(behavior: ScrollBehavior = 'instant') {
   window.scrollTo({ top: settledHeroScrollY(), behavior })
+}
+
+export function requestHeroBegin() {
+  window.dispatchEvent(new Event(HERO_BEGIN_EVENT))
+}
+
+export function publishHeroIntroState(state: HeroIntroState) {
+  window.dispatchEvent(
+    new CustomEvent(HERO_INTRO_STATE_EVENT, { detail: { state } }),
+  )
 }
 
 /** Home/logo click on the landing page — jump past the intro when already seen. */

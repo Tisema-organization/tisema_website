@@ -7,6 +7,7 @@ import { AboutCampaign } from './sections/AboutCampaign'
 import { CampaignFeed } from './sections/CampaignFeed'
 import { CampaignGallery } from './sections/CampaignGallery'
 import { DemandDeclaration } from './sections/DemandDeclaration'
+import { RecentStories } from './sections/RecentStories'
 import { SiteFooter } from './sections/SiteFooter'
 import { Stat } from './sections/Stat'
 import { Timeline } from './sections/Timeline'
@@ -85,6 +86,7 @@ export function LandingPage() {
             <Timeline />
             <CampaignGallery />
             <CampaignFeed />
+            <RecentStories />
           </main>
 
           <SiteFooter />

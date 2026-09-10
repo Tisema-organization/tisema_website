@@ -9,20 +9,22 @@ import {
   POSTER_FROM_HAND,
 } from '../lib/assets'
 import { buildHeroCells } from '../lib/victims'
-import { HERO_SUBTITLE } from '../lib/content'
+import { HERO_SUBTITLE, petitionUrl } from '../lib/content'
+import { DEMANDS_PAGE_HREF } from '../lib/demands'
 import {
+  HERO_BEGIN_EVENT,
   markHeroIntroSeen,
-  settledHeroScrollY,
+  publishHeroIntroState,
   shouldSkipHeroIntro,
+  type HeroIntroState,
 } from '../lib/heroSession'
+import { clientNavigate, useRouter } from '../lib/router'
 
 /** Odd max — keep growing through the hand phase so the mosaic never sits still. */
 const MAX_SIDE = 17
 const GRID = buildHeroCells(MAX_SIDE * MAX_SIDE)
 const CENTER = Math.floor(MAX_SIDE / 2)
 const HAND_ASPECT = 819 / 780
-
-const SIDE_AT_MASK = 7
 
 /**
  * The opening frame is a wall of portraits filling the viewport: 4x2 on a
@@ -45,19 +47,11 @@ function openingGrid(vw: number, vh: number) {
 const EAGER_COLS = 4
 const EAGER_ROWS = 3
 
-/** Scroll: 4×2 wall → densify → paper closes in (hand defines) → settle → solid. */
-/*
- * Densifying starts on the very first pixel. It used to wait until 8% of a
- * six-viewport hero — ~420px, about four wheel notches — during which nothing
- * on screen moved at all and the page read as frozen.
- */
-const GROW_START = 0
-const MASK_START = 0.38
+/** Scroll: densifying wall → paper closes in (hand defines) → settle → solid. */
 const MASK_REVEAL_END = 0.62
 /** Hold the invisible oversize hole before paper starts closing in. */
 const MASK_SHRINK_START = 0.46
 const PLATE_ZOOM_END = 0.78
-const GROW_END = 0.88
 
 /** Upper-left palm flesh — solid in the mask (face cutout at center is not). */
 const MASK_POS_START_X = 34
@@ -77,7 +71,25 @@ const MASK_POS_END_Y = 50
 const OPEN_ZOOM = 1.28
 const OPEN_SETTLE = 0.24
 
-const SCROLL_EASE = 0.14
+/**
+ * One-gesture cinematic. The old multi-viewport scrub read as a media toy;
+ * a single Begin plays the same beats as a short film, then the page is a
+ * normal campaign site.
+ *
+ * scrollP runs linear in time — no keyframe remapping. Remapping used to brake
+ * right before the cutout (densify leg was fast, cutout leg slow), which read
+ * as a stall and a wobble as the grid and mask fought each other.
+ */
+const CINEMATIC_MS = 8000
+/** Hero scrollP reaches 1 here; handoff starts earlier so the join is continuous. */
+const CINEMATIC_HERO_END = 0.78
+const CINEMATIC_HANDOFF_START = 0.64
+
+/**
+ * Mask size where the paper edge first reads — used for paper opacity / pos.
+ * Above this the hole is still larger than the viewport.
+ */
+const MASK_VISIBLE_START = 260
 
 /*
  * Handoff (phase B) beats, in units of handP. The plate glides first so the
@@ -117,6 +129,31 @@ function smoothstep(edge0: number, edge1: number, x: number) {
 function easeOutQuad(edge0: number, edge1: number, x: number) {
   const t = clamp((x - edge0) / (edge1 - edge0))
   return t * (2 - t)
+}
+
+function easeInCubic(t: number) {
+  return t * t * t
+}
+
+/**
+ * Mask hole size. Drops through invisible oversize with a soft ease-in, then
+ * the visible close is linear — ease-out used to slam the first visible frames
+ * and read as a wobble against the grid.
+ */
+function maskPctForReveal(
+  revealT: number,
+  oversize: number,
+  visibleStart: number,
+) {
+  const t = clamp(revealT)
+  if (t <= 0) return oversize
+  if (t >= 1) return 100
+  // First fifth: oversize → visibleStart (soft). Rest: linear visible close.
+  const head = 0.2
+  if (t < head) {
+    return lerp(oversize, visibleStart, easeInCubic(t / head))
+  }
+  return lerp(visibleStart, 100, (t - head) / (1 - head))
 }
 
 /**
@@ -175,11 +212,9 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
     const reduced = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
     ).matches
-    const touchLike = window.matchMedia('(pointer: coarse)').matches
     const paperMaskUrl = `url(${HAND_MASK_OUTSIDE})`
 
     let frameId = 0
-    let smoothProgress = 0
     let lockedVw = window.innerWidth
     /** Locked so mobile browser chrome changing `vh` mid-scroll cannot rewind progress. */
     let lockedVh = window.innerHeight
@@ -202,6 +237,31 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
     let openCols = EAGER_COLS
     let openRows = EAGER_ROWS
 
+    /*
+     * waiting → one gesture → playing → done. Once done, the scrub track is
+     * gone and the stage stays on the settled Home for a short rest height.
+     */
+    let introState: HeroIntroState = 'done'
+    let cinematicStart = 0
+    let touchStartY = 0
+    let prevOverflow = ''
+
+    const setIntroState = (next: HeroIntroState) => {
+      if (introState === next) return
+      introState = next
+      root.dataset.heroIntro = next
+      publishHeroIntroState(next)
+    }
+
+    const lockScroll = () => {
+      prevOverflow = document.body.style.overflow
+      document.body.style.overflow = 'hidden'
+    }
+
+    const unlockScroll = () => {
+      document.body.style.overflow = prevOverflow
+    }
+
     const maybeRelockViewport = () => {
       const vw = window.innerWidth
       if (Math.abs(vw - lockedVw) > 1) {
@@ -216,17 +276,26 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
       const vh = lockedVh
 
       /*
-       * A sticky child stops pinning once the parent has only its own height
-       * left, so the parent needs one extra viewport on top of the phases —
-       * without it the settled Home forms and departs on the very same frame.
+       * Waiting/playing: one viewport — the cinematic drives itself.
+       * Done/reduced: short settled rest, then the page below.
+       * Dev scrub keeps the old multi-viewport track so frames stay reachable.
        */
-      /*
-       * Reduced motion jumps straight to the settled Home, so the scroll length
-       * that exists purely to drive the animation would be dead space.
-       */
-      scroller.style.height = reduced
-        ? `${vh}px`
-        : `${vh * (HERO_SCROLL_VH + HANDOFF_VH + HERO_REST_VH + 1)}px`
+      const frozenScrub = import.meta.env.DEV
+        ? new URLSearchParams(window.location.search).get('scrub')
+        : null
+
+      if (frozenScrub) {
+        scroller.style.height = `${vh * (HERO_SCROLL_VH + HANDOFF_VH + HERO_REST_VH + 1)}px`
+      } else if (reduced || introState === 'done') {
+        /*
+         * Exactly one viewport — no leftover "rest" track. After the cinematic,
+         * an extra HERO_REST_VH of pinned settled hero ate the first scroll
+         * with no visible change.
+         */
+        scroller.style.height = `${vh}px`
+      } else {
+        scroller.style.height = `${vh}px`
+      }
       sticky.style.height = `${vh}px`
 
       const isNarrow = vw < 1024
@@ -315,7 +384,7 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
     const layoutGrid = (colsFloat: number, rowsFloat: number) => {
       const cellW = 100 / colsFloat
       const cellH = 100 / rowsFloat
-      const key = `${cellW.toFixed(3)}:${cellH.toFixed(3)}`
+      const key = `${cellW.toFixed(5)}:${cellH.toFixed(5)}`
       if (key === lastLayoutKey) return
       lastLayoutKey = key
 
@@ -332,11 +401,11 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
         const opCol =
           colNeed <= openCols
             ? 1
-            : smoothstep(colNeed - 1.05, colNeed - 0.15, colsFloat)
+            : clamp(colsFloat - (colNeed - 1))
         const opRow =
           rowNeed <= openRows
             ? 1
-            : smoothstep(rowNeed - 1.05, rowNeed - 0.15, rowsFloat)
+            : clamp(rowsFloat - (rowNeed - 1))
         const op = Math.min(opCol, opRow)
 
         if (op < 0.01) {
@@ -355,54 +424,64 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
     }
 
     const apply = (scrollP: number, fadeP: number, handP: number) => {
-      const preT = easeOutQuad(GROW_START, MASK_START, scrollP)
-      const postT = smoothstep(MASK_START, GROW_END, scrollP)
-      const colsFloat =
-        scrollP < MASK_START
-          ? lerp(startCols, SIDE_AT_MASK, preT)
-          : lerp(SIDE_AT_MASK, MAX_SIDE, postT)
-      const rowsFloat =
-        scrollP < MASK_START
-          ? lerp(startRows, SIDE_AT_MASK, preT)
-          : lerp(SIDE_AT_MASK, MAX_SIDE, postT)
+      /*
+       * Densify finishes as the cutout begins — so the wall is already full
+       * and still when paper starts closing. Growing cells into a moving mask
+       * was the pre-cutout wobble.
+       */
+      const growT = clamp(scrollP / MASK_SHRINK_START)
+      const colsFloat = lerp(startCols, MAX_SIDE, growT)
+      const rowsFloat = lerp(startRows, MAX_SIDE, growT)
       layoutGrid(colsFloat, rowsFloat)
 
       /*
        * Grid is never masked. A paper layer on top has an oversized hand-shaped
        * hole — at max size the hole covers the plate (looks like full grid).
        * Shrinking the hole closes paper in from the edges and defines the hand.
+       *
+       * revealT is linear in scrollP (not smoothstep) so the cutout doesn't
+       * ease to a standstill at either end of its window.
        */
-      const revealT = smoothstep(MASK_SHRINK_START, MASK_REVEAL_END, scrollP)
-      const revealEase = revealT * revealT * revealT * revealT
-      const plateT = smoothstep(MASK_REVEAL_END, PLATE_ZOOM_END, scrollP)
+      const revealT = clamp(
+        (scrollP - MASK_SHRINK_START) / (MASK_REVEAL_END - MASK_SHRINK_START),
+      )
+      const visibleStart = Math.max(MASK_VISIBLE_START, coverScale * 95)
       const currentMaskPct =
         scrollP < MASK_SHRINK_START
           ? maskOversizePct
-          : lerp(maskOversizePct, 100, revealEase)
+          : maskPctForReveal(revealT, maskOversizePct, visibleStart)
+      // easeOutQuad — smoothstep was flat at the cutout→zoom seam.
+      const plateT = easeOutQuad(MASK_REVEAL_END, PLATE_ZOOM_END, scrollP)
       const shrinkProgress = clamp(
-        (maskOversizePct - currentMaskPct) / (maskOversizePct - 100),
+        scrollP < MASK_SHRINK_START
+          ? 0
+          : (visibleStart - Math.min(currentMaskPct, visibleStart)) /
+              (visibleStart - 100),
       )
-      const paperIn = smoothstep(0.18, 0.42, shrinkProgress)
+      const paperIn = smoothstep(0.02, 0.22, shrinkProgress)
       /** Stay on the palm until paper creeps in, then drift to logo center. */
-      const posT = smoothstep(0.3, 0.95, shrinkProgress)
+      const posT = smoothstep(0.15, 0.9, shrinkProgress)
       setPaperMaskPosition(
         lerp(MASK_POS_START_X, MASK_POS_END_X, posT),
         lerp(MASK_POS_START_Y, MASK_POS_END_Y, posT),
       )
 
       // Phase A drives the plate's scale; phase B takes over and flies it right.
-      const glide = smoothstep(0, GLIDE_END, handP)
+      // easeOutQuad (not smoothstep) so the logo glide starts moving immediately
+      // instead of holding still at the hero→handoff seam.
+      const glide = easeOutQuad(0, GLIDE_END, handP)
       const vw = window.innerWidth
       const vh = window.innerHeight
       const targetScale = handTarget.w > 0 ? handTarget.w / plateW : 1
       const dx = handTarget.w > 0 ? lerp(0, handTarget.cx - vw / 2, glide) : 0
       const dy = handTarget.w > 0 ? lerp(0, handTarget.cy - vh / 2, glide) : 0
 
-      // Settled well before the mask work begins, so the later legs are unchanged.
+      // Opening zoom settles early and linearly so late densify isn't fighting
+      // a still-moving plate scale.
       const openScale = lerp(
         coverScale * OPEN_ZOOM,
         coverScale,
-        easeOutQuad(0, OPEN_SETTLE, scrollP),
+        clamp(scrollP / Math.max(OPEN_SETTLE, 1e-6)),
       )
 
       let baseScale: number
@@ -476,42 +555,85 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
         root.dataset.phase = phase
         lastPhase = phase
       }
-
-      if (!reduced && handP >= 1) {
-        markHeroIntroSeen()
-      }
     }
 
-    const tick = () => {
-      const vh = lockedVh
-      const heroMax = Math.max(1, vh * HERO_SCROLL_VH)
-      const y = window.scrollY
-      const target = reduced ? 1 : clamp(y / heroMax)
-      const handP = reduced
-        ? 1
-        : clamp((y - heroMax) / Math.max(1, vh * HANDOFF_VH))
+    const finishCinematic = () => {
+      cancelAnimationFrame(frameId)
+      markHeroIntroSeen()
+      setIntroState('done')
+      unlockScroll()
+      layoutShell()
+      window.scrollTo(0, 0)
+      measureHandTarget()
+      apply(1, 1, 1)
+      frameId = requestAnimationFrame(tickSettled)
+    }
 
-      if (reduced) {
-        smoothProgress = 1
-      } else if (touchLike) {
-        smoothProgress = target
-      } else {
-        smoothProgress += (target - smoothProgress) * SCROLL_EASE
-        if (Math.abs(target - smoothProgress) < 0.0004) smoothProgress = target
-      }
+    const tickCinematic = (now: number) => {
+      if (!cinematicStart) cinematicStart = now
+      // Strictly linear in wall-clock time — any global ease reintroduces
+      // rushes and hangs.
+      const u = clamp((now - cinematicStart) / CINEMATIC_MS)
 
-      // The glide target lives in viewport space, so it moves while pinned.
+      const scrollP = clamp(u / CINEMATIC_HERO_END)
+      const handP =
+        u <= CINEMATIC_HANDOFF_START
+          ? 0
+          : clamp(
+              (u - CINEMATIC_HANDOFF_START) / (1 - CINEMATIC_HANDOFF_START),
+            )
+
       if (handP > 0) measureHandTarget()
+      apply(scrollP, scrollP, handP)
 
-      apply(reduced ? 1 : target, smoothProgress, handP)
-      frameId = requestAnimationFrame(tick)
+      if (u >= 1) {
+        finishCinematic()
+        return
+      }
+      frameId = requestAnimationFrame(tickCinematic)
+    }
+
+    const tickSettled = () => {
+      apply(1, 1, 1)
+      frameId = requestAnimationFrame(tickSettled)
+    }
+
+    const startCinematic = () => {
+      if (introState !== 'waiting') return
+      setIntroState('playing')
+      cinematicStart = 0
+      frameId = requestAnimationFrame(tickCinematic)
+    }
+
+    const onBeginEvent = () => startCinematic()
+
+    const onPointerUp = (event: PointerEvent) => {
+      if (introState !== 'waiting') return
+      if (event.pointerType === 'mouse' && event.button !== 0) return
+      startCinematic()
+    }
+
+    const onWheel = (event: WheelEvent) => {
+      if (introState !== 'waiting') return
+      if (event.deltaY <= 0) return
+      event.preventDefault()
+      startCinematic()
+    }
+
+    const onTouchStart = (event: TouchEvent) => {
+      if (introState !== 'waiting') return
+      touchStartY = event.touches[0]?.clientY ?? 0
+    }
+
+    const onTouchMove = (event: TouchEvent) => {
+      if (introState !== 'waiting') return
+      event.preventDefault()
+      const y = event.touches[0]?.clientY ?? touchStartY
+      if (touchStartY - y > 28) startCinematic()
     }
 
     paper.style.webkitMaskImage = paperMaskUrl
     paper.style.maskImage = paperMaskUrl
-    layoutShell()
-    setPaperMaskSize(maskOversizePct)
-    setPaperMaskPosition(MASK_POS_START_X, MASK_POS_START_Y)
 
     /*
      * ?scrub=heroP,handP freezes the stage on one frame so a screenshot can be
@@ -523,27 +645,50 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
       : null
 
     const skipIntro = shouldSkipHeroIntro() && !reduced && !frozen
+    const deepLink = (() => {
+      const hash = window.location.hash
+      return Boolean(hash && hash !== '#home')
+    })()
 
     if (frozen) {
+      setIntroState('done')
       const [heroP = 1, handP = 0] = frozen.split(',').map(Number)
+      layoutShell()
+      setPaperMaskSize(maskOversizePct)
+      setPaperMaskPosition(MASK_POS_START_X, MASK_POS_START_Y)
       requestAnimationFrame(() => {
         layoutShell()
         measureHandTarget()
         apply(heroP, heroP, handP)
       })
-    } else if (skipIntro) {
-      smoothProgress = 1
-      window.scrollTo(0, settledHeroScrollY(lockedVh))
+    } else if (reduced || skipIntro || deepLink) {
+      setIntroState('done')
+      if (!reduced && skipIntro) markHeroIntroSeen()
+      layoutShell()
+      setPaperMaskSize(maskOversizePct)
+      setPaperMaskPosition(MASK_POS_START_X, MASK_POS_START_Y)
+      if (!deepLink) window.scrollTo(0, 0)
       apply(1, 1, 1)
       requestAnimationFrame(() => {
         layoutShell()
         measureHandTarget()
         apply(1, 1, 1)
-        frameId = requestAnimationFrame(tick)
+        frameId = requestAnimationFrame(tickSettled)
       })
     } else {
+      setIntroState('waiting')
+      lockScroll()
+      layoutShell()
+      setPaperMaskSize(maskOversizePct)
+      setPaperMaskPosition(MASK_POS_START_X, MASK_POS_START_Y)
+      window.scrollTo(0, 0)
       apply(0, 0, 0)
-      frameId = requestAnimationFrame(tick)
+
+      window.addEventListener(HERO_BEGIN_EVENT, onBeginEvent)
+      sticky.addEventListener('pointerup', onPointerUp)
+      window.addEventListener('wheel', onWheel, { passive: false })
+      window.addEventListener('touchstart', onTouchStart, { passive: true })
+      window.addEventListener('touchmove', onTouchMove, { passive: false })
     }
 
     window.addEventListener('resize', layoutShell, { passive: true })
@@ -555,7 +700,6 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
         heroP: number,
         handP = 0,
       ) => {
-        smoothProgress = heroP
         measureHandTarget()
         apply(heroP, heroP, handP)
       }
@@ -563,7 +707,14 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
 
     return () => {
       cancelAnimationFrame(frameId)
+      unlockScroll()
       window.removeEventListener('resize', layoutShell)
+      window.removeEventListener(HERO_BEGIN_EVENT, onBeginEvent)
+      sticky.removeEventListener('pointerup', onPointerUp)
+      window.removeEventListener('wheel', onWheel)
+      window.removeEventListener('touchstart', onTouchStart)
+      window.removeEventListener('touchmove', onTouchMove)
+      delete root.dataset.heroIntro
       if (import.meta.env.DEV) {
         delete (window as unknown as Record<string, unknown>).__tisemaScrub
       }
@@ -668,13 +819,18 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
 
 /** The settled Home headline — slides in from the left as the hand clears it. */
 function HeroCopy() {
+  const { navigate } = useRouter()
+  const petition = petitionUrl()
+  const petitionExternal = petition.startsWith('http')
+
   return (
     <div
-      className="hero-copy pointer-events-none absolute top-[calc(72px+0.5rem)] left-[5.55%] z-[2] flex w-[89%] max-w-[630px] flex-col gap-4 sm:gap-5 lg:top-1/2 lg:left-[6.48%] lg:w-[52%] lg:gap-[56px]"
+      className="hero-copy absolute top-[calc(72px+0.5rem)] left-[5.55%] z-[2] flex w-[89%] max-w-[630px] flex-col gap-4 sm:gap-5 lg:top-1/2 lg:left-[6.48%] lg:w-[52%] lg:gap-10"
       style={{
         opacity: 'var(--hero-text-in, 0)',
         transform:
           'translateY(var(--hero-copy-shift, 0px)) translateX(calc((1 - var(--hero-text-in, 0)) * -40px))',
+        pointerEvents: 'none',
       }}
     >
       <h1 className="max-w-[572px] font-serif text-[clamp(2rem,4.63vw,70px)] leading-[1.093] text-field">
@@ -686,6 +842,28 @@ function HeroCopy() {
       <p className="max-w-[644px] text-[clamp(1rem,1.56vw,23.625px)] leading-[1.4444] font-normal text-field">
         {HERO_SUBTITLE}
       </p>
+
+      <div className="pointer-events-auto flex flex-wrap items-start gap-3 sm:gap-6">
+        <a
+          href={petition}
+          {...(petitionExternal
+            ? { target: '_blank', rel: 'noopener noreferrer' }
+            : {})}
+          className="flex w-full max-w-[224px] items-center justify-center rounded-[3.5px] bg-oxblood px-[28px] py-[8.75px] text-[13.78px] leading-[24.5px] font-semibold whitespace-nowrap text-lime transition-opacity hover:opacity-90 sm:w-auto"
+        >
+          Sign the Petition
+        </a>
+        <a
+          href={DEMANDS_PAGE_HREF}
+          onClick={(e) => clientNavigate(e, DEMANDS_PAGE_HREF, navigate)}
+          className="inline-flex items-center justify-center gap-[8.75px] rounded-[3.5px] border border-solid border-oxblood px-[28px] py-[8.75px] text-[15.75px] leading-[28px] font-semibold whitespace-nowrap text-oxblood transition-opacity hover:opacity-80"
+        >
+          Read the Demand
+          <span aria-hidden className="text-[18px] leading-none">
+            ↗
+          </span>
+        </a>
+      </div>
     </div>
   )
 }

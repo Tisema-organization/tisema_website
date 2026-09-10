@@ -8,25 +8,58 @@ import {
   type ReactNode,
 } from 'react'
 
-export type AppRoute = 'landing' | 'gallery' | 'terms'
+export type AppRoute =
+  | 'landing'
+  | 'gallery'
+  | 'terms'
+  | 'demand'
+  | 'demands'
+  | 'faq'
+  | 'blogs'
+
+const SPA_PATHS = new Set([
+  '/',
+  '/gallery',
+  '/terms',
+  '/demand',
+  '/demands',
+  '/faq',
+  '/blogs',
+])
+
+const SCROLL_TOP_ROUTES = new Set<AppRoute>([
+  'gallery',
+  'terms',
+  'demand',
+  'demands',
+  'faq',
+  'blogs',
+])
 
 function normalizePath(pathname: string) {
   const path = pathname.replace(/\/$/, '') || '/'
   if (path.endsWith('/index.html') || path.endsWith('/index.htm')) return '/'
   if (path.endsWith('/gallery.html')) return '/gallery'
   if (path.endsWith('/terms.html')) return '/terms'
+  if (path.endsWith('/demand.html')) return '/demand'
+  if (path.endsWith('/demands.html')) return '/demands'
+  if (path.endsWith('/faq.html')) return '/faq'
+  if (path.endsWith('/blogs.html')) return '/blogs'
   return path
 }
 
 function isSpaPath(pathname: string) {
-  const path = normalizePath(pathname)
-  return path === '/' || path === '/gallery' || path === '/terms'
+  return SPA_PATHS.has(normalizePath(pathname))
 }
 
 export function getAppRoute(pathname = window.location.pathname): AppRoute {
   const path = normalizePath(pathname)
   if (path === '/gallery') return 'gallery'
   if (path === '/terms') return 'terms'
+  if (path === '/demand') return 'demand'
+  if (path === '/demands') return 'demands'
+  if (path === '/faq') return 'faq'
+  if (path === '/blogs') return 'blogs'
   return 'landing'
 }
 
@@ -82,7 +115,7 @@ export function RouterProvider({ children }: { children: ReactNode }) {
 
       setRoute(next)
 
-      if (next === 'gallery' || next === 'terms') {
+      if (SCROLL_TOP_ROUTES.has(next)) {
         window.scrollTo(0, 0)
         return
       }

@@ -4,7 +4,20 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 /** Client routes served by index.html — one SPA entry for the whole site. */
-const SPA_ROUTES = ['/gallery', '/gallery.html', '/terms', '/terms.html']
+const SPA_ROUTES = [
+  '/gallery',
+  '/gallery.html',
+  '/terms',
+  '/terms.html',
+  '/demand',
+  '/demand.html',
+  '/demands',
+  '/demands.html',
+  '/faq',
+  '/faq.html',
+  '/blogs',
+  '/blogs.html',
+]
 
 function attachSpaFallback(server: ViteDevServer | PreviewServer) {
   server.middlewares.use((req, _res, next) => {

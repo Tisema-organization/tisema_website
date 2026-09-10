@@ -128,13 +128,13 @@ export const DEMANDS = [
   {
     index: '04',
     title: 'Mandatory Public Reporting',
-    body: ' Fixed reporting intervals with published data and similar structures replicated in every region.',
+    body: 'Fixed reporting intervals with published data and similar structures replicated in every region.',
   },
 ] as const
 
 export const NOT_ASKING_TITLE = 'What Tisema Is NOT Asking For '
 export const NOT_ASKING_BODY =
-  "We are NOT asking for a State of Emergency under Article 93. Article 93 operates by suspending rights. We are asking for state capacity and resources to be fully mobilized to protect rights—specifically women and girls' rights."
+  "We are NOT asking for a State of Emergency under Article 93. Article 93 operates by suspending rights. We are asking for state capacity and resources to be fully mobilized to protect rights specifically women and girls' rights."
 
 export type TimelineEntry = {
   date: string
@@ -253,40 +253,87 @@ export { FEED_POSTS } from './feed'
 
 export const FOOTER_CTA = 'Help Make a Difference Today.'
 
+/** Primary quick links shown in the footer column (Figma 208:473). */
 export const FOOTER_LINKS = [
   { label: 'Home', href: '#home' },
-  { label: 'About The Campaign', href: '#about-the-campaign' },
-  { label: 'Timeline', href: '#timeline' },
-  { label: 'Campaign Gallery', href: '/gallery' },
-  { label: 'Campaign Feed', href: '#campaign-feed' },
+  { label: 'The Demand & Declaration', href: '/demand' },
+  { label: 'The 12 Demands', href: '/demands' },
+  { label: 'FAQ', href: '/faq' },
+  { label: 'Blogs', href: '/blogs' },
   { label: 'Terms and Conditions', href: '/terms' },
 ] as const
+
+export const FOOTER_COPYRIGHT = '© 2026 #Tisema. All rights reserved.'
+
+export const FOOTER_LEGAL = [
+  { label: 'Privacy Policy', href: '/terms' },
+] as const
+
+export const FOOTER_HELP = {
+  title: 'RESOURCES & GET HELP',
+  badge: 'SURVIVOR SUPPORT',
+  helplineLabel: '24/7 EMERGENCY & CRISIS HELPLINE',
+  tollFree: 'Toll-Free: 1111',
+  tollFreeTel: '1111',
+  phone: '+251 11 667 8540',
+  phoneTel: '+251116678540',
+  lines: [
+    {
+      label: 'Survivor Legal Aid Clinic',
+      phone: '+251 11 545 789',
+      tel: '+25111545789',
+    },
+    {
+      label: 'Confidential Psychological Support',
+      phone: '+251 11 545 789',
+      tel: '+25111545789',
+    },
+    {
+      label: 'Safe House Emergency Intake & Shelter Dispatch',
+      phone: '+251 11 545 789',
+      tel: '+25111545789',
+    },
+  ],
+} as const
 
 export type SocialMark = {
   src: string
   label: string
+  href: string
   w: number
   h: number
-  /** Twitter and YouTube sit in a translucent rounded chip in the design. */
+  /** X and Telegram sit in a translucent rounded chip in the design. */
   boxed?: boolean
 }
 
-/** Exported social marks, in the order they sit in the footer row. */
+/** Live campaign channels, in footer order. */
 export const FOOTER_SOCIALS: SocialMark[] = [
-  { src: '/design/social-1.svg', label: 'LinkedIn', w: 40.322, h: 40.322 },
-  { src: '/design/social-2.svg', label: 'Instagram', w: 38.365, h: 39 },
   {
     src: '/design/twitter-glyph.svg',
     label: 'X',
+    href: 'https://x.com/tisemaethiopia',
     w: 24.32,
     h: 22.041,
     boxed: true,
   },
-  { src: '/design/social-4.svg', label: 'Facebook', w: 38, h: 39 },
-  { src: '/design/social-3.svg', label: 'TikTok', w: 38.365, h: 39.3 },
   {
-    src: '/design/social-youtube.svg',
-    label: 'YouTube',
+    src: '/design/social-2.svg',
+    label: 'Instagram',
+    href: 'https://www.instagram.com/tisemaethiopia',
+    w: 38.365,
+    h: 39,
+  },
+  {
+    src: '/design/social-3.svg',
+    label: 'TikTok',
+    href: 'https://www.tiktok.com/@tisemaethiopia',
+    w: 38.365,
+    h: 39.3,
+  },
+  {
+    src: '/design/telegram-glyph.svg',
+    label: 'Telegram',
+    href: 'https://t.me/+hEb9hRj8flllOTA1',
     w: 24.32,
     h: 24.32,
     boxed: true,

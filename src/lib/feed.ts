@@ -19,6 +19,8 @@ type TikTokItem = {
   createTime?: number
   author?: TikTokAuthor
   video?: TikTokVideo
+  /** Present on photo carousels — share URL uses /photo/ instead of /video/. */
+  imagePost?: unknown
 }
 
 const rawPosts = raw as Record<string, TikTokItem>
@@ -51,6 +53,7 @@ function toFeedPost(item: TikTokItem): FeedPost | null {
   if (!cover) return null
 
   const body = (item.desc ?? '').trim() || 'Shared on TikTok for #Tisema'
+  const kind = item.imagePost ? 'photo' : 'video'
 
   return {
     id,
@@ -59,7 +62,7 @@ function toFeedPost(item: TikTokItem): FeedPost | null {
     handle: `@${uniqueId}`,
     age: relativeAge(item.createTime),
     body,
-    url: `https://www.tiktok.com/@${uniqueId}/video/${id}`,
+    url: `https://www.tiktok.com/@${uniqueId}/${kind}/${id}`,
     avatarSrc: item.author?.avatarThumb ?? undefined,
     createdAt: item.createTime,
   }
