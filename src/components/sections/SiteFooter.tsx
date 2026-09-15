@@ -30,7 +30,7 @@ export function SiteFooter({ base = '' }: { base?: string } = {}) {
     >
       <div className="flex w-full flex-col items-center justify-center gap-[72px] border-[0.875px] border-solid border-clay-flat bg-oxblood p-[32px] lg:gap-[114px]">
         <div className="flex w-full flex-col items-center gap-8 lg:gap-[23px]">
-          <h2 className="max-w-[900px] text-center font-serif text-[clamp(1.75rem,4vw,56px)] leading-[1.25] text-paper lg:text-[72px] lg:leading-[106px]">
+          <h2 className="max-w-[720px] text-center font-serif text-[clamp(1.5rem,3vw,40px)] leading-[1.25] text-paper">
             <Words segments={[{ text: FOOTER_CTA }]} gap={0.05} />
           </h2>
 
@@ -40,7 +40,7 @@ export function SiteFooter({ base = '' }: { base?: string } = {}) {
               {...(petitionExternal
                 ? { target: '_blank', rel: 'noopener noreferrer' }
                 : {})}
-              className="flex items-center justify-center rounded-[4px] bg-lime px-6 py-2.5 font-serif text-[clamp(1rem,1.75vw,24px)] whitespace-nowrap text-clay-shadow transition-opacity hover:opacity-90 lg:px-[46px] lg:py-[14px] lg:text-[34.56px] lg:leading-[66px]"
+              className="flex items-center justify-center rounded-[4px] bg-lime px-6 py-2.5 font-serif text-[15px] leading-[24px] whitespace-nowrap text-clay-shadow transition-opacity hover:opacity-90 sm:text-[16px] lg:px-8 lg:py-3 lg:text-[17px] lg:leading-[28px]"
             >
               Take Action
             </a>
