@@ -5,7 +5,6 @@ import { TermsPage } from './components/TermsPage'
 import { DemandPage } from './components/DemandPage'
 import { DemandsPage } from './components/DemandsPage'
 import { FaqPage } from './components/FaqPage'
-import { BlogsPage } from './components/BlogsPage'
 import { HeroScrollHint } from './components/HeroScrollHint'
 
 export default function App() {
@@ -16,7 +15,6 @@ export default function App() {
   if (route === 'demand') return <DemandPage />
   if (route === 'demands') return <DemandsPage />
   if (route === 'faq') return <FaqPage />
-  if (route === 'blogs') return <BlogsPage />
 
   return (
     <>

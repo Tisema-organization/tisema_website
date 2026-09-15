@@ -148,7 +148,7 @@ export function Timeline() {
   return (
     <section
       id="timeline"
-      className="w-full scroll-mt-[105px] bg-paper py-[80px] lg:py-0"
+      className="w-full scroll-mt-[68px] bg-paper py-[80px] lg:py-0"
     >
       {/*
         Sits in the same band container as the Gallery and Feed headings so all

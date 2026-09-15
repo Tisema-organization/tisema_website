@@ -64,7 +64,7 @@ export function CampaignFeed() {
   return (
     <section
       id="campaign-feed"
-      className="relative w-full scroll-mt-[105px] bg-paper py-[96px] lg:py-[120px]"
+      className="relative w-full scroll-mt-[68px] bg-paper py-[96px] lg:py-[120px]"
     >
       <div className="section-shell">
         <div className="mx-auto w-full max-w-[1253.875px]">

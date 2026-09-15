@@ -825,7 +825,7 @@ function HeroCopy() {
 
   return (
     <div
-      className="hero-copy absolute top-[calc(72px+0.5rem)] left-[5.55%] z-[2] flex w-[89%] max-w-[630px] flex-col gap-4 sm:gap-5 lg:top-1/2 lg:left-[6.48%] lg:w-[52%] lg:gap-10"
+      className="hero-copy absolute top-[calc(56px+0.5rem)] left-[5.55%] z-[2] flex w-[89%] max-w-[630px] flex-col gap-4 sm:gap-5 lg:top-1/2 lg:left-[6.48%] lg:w-[52%] lg:gap-10"
       style={{
         opacity: 'var(--hero-text-in, 0)',
         transform:
@@ -851,7 +851,7 @@ function HeroCopy() {
             : {})}
           className="flex w-full max-w-[224px] items-center justify-center rounded-[3.5px] bg-oxblood px-[28px] py-[8.75px] text-[13.78px] leading-[24.5px] font-semibold whitespace-nowrap text-lime transition-opacity hover:opacity-90 sm:w-auto"
         >
-          Sign the Petition
+          Take Action
         </a>
         <a
           href={DEMANDS_PAGE_HREF}

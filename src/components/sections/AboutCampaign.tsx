@@ -6,7 +6,7 @@ export function AboutCampaign() {
   return (
     <section
       id="about-the-campaign"
-      className="w-full scroll-mt-[105px] bg-paper py-[96px] lg:h-[635px] lg:py-0"
+      className="w-full scroll-mt-[68px] bg-paper py-[96px] lg:h-[635px] lg:py-0"
     >
       <div className="section-shell flex h-full flex-col justify-center">
         <div className="flex w-full max-w-[1031.625px] flex-col gap-[35px] lg:ml-[80.5px]">

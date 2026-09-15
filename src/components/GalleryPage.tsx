@@ -34,19 +34,19 @@ export function GalleryPage() {
         <div className="relative min-h-screen bg-paper">
           <SiteNav pinned base="/" />
 
-          <main className="pt-[72px] lg:pt-[105px]">
+          <main className="pt-[56px] lg:pt-[68px]">
             <div className="section-shell py-[56px] lg:py-[96px]">
               <div className="mx-auto flex w-full max-w-[1253.875px] flex-col gap-[48px] lg:gap-[72px]">
                 <header className="flex max-w-[820px] flex-col gap-[16px]">
                   <a
                     href="/"
-                    onClick={(e) => clientNavigate(e, '/', navigate)}
+                    onClick={(e) => clientNavigate(e, "/", navigate)}
                     className="w-fit font-serif text-[15.75px] leading-[28px] text-oxblood transition-opacity hover:opacity-70"
                   >
                     ← Back to home
                   </a>
                   <BandTitle
-                    text="Campaign Gallery"
+                    text="The Cases"
                     className="text-field lg:leading-[60px]"
                   />
                   <p className="text-[18px] leading-[34.125px] text-field">
@@ -54,8 +54,8 @@ export function GalleryPage() {
                   </p>
                   {GALLERY_ITEMS.length > PER_PAGE ? (
                     <p className="text-[15.75px] leading-[26px] text-oxblood">
-                      Showing {rangeStart}–{rangeEnd} of {GALLERY_ITEMS.length}{' '}
-                      stories
+                      Showing {rangeStart}–{rangeEnd} of {GALLERY_ITEMS.length}{" "}
+                      cases
                     </p>
                   ) : null}
                 </header>
@@ -77,7 +77,7 @@ export function GalleryPage() {
                     pageCount={pageCount}
                     page={page}
                     setPage={setPage}
-                    label="Gallery page"
+                    label="Cases page"
                   />
                 ) : null}
               </div>
@@ -88,5 +88,5 @@ export function GalleryPage() {
         </div>
       </MotionConfig>
     </LazyMotion>
-  )
+  );
 }

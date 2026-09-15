@@ -26,7 +26,7 @@ export function SiteFooter({ base = '' }: { base?: string } = {}) {
   return (
     <footer
       id="petition"
-      className="w-full scroll-mt-[105px] overflow-clip bg-field"
+      className="w-full scroll-mt-[68px] overflow-clip bg-field"
     >
       <div className="flex w-full flex-col items-center justify-center gap-[72px] border-[0.875px] border-solid border-clay-flat bg-oxblood p-[32px] lg:gap-[114px]">
         <div className="flex w-full flex-col items-center gap-8 lg:gap-[23px]">
@@ -42,7 +42,7 @@ export function SiteFooter({ base = '' }: { base?: string } = {}) {
                 : {})}
               className="flex items-center justify-center rounded-[4px] bg-lime px-6 py-2.5 font-serif text-[clamp(1rem,1.75vw,24px)] whitespace-nowrap text-clay-shadow transition-opacity hover:opacity-90 lg:px-[46px] lg:py-[14px] lg:text-[34.56px] lg:leading-[66px]"
             >
-              Sign the Petition
+              Take Action
             </a>
           </Reveal>
         </div>

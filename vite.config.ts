@@ -5,6 +5,8 @@ import tailwindcss from '@tailwindcss/vite'
 
 /** Client routes served by index.html — one SPA entry for the whole site. */
 const SPA_ROUTES = [
+  '/cases',
+  '/cases.html',
   '/gallery',
   '/gallery.html',
   '/terms',
@@ -15,8 +17,6 @@ const SPA_ROUTES = [
   '/demands.html',
   '/faq',
   '/faq.html',
-  '/blogs',
-  '/blogs.html',
 ]
 
 function attachSpaFallback(server: ViteDevServer | PreviewServer) {

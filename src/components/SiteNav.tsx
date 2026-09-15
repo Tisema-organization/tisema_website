@@ -77,21 +77,22 @@ export function SiteNav({
         pinned
           ? undefined
           : {
-              opacity: 'var(--hero-nav-in, 0)',
-              transform: 'translateY(calc((1 - var(--hero-nav-in, 0)) * -100%))',
+              opacity: "var(--hero-nav-in, 0)",
+              transform:
+                "translateY(calc((1 - var(--hero-nav-in, 0)) * -100%))",
             }
       }
     >
-      <nav className="section-shell flex h-[72px] items-center justify-between lg:h-[105px]">
+      <nav className="section-shell flex h-[56px] items-center justify-between lg:h-[68px]">
         <a
           href={`${base}#home`}
           className="flex items-center gap-[13px] lg:w-[260px]"
           onClick={(e) => {
-            const href = `${base}#home`
+            const href = `${base}#home`;
             if (!clientNavigate(e, href, navigate)) {
-              handleHomeNavClick(e, base, href)
+              handleHomeNavClick(e, base, href);
             }
-            closeMenu()
+            closeMenu();
           }}
         >
           <img
@@ -99,7 +100,7 @@ export function SiteNav({
             alt="Tisema"
             width={1080}
             height={1350}
-            className="h-[52px] w-[41.6px] object-cover lg:h-[87.75px] lg:w-[70.2px]"
+            className="h-[40px] w-[32px] object-cover lg:h-[52px] lg:w-[41.6px]"
           />
         </a>
 
@@ -111,9 +112,9 @@ export function SiteNav({
                   href={`${base}${link.href}`}
                   onClick={(e) => followLink(e, `${base}${link.href}`)}
                   className={`leading-[28px] whitespace-nowrap text-field transition-opacity hover:opacity-70 ${
-                    link.label === 'Timeline'
-                      ? 'text-[17.5px]'
-                      : 'text-[15.75px]'
+                    link.label === "Timeline"
+                      ? "text-[17.5px]"
+                      : "text-[15.75px]"
                   }`}
                 >
                   {link.label}
@@ -125,11 +126,11 @@ export function SiteNav({
           <a
             href={petition}
             {...(petitionExternal
-              ? { target: '_blank', rel: 'noopener noreferrer' }
+              ? { target: "_blank", rel: "noopener noreferrer" }
               : {})}
             className="flex items-center justify-center rounded-[3.5px] bg-oxblood px-[16px] py-[8px] text-[12px] font-semibold whitespace-nowrap text-lime transition-opacity hover:opacity-90 sm:px-[20px] sm:text-[13px] lg:px-[28px] lg:text-[13.78px] lg:leading-[24.5px]"
           >
-            Sign the Petition
+            Take Action
           </a>
 
           <button
@@ -137,7 +138,7 @@ export function SiteNav({
             className="flex size-10 items-center justify-center rounded-sm lg:hidden"
             aria-expanded={menuOpen}
             aria-controls="mobile-nav"
-            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
             onClick={() => setMenuOpen((open) => !open)}
           >
             <MenuIcon open={menuOpen} />
@@ -166,5 +167,7 @@ export function SiteNav({
         </div>
       ) : null}
     </header>
-  )
+  );
 }
+
+

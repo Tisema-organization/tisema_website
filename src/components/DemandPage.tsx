@@ -24,7 +24,7 @@ export function DemandPage() {
         <div className="relative min-h-screen bg-paper">
           <SiteNav pinned base="/" />
 
-          <main className="pt-[72px] lg:pt-[105px]">
+          <main className="pt-[56px] lg:pt-[68px]">
             <div className="section-shell py-[56px] lg:py-[96px]">
               <div className="mx-auto flex w-full max-w-[1253.875px] flex-col gap-[64px]">
                 <a

@@ -25,14 +25,14 @@ export function CampaignGallery() {
 
   return (
     <section
-      id="campaign-gallery"
-      className="w-full scroll-mt-[105px] bg-paper py-[96px] lg:h-[1002px] lg:py-0"
+      id="cases"
+      className="w-full scroll-mt-[68px] bg-paper py-[96px] lg:h-[1002px] lg:py-0"
     >
       <div className="section-shell flex h-full items-center">
         <div className="mx-auto flex w-full max-w-[1253.875px] flex-col gap-[56px] lg:gap-[105px]">
           <div className="flex flex-col gap-6 text-field lg:flex-row lg:items-center lg:gap-[233px]">
             <BandTitle
-              text="Campaign Gallery"
+              text="The Cases"
               className="whitespace-nowrap lg:leading-[60px]"
             />
             <Reveal className="flex-1" delay={0.2}>
@@ -45,7 +45,7 @@ export function CampaignGallery() {
             perPage={perPage}
             page={page}
             pageCount={pageCount}
-            label="Gallery page"
+            label="Cases page"
             gridClassName="grid grid-cols-2 items-start gap-4 lg:grid-cols-4"
             render={(item, index) => (
               <GalleryTile
@@ -60,7 +60,7 @@ export function CampaignGallery() {
             pageCount={pageCount}
             page={page}
             setPage={setPage}
-            label="Gallery page"
+            label="Cases page"
           />
 
           <Reveal className="flex justify-center" delay={0.15}>
@@ -69,12 +69,12 @@ export function CampaignGallery() {
               onClick={(e) => clientNavigate(e, GALLERY_PAGE_HREF, navigate)}
               className="inline-flex items-center justify-center gap-2 rounded-[4px] border border-solid border-oxblood px-6 py-3 font-serif text-[17px] leading-[28px] text-oxblood transition-opacity hover:opacity-80"
             >
-              View all stories
+              View all cases
               <span aria-hidden>→</span>
             </a>
           </Reveal>
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -27,7 +27,7 @@ export function TermsPage() {
               its anchors point back at the landing page. */}
           <SiteNav pinned base="/" />
 
-          <main className="pt-[72px] lg:pt-[105px]">
+          <main className="pt-[56px] lg:pt-[68px]">
             <div className="section-shell py-[56px] lg:py-[96px]">
               <div className="mx-auto flex max-w-[820px] flex-col gap-[48px]">
                 <header className="flex flex-col gap-[12px]">

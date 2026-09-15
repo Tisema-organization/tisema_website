@@ -14,7 +14,7 @@ import {
 export const NAV_LINKS = [
   { label: 'About The Campaign', href: '#about-the-campaign' },
   { label: 'Timeline', href: '#timeline' },
-  { label: 'Campaign Gallery', href: '#campaign-gallery' },
+  { label: 'Cases', href: '#cases' },
   { label: 'Campaign Feed', href: '#campaign-feed' },
 ] as const
 
@@ -171,7 +171,7 @@ export const TIMELINE: TimelineEntry[] = [
 ]
 
 export const GALLERY_INTRO =
-  'This gallery holds the stories behind Tisema women lost to violence, whose cases still call for justice.'
+  'Here are the stories behind Tisema — women lost to violence, whose cases still call for justice.'
 export const FEED_INTRO =
   "Every case page brings together what's being said across social media; posts, comments, and shares from every platform; gathered in one place so no voice speaking up for these women gets lost or scattered."
 /** The one non-social channel the footer blurb points at. */
@@ -192,7 +192,7 @@ export type GalleryItem = {
   file: string
 }
 
-export const GALLERY_PAGE_HREF = '/gallery'
+export const GALLERY_PAGE_HREF = '/cases'
 
 /** How many tiles the landing-page carousel shows before linking to the full gallery. */
 export const GALLERY_LANDING_PREVIEW = 4
@@ -259,7 +259,6 @@ export const FOOTER_LINKS = [
   { label: 'The Demand & Declaration', href: '/demand' },
   { label: 'The 12 Demands', href: '/demands' },
   { label: 'FAQ', href: '/faq' },
-  { label: 'Blogs', href: '/blogs' },
   { label: 'Terms and Conditions', href: '/terms' },
 ] as const
 
@@ -270,7 +269,7 @@ export const FOOTER_LEGAL = [
 ] as const
 
 export const FOOTER_HELP = {
-  title: 'RESOURCES & GET HELP',
+  title: 'GET HELP',
   badge: 'SURVIVOR SUPPORT',
   helplineLabel: '24/7 EMERGENCY & CRISIS HELPLINE',
   tollFree: 'Toll-Free: 1111',
