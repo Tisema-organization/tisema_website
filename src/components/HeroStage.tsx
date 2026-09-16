@@ -746,7 +746,7 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
         draggable={false}
         width={1080}
         height={1350}
-        className="hero-poster pointer-events-none absolute top-[70%] left-1/2 h-[52vh] w-auto max-w-[94vw] -translate-x-1/2 -translate-y-1/2 opacity-0 lg:top-[52.016%] lg:left-[74.537%] lg:h-[71.953vh] lg:max-w-none"
+        className="hero-poster pointer-events-none absolute top-[78%] left-1/2 h-[44vh] w-auto max-w-[88vw] -translate-x-1/2 -translate-y-1/2 opacity-0 sm:top-[74%] sm:h-[48vh] lg:top-[52.016%] lg:left-[74.537%] lg:h-[71.953vh] lg:max-w-none"
       />
 
       <div ref={plateRef} className="hero-plate pointer-events-none">
@@ -825,7 +825,7 @@ function HeroCopy() {
 
   return (
     <div
-      className="hero-copy pointer-events-none absolute top-[calc(56px+0.5rem)] left-[5.55%] z-[2] flex w-[89%] max-w-[630px] flex-col gap-4 sm:gap-5 lg:top-1/2 lg:left-[6.48%] lg:w-[52%] lg:max-w-none lg:gap-10"
+      className="hero-copy pointer-events-none absolute top-[calc(56px+0.5rem)] left-[5.55%] z-20 flex w-[89%] max-w-[630px] flex-col gap-4 sm:gap-5 lg:top-1/2 lg:left-[6.48%] lg:w-[52%] lg:max-w-none lg:gap-10"
       style={{
         opacity: 'var(--hero-text-in, 0)',
         transform:
@@ -842,20 +842,20 @@ function HeroCopy() {
         {HERO_SUBTITLE}
       </p>
 
-      <div className="pointer-events-auto flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:gap-6">
+      <div className="pointer-events-auto relative z-20 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:gap-6">
         <a
           href={petition}
           {...(petitionExternal
             ? { target: '_blank', rel: 'noopener noreferrer' }
             : {})}
-          className="flex w-full max-w-[224px] items-center justify-center rounded-[3.5px] bg-oxblood px-[28px] py-[8.75px] text-[13.78px] leading-[24.5px] font-semibold whitespace-nowrap text-lime transition-opacity hover:opacity-90 sm:w-auto"
+          className="inline-flex shrink-0 items-center justify-center rounded-[3.5px] bg-oxblood px-5 py-2.5 text-[13.78px] leading-[24.5px] font-semibold whitespace-nowrap text-paper transition-opacity hover:opacity-90 sm:px-[28px] sm:py-[8.75px] sm:text-lime"
         >
           Take Action
         </a>
         <a
           href={DEMANDS_PAGE_HREF}
           onClick={(e) => clientNavigate(e, DEMANDS_PAGE_HREF, navigate)}
-          className="inline-flex w-full max-w-[280px] items-center justify-center gap-[8.75px] rounded-[3.5px] border border-solid border-oxblood px-[28px] py-[8.75px] text-[15.75px] leading-[28px] font-semibold whitespace-nowrap text-oxblood transition-opacity hover:opacity-80 sm:w-auto sm:max-w-none"
+          className="inline-flex shrink-0 items-center justify-center gap-2 rounded-[3.5px] border border-solid border-oxblood bg-lime px-5 py-2.5 text-[14px] leading-[22px] font-semibold whitespace-nowrap text-oxblood transition-opacity hover:opacity-80 sm:gap-[8.75px] sm:px-[28px] sm:py-[8.75px] sm:text-[15.75px] sm:leading-[28px]"
         >
           Read the Demand
           <span aria-hidden className="text-[18px] leading-none">

@@ -127,9 +127,16 @@ body {
 /*
   Under lg the hero restacks: copy on top, poster below. Reserve the fixed nav
   height so the headline never sits under it when --hero-nav-in reaches 1.
+
+  Copy must sit ABOVE the poster. On mobile the hand overlaps the CTA band;
+  a lower z-index lets the poster punch holes through the buttons (empty
+  outline / clipped label). Desktop is unaffected — copy and poster sit in
+  different horizontal halves.
 */
 .hero-copy {
   --hero-copy-shift: 0px;
+  z-index: 20;
+  isolation: isolate;
 }
 
 @media (min-width: 64rem) {
