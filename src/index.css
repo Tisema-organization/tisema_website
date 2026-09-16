@@ -130,8 +130,6 @@ body {
 */
 .hero-copy {
   --hero-copy-shift: 0px;
-  width: auto;
-  max-width: min(630px, 100%);
 }
 
 @media (min-width: 64rem) {
