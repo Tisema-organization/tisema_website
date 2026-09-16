@@ -3,6 +3,7 @@
  * Placeholder copy in the gallery/feed/footer is reproduced as designed.
  */
 
+import { FAQ_PAGE_HREF } from './faq'
 import {
   VICTIM_DOWNLOAD_EXT,
   VICTIM_IMAGE_BASE,
@@ -11,12 +12,26 @@ import {
   VICTIMS,
 } from './victims'
 
-export const NAV_LINKS = [
+export type NavLink = {
+  label: string
+  href: string
+  /** Pill styling on the homepage and when this route is active. */
+  highlight?: boolean
+}
+
+export const NAV_LINKS: NavLink[] = [
   { label: 'About The Campaign', href: '#about-the-campaign' },
   { label: 'Timeline', href: '#timeline' },
   { label: 'Cases', href: '#cases' },
   { label: 'Campaign Feed', href: '#campaign-feed' },
-] as const
+  { label: 'FAQ', href: FAQ_PAGE_HREF, highlight: true },
+]
+
+/** Hash links respect `base`; app routes stay root-relative. */
+export function resolveNavHref(href: string, base = '') {
+  if (href.startsWith('/')) return href
+  return `${base}${href}`
+}
 
 export const PETITION_HREF = 'https://c.org/zKH2wvVRdr'
 
@@ -38,22 +53,21 @@ export type StatItem = {
   body: string
 }
 
+/** Figures from About Tisema (vF 0209) — EDHS 2024–25 and crisis brief. */
 export const STATS: StatItem[] = [
   {
     figure: '1 in 3',
-    body: 'Women experience physical or sexual violence in their lifetime in Ethiopia',
+    body: 'Ever-married Ethiopian women who have experienced violence from a partner (EDHS 2024–25).',
   },
   {
-    figure: '300K',
-    countTo: 300,
-    suffix: 'K',
-    body: 'GBV cases reported, justice delayed is justice denied.',
+    figure: '45%',
+    countTo: 45,
+    suffix: '%',
+    body: 'Increase in women killed in about four years (Addis Ababa & Dire Dawa).',
   },
   {
-    figure: '100k+',
-    countTo: 100,
-    suffix: 'k+',
-    body: 'Number of petition signed',
+    figure: '7.2M',
+    body: 'People needing protection from gender-based violence — up from 5.8 million in two years.',
   },
 ]
 

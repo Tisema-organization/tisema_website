@@ -5,6 +5,7 @@ import { HeroStage } from './HeroStage'
 import { SiteNav } from './SiteNav'
 import { AboutCampaign } from './sections/AboutCampaign'
 import { CampaignFeed } from './sections/CampaignFeed'
+import { FaqHighlight } from './sections/FaqHighlight'
 import { CampaignGallery } from './sections/CampaignGallery'
 import { DemandDeclaration } from './sections/DemandDeclaration'
 import { SiteFooter } from './sections/SiteFooter'
@@ -85,6 +86,7 @@ export function LandingPage() {
             <Timeline />
             <CampaignGallery />
             <CampaignFeed />
+            <FaqHighlight />
           </main>
 
           <SiteFooter />

@@ -136,12 +136,17 @@ export function FaqPage() {
                       key={section.category}
                       className="flex flex-col gap-[16px]"
                     >
-                      <div className="flex items-center gap-[8px] pt-[8px]">
-                        <p className="text-[12px] font-bold tracking-[0.06em] text-field uppercase">
-                          {section.category}
-                        </p>
-                        <span className="h-[2px] w-[48px] bg-lime" aria-hidden />
-                        <h2 className="text-[20px] font-bold text-field">
+                      <div className="flex flex-col gap-2 pt-[8px] sm:flex-row sm:items-center sm:gap-[8px]">
+                        <div className="flex shrink-0 items-center gap-[8px]">
+                          <p className="text-[12px] font-bold tracking-[0.06em] text-field uppercase">
+                            {section.category}
+                          </p>
+                          <span
+                            className="h-[2px] w-[48px] shrink-0 bg-lime"
+                            aria-hidden
+                          />
+                        </div>
+                        <h2 className="min-w-0 text-[18px] leading-[1.35] font-bold text-field sm:text-[20px] sm:leading-normal">
                           {section.categoryTitle}
                         </h2>
                       </div>
@@ -159,24 +164,22 @@ export function FaqPage() {
                               onClick={() =>
                                 setOpenId(open ? '' : item.id)
                               }
-                              className="flex w-full items-start justify-between gap-[16px] p-[24px] text-left"
+                              className="flex w-full items-start gap-3 p-4 text-left sm:gap-4 sm:p-6"
                             >
-                              <div className="flex gap-[16px]">
-                                <span className="flex size-[40px] shrink-0 items-center justify-center rounded-full bg-[#f0eee8] text-[16px] font-bold text-field">
-                                  {item.index}
-                                </span>
-                                <div className="flex flex-col gap-[4px] pt-[4px]">
-                                  <p className="text-[12px] font-semibold tracking-[0.06em] text-[#496800] uppercase">
-                                    {item.tag}
-                                  </p>
-                                  <p className="text-[18px] leading-[28px] font-bold text-field lg:text-[20px]">
-                                    {item.question}
-                                  </p>
-                                </div>
+                              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#f0eee8] text-[13px] font-bold text-field sm:size-10 sm:text-[16px]">
+                                {item.index}
+                              </span>
+                              <div className="min-w-0 flex-1 flex flex-col gap-1 pt-0.5 sm:gap-[4px] sm:pt-1">
+                                <p className="text-[11px] font-semibold tracking-[0.06em] text-[#496800] uppercase sm:text-[12px]">
+                                  {item.tag}
+                                </p>
+                                <p className="text-[16px] leading-[24px] font-bold text-field sm:text-[18px] sm:leading-[28px] lg:text-[20px]">
+                                  {item.question}
+                                </p>
                               </div>
                               <span
                                 aria-hidden
-                                className={`flex size-[32px] shrink-0 items-center justify-center rounded-full bg-[#f0eee8] text-field transition-transform ${
+                                className={`mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full bg-[#f0eee8] text-sm text-field transition-transform sm:mt-0 sm:size-8 ${
                                   open ? 'rotate-180' : ''
                                 }`}
                               >
@@ -185,7 +188,7 @@ export function FaqPage() {
                             </button>
 
                             {open && item.answer ? (
-                              <div className="flex flex-col gap-[16px] px-[24px] pb-[32px] lg:px-[80px]">
+                              <div className="flex flex-col gap-[16px] px-4 pb-6 sm:px-6 sm:pb-8 lg:px-[80px]">
                                 {item.answer.split('\n\n').map((para) => (
                                   <p
                                     key={para.slice(0, 32)}

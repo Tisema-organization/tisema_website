@@ -823,43 +823,46 @@ function HeroCopy() {
   const petition = petitionUrl()
   const petitionExternal = petition.startsWith('http')
 
-  return (
-    <div
-      className="hero-copy absolute top-[calc(56px+0.5rem)] left-[5.55%] z-[2] flex w-[89%] max-w-[630px] flex-col gap-4 sm:gap-5 lg:top-1/2 lg:left-[6.48%] lg:w-[52%] lg:gap-10"
-      style={{
-        opacity: 'var(--hero-text-in, 0)',
-        transform:
-          'translateY(var(--hero-copy-shift, 0px)) translateX(calc((1 - var(--hero-text-in, 0)) * -40px))',
-        pointerEvents: 'none',
-      }}
-    >
-      <h1 className="max-w-[572px] font-serif text-[clamp(2rem,4.63vw,70px)] leading-[1.093] text-field">
-        <span>Declaring </span>
-        <span className="text-oxblood">Violence Against </span>
-        <span className="text-oxblood italic">Women and Girls </span>
-        <span>a National Crisis</span>
-      </h1>
-      <p className="max-w-[644px] text-[clamp(1rem,1.56vw,23.625px)] leading-[1.4444] font-normal text-field">
-        {HERO_SUBTITLE}
-      </p>
+  const revealStyle = {
+    opacity: 'var(--hero-text-in, 0)',
+    transform:
+      'translateY(var(--hero-copy-shift, 0px)) translateX(calc((1 - var(--hero-text-in, 0)) * -40px))',
+  } as const
 
-      <div className="pointer-events-auto flex flex-wrap items-start gap-3 sm:gap-6">
+  return (
+    <div className="hero-copy pointer-events-none absolute top-[calc(56px+0.5rem)] right-[5.55%] left-[5.55%] z-[2] flex max-w-[630px] flex-col gap-4 sm:gap-5 lg:top-1/2 lg:right-auto lg:left-[6.48%] lg:w-[52%] lg:max-w-none lg:gap-10">
+      <div className="min-w-0" style={revealStyle}>
+        <h1 className="max-w-[572px] font-serif text-[clamp(2rem,4.63vw,70px)] leading-[1.093] text-field">
+          <span>Declaring </span>
+          <span className="text-oxblood">Violence Against </span>
+          <span className="text-oxblood italic">Women and Girls </span>
+          <span>a National Crisis</span>
+        </h1>
+        <p className="mt-4 max-w-[644px] text-[clamp(1rem,1.56vw,23.625px)] leading-[1.4444] font-normal text-field sm:mt-5 lg:mt-0">
+          {HERO_SUBTITLE}
+        </p>
+      </div>
+
+      <div
+        className="pointer-events-auto flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-6"
+        style={revealStyle}
+      >
         <a
           href={petition}
           {...(petitionExternal
             ? { target: '_blank', rel: 'noopener noreferrer' }
             : {})}
-          className="flex w-full max-w-[224px] items-center justify-center rounded-[3.5px] bg-oxblood px-[28px] py-[8.75px] text-[13.78px] leading-[24.5px] font-semibold whitespace-nowrap text-lime transition-opacity hover:opacity-90 sm:w-auto"
+          className="box-border flex w-full max-w-full items-center justify-center rounded-[3.5px] bg-oxblood px-5 py-2.5 text-[13.78px] leading-[24.5px] font-semibold whitespace-nowrap text-lime transition-opacity hover:opacity-90 sm:w-auto sm:max-w-[224px] sm:px-[28px] sm:py-[8.75px]"
         >
           Take Action
         </a>
         <a
           href={DEMANDS_PAGE_HREF}
           onClick={(e) => clientNavigate(e, DEMANDS_PAGE_HREF, navigate)}
-          className="inline-flex items-center justify-center gap-[8.75px] rounded-[3.5px] border border-solid border-oxblood px-[28px] py-[8.75px] text-[15.75px] leading-[28px] font-semibold whitespace-nowrap text-oxblood transition-opacity hover:opacity-80"
+          className="box-border flex w-full max-w-full items-center justify-center gap-2 rounded-[3.5px] border border-solid border-oxblood px-5 py-2.5 text-center text-[14px] leading-[22px] font-semibold text-field transition-opacity hover:opacity-80 sm:w-auto sm:max-w-none sm:px-[28px] sm:py-[8.75px] sm:text-[15.75px] sm:leading-[28px] sm:whitespace-nowrap"
         >
-          Read the Demand
-          <span aria-hidden className="text-[18px] leading-none">
+          <span>Read the Demand</span>
+          <span aria-hidden className="shrink-0 text-[16px] leading-none sm:text-[18px]">
             ↗
           </span>
         </a>

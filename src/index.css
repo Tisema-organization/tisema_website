@@ -24,6 +24,7 @@ body,
 #root {
   margin: 0;
   min-height: 100%;
+  max-width: 100%;
   background: var(--color-paper);
 }
 
@@ -37,6 +38,7 @@ html::-webkit-scrollbar {
 }
 
 body {
+  overflow-x: clip;
   font-family: var(--font-sans);
   font-weight: 400;
   color: var(--color-oxblood);
@@ -128,6 +130,8 @@ body {
 */
 .hero-copy {
   --hero-copy-shift: 0px;
+  width: auto;
+  max-width: min(630px, 100%);
 }
 
 @media (min-width: 64rem) {
