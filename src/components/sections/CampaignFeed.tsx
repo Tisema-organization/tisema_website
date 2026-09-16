@@ -120,6 +120,9 @@ export function CampaignFeed() {
 
 function Post({ post, delay }: { post: FeedPost; delay: number }) {
   const initial = post.name.trim().charAt(0).toUpperCase() || 'U'
+  const [coverFailed, setCoverFailed] = useState(false)
+  const [avatarFailed, setAvatarFailed] = useState(false)
+  const showAvatar = Boolean(post.avatarSrc) && !avatarFailed
 
   return (
     <Reveal delay={delay}>
@@ -128,17 +131,33 @@ function Post({ post, delay }: { post: FeedPost; delay: number }) {
           href={post.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="relative w-full transition-opacity hover:opacity-90"
+          className="relative block w-full transition-opacity hover:opacity-90"
           aria-label={`View ${post.name}'s TikTok post`}
         >
-          <img
-            src={post.src}
-            alt=""
-            width={1080}
-            height={1350}
-            loading="lazy"
-            className="aspect-[403.958/472.5] w-full rounded-[16px] object-cover"
-          />
+          {coverFailed ? (
+            <div
+              className="flex aspect-[403.958/472.5] w-full items-center justify-center rounded-[16px] bg-oxblood"
+              aria-hidden
+            >
+              <img
+                src="/design/social-5.svg"
+                alt=""
+                width={48}
+                height={48}
+                className="opacity-90"
+              />
+            </div>
+          ) : (
+            <img
+              src={post.src}
+              alt=""
+              width={1080}
+              height={1350}
+              loading="lazy"
+              onError={() => setCoverFailed(true)}
+              className="aspect-[403.958/472.5] w-full rounded-[16px] object-cover"
+            />
+          )}
           <div className="absolute top-[15px] left-[16.5px] h-[33.069px] w-[32.365px]">
             <img
               src="/design/social-5.svg"
@@ -159,17 +178,18 @@ function Post({ post, delay }: { post: FeedPost; delay: number }) {
         <div className="flex w-full flex-col gap-[7px] px-[14px]">
           <div className="flex items-start justify-between gap-3">
             <div className="flex min-w-0 items-center gap-[7px]">
-              {post.avatarSrc ? (
+              {showAvatar ? (
                 <img
                   src={post.avatarSrc}
                   alt=""
                   width={31}
                   height={31}
+                  onError={() => setAvatarFailed(true)}
                   className="size-[30.625px] shrink-0 rounded-full object-cover"
                 />
               ) : (
                 <div className="flex size-[30.625px] shrink-0 items-center justify-center rounded-[20.417px] border-[0.263px] border-solid border-clay-highlight bg-oxblood p-[5.104px]">
-                  <p className="font-serif text-[10.719px] leading-normal text-field">
+                  <p className="font-serif text-[10.719px] leading-normal text-paper">
                     {initial}
                   </p>
                 </div>

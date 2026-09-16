@@ -63,7 +63,7 @@ function toFeedPost(item: TikTokItem): FeedPost | null {
     age: relativeAge(item.createTime),
     body,
     url: `https://www.tiktok.com/@${uniqueId}/${kind}/${id}`,
-    avatarSrc: item.author?.avatarThumb ?? undefined,
+    avatarSrc: item.author?.avatarThumb?.trim() || undefined,
     createdAt: item.createTime,
   }
 }
