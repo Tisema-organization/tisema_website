@@ -13,6 +13,95 @@ import { SiteNav } from './SiteNav'
 import { SiteFooter } from './sections/SiteFooter'
 import { Reveal } from './motion'
 
+const EMPHASIZED_LEADS = [
+  'Widespread.',
+  'Serious and irreversible.',
+  'Why the distinction matters.',
+  'Therefore, in this context the term gender-based describes the cause, not the number.',
+]
+
+function AnswerLine({ line, bullet = false }: { line: string; bullet?: boolean }) {
+  const colon = line.indexOf(':')
+  const colonLead = colon > 0 && colon < 70 ? line.slice(0, colon + 1) : ''
+  const sentenceLead = EMPHASIZED_LEADS.find((lead) => line.startsWith(lead))
+  const firstStop = line.indexOf('.')
+  const bulletLead =
+    bullet && firstStop > 0 && firstStop < 36
+      ? line.slice(0, firstStop + 1)
+      : ''
+  const lead = colonLead || sentenceLead || bulletLead || ''
+
+  if (line.startsWith('Source:') || line.startsWith('Sources:')) {
+    return <span className="text-[14px] italic text-oxblood/70">{line}</span>
+  }
+
+  if (!lead) return <>{line}</>
+
+  return (
+    <>
+      <strong className="font-bold text-field">
+        {bulletLead ? lead.slice(0, -1) + ':' : sentenceLead ? lead.slice(0, -1) + ';' : lead}
+      </strong>
+      {line.slice(lead.length)}
+    </>
+  )
+}
+
+function AnswerContent({ answer }: { answer: string }) {
+  const blocks = answer.split(/\n\s*\n/)
+
+  return blocks.map((block, blockIndex) => {
+    const lines = block.split('\n').map((line) => line.trim()).filter(Boolean)
+    const isList = lines.every((line) => /^[●·•]\s*/.test(line))
+    const isNumberedList = lines.every((line) => /^\d+\.\s+/.test(line))
+
+    if (isList || isNumberedList) {
+      return (
+        <ul
+          key={`${blockIndex}-${block.slice(0, 24)}`}
+          className={`flex flex-col gap-2 pl-6 text-[16px] leading-[30px] tracking-[0.02em] text-[#4f4d4d] ${
+            isNumberedList ? 'list-decimal' : 'list-disc'
+          }`}
+        >
+          {lines.map((line) => {
+            const content = line.replace(/^(?:[●·•]\s*|\d+\.\s+)/, '')
+            return (
+              <li key={line.slice(0, 48)}>
+                <AnswerLine line={content} bullet />
+              </li>
+            )
+          })}
+        </ul>
+      )
+    }
+
+    return (
+      <div
+        key={`${blockIndex}-${block.slice(0, 24)}`}
+        className="flex flex-col gap-2 text-[16px] leading-[30px] tracking-[0.02em] text-[#4f4d4d]"
+      >
+        {lines.map((line) => {
+          const bullet = /^[●·•]\s*/.test(line)
+          const content = line.replace(/^[●·•]\s*/, '')
+
+          return bullet ? (
+            <div key={line.slice(0, 48)} className="flex gap-3 pl-1">
+              <span aria-hidden className="shrink-0 text-field">•</span>
+              <p>
+                <AnswerLine line={content} bullet />
+              </p>
+            </div>
+          ) : (
+            <p key={line.slice(0, 48)}>
+              <AnswerLine line={line} />
+            </p>
+          )
+        })}
+      </div>
+    )
+  })
+}
+
 export function FaqPage() {
   const { navigate } = useRouter()
   const [topic, setTopic] = useState<FaqTopic>('All')
@@ -28,7 +117,7 @@ export function FaqPage() {
         ?.map((c) => `${c.title} ${c.body}`)
         .join(' ')
       const hay =
-        `${item.question} ${item.tag} ${item.answer ?? ''} ${brand ?? ''}`.toLowerCase()
+        `${item.question} ${item.tag ?? ''} ${item.answer ?? ''} ${brand ?? ''}`.toLowerCase()
       return hay.includes(q)
     })
   }, [topic, query])
@@ -170,9 +259,11 @@ export function FaqPage() {
                                 {item.index}
                               </span>
                               <div className="min-w-0 flex-1 flex flex-col gap-1 pt-0.5 sm:gap-[4px] sm:pt-1">
-                                <p className="text-[11px] font-semibold tracking-[0.06em] text-[#496800] uppercase sm:text-[12px]">
-                                  {item.tag}
-                                </p>
+                                {item.tag ? (
+                                  <p className="text-[11px] font-semibold tracking-[0.06em] text-[#496800] uppercase sm:text-[12px]">
+                                    {item.tag}
+                                  </p>
+                                ) : null}
                                 <p className="text-[16px] leading-[24px] font-bold text-field sm:text-[18px] sm:leading-[28px] lg:text-[20px]">
                                   {item.question}
                                 </p>
@@ -189,14 +280,7 @@ export function FaqPage() {
 
                             {open && item.answer ? (
                               <div className="flex flex-col gap-[16px] px-4 pb-6 sm:px-6 sm:pb-8 lg:px-[80px]">
-                                {item.answer.split('\n\n').map((para) => (
-                                  <p
-                                    key={para.slice(0, 32)}
-                                    className="text-[16px] leading-[30px] tracking-[0.02em] text-[#4f4d4d]"
-                                  >
-                                    {para}
-                                  </p>
-                                ))}
+                                <AnswerContent answer={item.answer} />
 
                                 {item.brandCards ? (
                                   <div className="grid gap-[16px] sm:grid-cols-2">
