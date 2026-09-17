@@ -24,7 +24,7 @@ export const NAV_LINKS: NavLink[] = [
   { label: 'Timeline', href: '#timeline' },
   { label: 'Cases', href: '#cases' },
   { label: 'Campaign Feed', href: '#campaign-feed' },
-  { label: 'FAQ', href: FAQ_PAGE_HREF, highlight: true },
+  { label: 'FAQ', href: FAQ_PAGE_HREF },
 ]
 
 /** Hash links respect `base`; app routes stay root-relative. */
