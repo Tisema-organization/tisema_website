@@ -51,23 +51,27 @@ export type StatItem = {
   /** Trails the counted number, e.g. the "K" in "300K". */
   suffix?: string
   body: string
+  source: string
 }
 
 /** Figures from About Tisema (vF 0209) — EDHS 2024–25 and crisis brief. */
 export const STATS: StatItem[] = [
   {
     figure: '1 in 3',
-    body: 'Ever-married Ethiopian women who have experienced violence from a partner (EDHS 2024–25).',
+    body: '31.4% of ever-married Ethiopian women experience intimate partner violence.',
+    source: 'Ethiopian Demographic and Health Survey (EDHS 2024–25), ESS & ICF.',
   },
   {
     figure: '45%',
     countTo: 45,
     suffix: '%',
-    body: 'Increase in women killed in about four years (Addis Ababa & Dire Dawa).',
+    body: 'Increase in female homicide victims over ~4 years (Addis Ababa & Dire Dawa).',
+    source: 'UNODC & UN Women Femicide Statistical Framework / Regional Homicide Data.',
   },
   {
     figure: '7.2M',
-    body: 'People needing protection from gender-based violence — up from 5.8 million in two years.',
+    body: 'People requiring GBV protection—up from 5.8M in two years.',
+    source: 'UNFPA Ethiopia Humanitarian Response Plan & UN OCHA Needs Overview.',
   },
 ]
 
@@ -189,7 +193,7 @@ export const GALLERY_INTRO =
 export const FEED_INTRO =
   "Every case page brings together what's being said across social media; posts, comments, and shares from every platform; gathered in one place so no voice speaking up for these women gets lost or scattered."
 /** The one non-social channel the footer blurb points at. */
-export const CONTACT_EMAIL = 'official@tisemaethiopia.com'
+export const CONTACT_EMAIL = 'info@tisemaethiopia.com'
 
 export const FOOTER_BLURB =
   'Have information, a story to share, or want to support this cause? Reach out through any of the channels below.'

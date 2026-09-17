@@ -151,6 +151,24 @@ export function clientNavigate(
   if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
     return false
   }
+
+  const target = new URL(href, window.location.origin)
+  const sameLocation =
+    target.origin === window.location.origin &&
+    normalizePath(target.pathname) === normalizePath(window.location.pathname) &&
+    target.search === window.location.search &&
+    target.hash === window.location.hash
+
+  if (sameLocation) {
+    event.preventDefault()
+    if (target.hash) {
+      document.querySelector(target.hash)?.scrollIntoView()
+    } else {
+      window.scrollTo(0, 0)
+    }
+    return true
+  }
+
   if (!shouldClientNavigate(href)) return false
 
   event.preventDefault()
