@@ -9,7 +9,7 @@ export function Stat() {
           className="mx-auto flex w-full max-w-[1157.625px] flex-col gap-10 text-center text-paper sm:flex-row sm:items-start sm:gap-[35px]"
           gap={0.12}
         >
-          {STATS.map((stat) => (
+          {STATS.map((stat, index) => (
             <Item
               key={stat.figure}
               className="flex flex-1 flex-col items-center gap-[18px] sm:pr-[21px]"
@@ -23,9 +23,16 @@ export function Stat() {
               </p>
               <div className="flex max-w-[340px] flex-col gap-3">
                 <p className="text-[15.75px] leading-[27px]">{stat.body}</p>
-                <p className="text-[12px] leading-[20px] text-paper/70">
-                  <span className="font-semibold text-paper/90">Source:</span>{' '}
-                  {stat.source}
+                <p className="text-center text-[12px] leading-[20px] text-paper/70">
+                  <sup className="mr-1 font-semibold text-lime">[{index + 1}]</sup>
+                  <a
+                    href={stat.sourceHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline decoration-paper/30 underline-offset-2 transition-colors hover:text-paper hover:decoration-paper"
+                  >
+                    {stat.source}
+                  </a>
                 </p>
               </div>
             </Item>

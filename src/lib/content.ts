@@ -52,6 +52,7 @@ export type StatItem = {
   suffix?: string
   body: string
   source: string
+  sourceHref: string
 }
 
 /** Figures from About Tisema (vF 0209) — EDHS 2024–25 and crisis brief. */
@@ -59,19 +60,28 @@ export const STATS: StatItem[] = [
   {
     figure: '1 in 3',
     body: '31.4% of ever-married Ethiopian women experience intimate partner violence.',
-    source: 'Ethiopian Demographic and Health Survey (EDHS 2024–25), ESS & ICF.',
+    source:
+      'Ethiopian Statistical Service (ESS) & ICF. (2026). Ethiopia Demographic and Health Survey 2024–25: Key Indicators Report, Table 18.',
+    sourceHref:
+      'https://ess.gov.et/wp-content/uploads/2026/01/edhs-2024-25-kir-01172026.pdf',
   },
   {
     figure: '45%',
     countTo: 45,
     suffix: '%',
     body: 'Increase in female homicide victims over ~4 years (Addis Ababa & Dire Dawa).',
-    source: 'UNODC & UN Women Femicide Statistical Framework / Regional Homicide Data.',
+    source:
+      'Tisema calculation from Addis Ababa and Dire Dawa homicide records. Classification methodology: UNODC & UN Women. (2022). Statistical Framework for Measuring the Gender-Related Killing of Women and Girls.',
+    sourceHref:
+      'https://www.unodc.org/documents/data-and-analysis/statistics/Statistical_framework_femicide_2022.pdf',
   },
   {
     figure: '7.2M',
     body: 'People requiring GBV protection—up from 5.8M in two years.',
-    source: 'UNFPA Ethiopia Humanitarian Response Plan & UN OCHA Needs Overview.',
+    source:
+      'ACAPS. (2025, July 15). Ethiopia: Gender-Based Violence Secondary Data Review Report 2024, p. 2 (citing OCHA, 2024, and UNFPA, 2024).',
+    sourceHref:
+      'https://www.acaps.org/fileadmin/Data_Product/Main_media/20250715_ACAPS_Ethiopia_-_Gender_Based__violence_secondary_data_review.pdf',
   },
 ]
 
