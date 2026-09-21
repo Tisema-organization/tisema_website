@@ -5,7 +5,7 @@ import {
   FOOTER_BLURB,
   FOOTER_COPYRIGHT,
   FOOTER_CTA,
-  FOOTER_HELP,
+  // FOOTER_HELP,
   FOOTER_LEGAL,
   FOOTER_LINKS,
   FOOTER_SOCIALS,
@@ -139,6 +139,8 @@ export function SiteFooter({ base = '' }: { base?: string } = {}) {
               </ul>
             </Item>
 
+            {/* Get Help is temporarily hidden until its phone numbers and
+                supporting information have been verified.
             <Item className="flex w-full flex-col gap-[12px] rounded-[16px] border border-white/10 bg-white/5 p-[25px] lg:w-[427px]">
               <div className="flex items-center justify-between gap-[12px]">
                 <p className="text-[12px] font-bold tracking-[0.12em] text-lime uppercase">
@@ -191,6 +193,7 @@ export function SiteFooter({ base = '' }: { base?: string } = {}) {
                 ))}
               </ul>
             </Item>
+            */}
           </Stagger>
 
           <div className="flex flex-col gap-[12px] border-t border-white/10 pt-[24px] sm:flex-row sm:items-center sm:justify-between lg:px-[118px]">
