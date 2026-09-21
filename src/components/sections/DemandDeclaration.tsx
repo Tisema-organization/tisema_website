@@ -1,12 +1,8 @@
 import { DEMANDS, NOT_ASKING_BODY, NOT_ASKING_TITLE } from '../../lib/content'
-import { DEMANDS_PAGE_HREF } from '../../lib/demands'
-import { clientNavigate, useRouter } from '../../lib/router'
 import { Item, Reveal, Stagger } from '../motion'
 import { Eyebrow } from './primitives'
 
 export function DemandDeclaration() {
-  const { navigate } = useRouter()
-
   return (
     <section className="w-full bg-oxblood py-[96px] lg:py-[120px]">
       <div className="section-shell flex flex-col items-center gap-[56px]">
@@ -37,6 +33,7 @@ export function DemandDeclaration() {
             ))}
           </Stagger>
 
+          {/* Temporarily disabled with the standalone Demands page.
           <Reveal className="flex justify-center" delay={0.2}>
             <a
               href={DEMANDS_PAGE_HREF}
@@ -47,6 +44,8 @@ export function DemandDeclaration() {
               <span aria-hidden>↗</span>
             </a>
           </Reveal>
+          */}
+
         </div>
 
         <Reveal className="flex w-full max-w-[1192px] flex-col gap-[21px] border-[0.875px] border-solid border-clay-flat bg-oxblood/15 p-[28px]">

@@ -284,18 +284,20 @@ export const FOOTER_CTA = 'Help Make a Difference Today.'
 /** Primary quick links shown in the footer column (Figma 208:473). */
 export const FOOTER_LINKS = [
   { label: 'Home', href: '#home' },
-  { label: 'The Demand & Declaration', href: '/demand' },
-  { label: 'The 12 Demands', href: '/demands' },
+  // Temporarily disabled with the standalone Demand and Terms routes.
+  // { label: 'The Demand & Declaration', href: '/demand' },
+  // { label: 'The 12 Demands', href: '/demands' },
   { label: 'FAQ', href: '/faq' },
   { label: 'Emergency Resources', href: '/resources' },
-  { label: 'Terms and Conditions', href: '/terms' },
+  // { label: 'Terms and Conditions', href: '/terms' },
 ] as const
 
 export const FOOTER_COPYRIGHT = '© 2026 #Tisema. All rights reserved.'
 
-export const FOOTER_LEGAL = [
-  { label: 'Privacy Policy', href: '/terms' },
-] as const
+// Temporarily disabled with the Terms route.
+// export const FOOTER_LEGAL = [
+//   { label: 'Privacy Policy', href: '/terms' },
+// ] as const
 
 export const FOOTER_HELP = {
   title: 'GET HELP',

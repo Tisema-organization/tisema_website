@@ -11,9 +11,9 @@ import {
 export type AppRoute =
   | 'landing'
   | 'gallery'
-  | 'terms'
-  | 'demand'
-  | 'demands'
+  // | 'terms'
+  // | 'demand'
+  // | 'demands'
   | 'faq'
   | 'resources'
 
@@ -21,18 +21,18 @@ const SPA_PATHS = new Set([
   '/',
   '/cases',
   '/gallery',
-  '/terms',
-  '/demand',
-  '/demands',
+  // '/terms',
+  // '/demand',
+  // '/demands',
   '/faq',
   '/resources',
 ])
 
 const SCROLL_TOP_ROUTES = new Set<AppRoute>([
   'gallery',
-  'terms',
-  'demand',
-  'demands',
+  // 'terms',
+  // 'demand',
+  // 'demands',
   'faq',
   'resources',
 ])
@@ -42,9 +42,9 @@ function normalizePath(pathname: string) {
   if (path.endsWith('/index.html') || path.endsWith('/index.htm')) return '/'
   if (path.endsWith('/cases.html')) return '/cases'
   if (path.endsWith('/gallery.html')) return '/gallery'
-  if (path.endsWith('/terms.html')) return '/terms'
-  if (path.endsWith('/demand.html')) return '/demand'
-  if (path.endsWith('/demands.html')) return '/demands'
+  // if (path.endsWith('/terms.html')) return '/terms'
+  // if (path.endsWith('/demand.html')) return '/demand'
+  // if (path.endsWith('/demands.html')) return '/demands'
   if (path.endsWith('/faq.html')) return '/faq'
   if (path.endsWith('/resources.html')) return '/resources'
   return path
@@ -57,9 +57,9 @@ function isSpaPath(pathname: string) {
 export function getAppRoute(pathname = window.location.pathname): AppRoute {
   const path = normalizePath(pathname)
   if (path === '/cases' || path === '/gallery') return 'gallery'
-  if (path === '/terms') return 'terms'
-  if (path === '/demand') return 'demand'
-  if (path === '/demands') return 'demands'
+  // if (path === '/terms') return 'terms'
+  // if (path === '/demand') return 'demand'
+  // if (path === '/demands') return 'demands'
   if (path === '/faq') return 'faq'
   if (path === '/resources') return 'resources'
   return 'landing'

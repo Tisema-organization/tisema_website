@@ -6,7 +6,6 @@ import {
   FOOTER_COPYRIGHT,
   FOOTER_CTA,
   // FOOTER_HELP,
-  FOOTER_LEGAL,
   FOOTER_LINKS,
   FOOTER_SOCIALS,
   petitionUrl,
@@ -182,19 +181,6 @@ export function SiteFooter({ base = '' }: { base?: string } = {}) {
             <p className="text-[12px] leading-[16px] text-[#a8a29e]">
               {FOOTER_COPYRIGHT}
             </p>
-            <ul className="flex flex-wrap gap-[16px]">
-              {FOOTER_LEGAL.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    onClick={(e) => clientNavigate(e, link.href, navigate)}
-                    className="text-[12px] leading-[16px] text-[#a8a29e] transition-opacity hover:opacity-80"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
       </div>

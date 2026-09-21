@@ -10,7 +10,6 @@ import {
 } from '../lib/assets'
 import { buildHeroCells } from '../lib/victims'
 import { HERO_SUBTITLE, petitionUrl } from '../lib/content'
-import { DEMANDS_PAGE_HREF } from '../lib/demands'
 import {
   HERO_BEGIN_EVENT,
   markHeroIntroSeen,
@@ -18,7 +17,6 @@ import {
   shouldSkipHeroIntro,
   type HeroIntroState,
 } from '../lib/heroSession'
-import { clientNavigate, useRouter } from '../lib/router'
 
 /** Odd max — keep growing through the hand phase so the mosaic never sits still. */
 const MAX_SIDE = 17
@@ -819,7 +817,6 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
 
 /** The settled Home headline — slides in from the left as the hand clears it. */
 function HeroCopy() {
-  const { navigate } = useRouter()
   const petition = petitionUrl()
   const petitionExternal = petition.startsWith('http')
 
@@ -852,16 +849,16 @@ function HeroCopy() {
         >
           Take Action
         </a>
+        {/* Temporarily disabled with the standalone Demands page.
         <a
           href={DEMANDS_PAGE_HREF}
           onClick={(e) => clientNavigate(e, DEMANDS_PAGE_HREF, navigate)}
           className="inline-flex shrink-0 items-center justify-center gap-2 rounded-[3.5px] border border-solid border-oxblood bg-lime px-5 py-2.5 text-[14px] leading-[22px] font-semibold whitespace-nowrap text-oxblood transition-opacity hover:opacity-80 sm:gap-[8.75px] sm:px-[28px] sm:py-[8.75px] sm:text-[15.75px] sm:leading-[28px]"
         >
           Read the Demand
-          <span aria-hidden className="text-[18px] leading-none">
-            ↗
-          </span>
+          <span aria-hidden className="text-[18px] leading-none">↗</span>
         </a>
+        */}
       </div>
     </div>
   )
