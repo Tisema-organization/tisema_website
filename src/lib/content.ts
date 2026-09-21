@@ -302,23 +302,23 @@ export const FOOTER_HELP = {
   helplineLabel: '24/7 EMERGENCY & CRISIS HELPLINE',
   tollFree: 'Toll-Free: 1111',
   tollFreeTel: '1111',
-  phone: '+251 11 667 8540',
-  phoneTel: '+251116678540',
+  phone: '',
+  phoneTel: '',
   lines: [
     {
       label: 'Survivor Legal Aid Clinic',
-      phone: '+251 11 545 789',
-      tel: '+25111545789',
+      phone: '',
+      tel: '',
     },
     {
       label: 'Confidential Psychological Support',
-      phone: '+251 11 545 789',
-      tel: '+25111545789',
+      phone: '',
+      tel: '',
     },
     {
       label: 'Safe House Emergency Intake & Shelter Dispatch',
-      phone: '+251 11 545 789',
-      tel: '+25111545789',
+      phone: '',
+      tel: '',
     },
   ],
 } as const
