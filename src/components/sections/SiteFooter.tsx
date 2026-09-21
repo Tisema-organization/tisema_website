@@ -12,6 +12,7 @@ import {
   petitionUrl,
 } from '../../lib/content'
 import { handleHomeNavClick } from '../../lib/heroSession'
+import { RESOURCES_PAGE_HREF } from '../../lib/resources'
 import { clientNavigate, useRouter } from '../../lib/router'
 
 /**
@@ -139,61 +140,42 @@ export function SiteFooter({ base = '' }: { base?: string } = {}) {
               </ul>
             </Item>
 
-            {/* Get Help is temporarily hidden until its phone numbers and
-                supporting information have been verified.
-            <Item className="flex w-full flex-col gap-[12px] rounded-[16px] border border-white/10 bg-white/5 p-[25px] lg:w-[427px]">
-              <div className="flex items-center justify-between gap-[12px]">
-                <p className="text-[12px] font-bold tracking-[0.12em] text-lime uppercase">
-                  {FOOTER_HELP.title}
+            <Item className="flex w-full flex-col gap-[14px] rounded-[16px] border border-white/10 bg-white/5 p-[20px] sm:p-[24px] lg:w-[427px]">
+              <div>
+                <p className="font-serif text-[18px] leading-[24px] text-paper lg:text-[21px]">
+                  Emergency Contacts
                 </p>
-                <span className="rounded-full border border-lime/30 bg-lime/20 px-[9px] py-[3px] text-[10px] font-bold tracking-[0.05em] text-lime uppercase">
-                  {FOOTER_HELP.badge}
-                </span>
+                <p className="mt-1 text-[11px] leading-[16px] text-body-rose">
+                  ለአስቸኳይ ጊዜ የእርዳታ ስልክ ቁጥሮች
+                </p>
               </div>
 
-              <div className="flex flex-col gap-[4px] rounded-[12px] border border-lime/40 bg-oxblood/80 p-[13px]">
-                <p className="text-[11px] tracking-[0.05em] text-[#d6d3d1] uppercase">
-                  {FOOTER_HELP.helplineLabel}
-                </p>
-                <div className="flex flex-wrap items-center gap-[8px]">
-                  <a
-                    href={`tel:${FOOTER_HELP.tollFreeTel}`}
-                    className="font-serif text-[16px] leading-[24px] text-lime"
-                  >
-                    {FOOTER_HELP.tollFree}
+              <div className="flex flex-col gap-[7px] rounded-[10px] bg-field/20 px-[16px] py-[13px]">
+                <div className="flex items-center gap-2 text-[13px] leading-[18px]">
+                  <span className="font-semibold text-paper">Police</span>
+                  <span className="text-body-rose" aria-hidden>•</span>
+                  <a href="tel:991" className="font-bold text-lime hover:underline">
+                    991
                   </a>
-                  <span className="text-[12px] text-[#a8a29e]" aria-hidden>
-                    •
-                  </span>
-                  <a
-                    href={`tel:${FOOTER_HELP.phoneTel}`}
-                    className="font-mono text-[12px] leading-[16px] text-[#e7e5e4]"
-                  >
-                    {FOOTER_HELP.phone}
+                </div>
+                <div className="flex items-center gap-2 text-[13px] leading-[18px]">
+                  <span className="font-semibold text-paper">EWLA</span>
+                  <span className="text-body-rose" aria-hidden>•</span>
+                  <a href="tel:7711" className="font-bold text-lime hover:underline">
+                    7711
                   </a>
                 </div>
               </div>
 
-              <ul className="flex flex-col gap-[8px] pt-[4px]">
-                {FOOTER_HELP.lines.map((line) => (
-                  <li
-                    key={line.label}
-                    className="flex items-start justify-between gap-[12px]"
-                  >
-                    <span className="text-[12px] leading-[16px] text-[#d6d3d1]">
-                      {line.label}
-                    </span>
-                    <a
-                      href={`tel:${line.tel}`}
-                      className="shrink-0 text-[12px] leading-[16px] whitespace-nowrap text-lime"
-                    >
-                      {line.phone}
-                    </a>
-                  </li>
-                ))}
-              </ul>
+              <a
+                href={RESOURCES_PAGE_HREF}
+                onClick={(e) => clientNavigate(e, RESOURCES_PAGE_HREF, navigate)}
+                className="flex items-center justify-center gap-2 self-end rounded-[3px] border border-lime px-5 py-2 text-[12px] font-bold text-lime transition-colors hover:bg-lime hover:text-field"
+              >
+                View All Contacts
+                <span aria-hidden>↗</span>
+              </a>
             </Item>
-            */}
           </Stagger>
 
           <div className="flex flex-col gap-[12px] border-t border-white/10 pt-[24px] sm:flex-row sm:items-center sm:justify-between lg:px-[118px]">

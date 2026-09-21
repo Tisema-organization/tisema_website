@@ -287,6 +287,7 @@ export const FOOTER_LINKS = [
   { label: 'The Demand & Declaration', href: '/demand' },
   { label: 'The 12 Demands', href: '/demands' },
   { label: 'FAQ', href: '/faq' },
+  { label: 'Emergency Resources', href: '/resources' },
   { label: 'Terms and Conditions', href: '/terms' },
 ] as const
 

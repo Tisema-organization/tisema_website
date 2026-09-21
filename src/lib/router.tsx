@@ -15,6 +15,7 @@ export type AppRoute =
   | 'demand'
   | 'demands'
   | 'faq'
+  | 'resources'
 
 const SPA_PATHS = new Set([
   '/',
@@ -24,6 +25,7 @@ const SPA_PATHS = new Set([
   '/demand',
   '/demands',
   '/faq',
+  '/resources',
 ])
 
 const SCROLL_TOP_ROUTES = new Set<AppRoute>([
@@ -32,6 +34,7 @@ const SCROLL_TOP_ROUTES = new Set<AppRoute>([
   'demand',
   'demands',
   'faq',
+  'resources',
 ])
 
 function normalizePath(pathname: string) {
@@ -43,6 +46,7 @@ function normalizePath(pathname: string) {
   if (path.endsWith('/demand.html')) return '/demand'
   if (path.endsWith('/demands.html')) return '/demands'
   if (path.endsWith('/faq.html')) return '/faq'
+  if (path.endsWith('/resources.html')) return '/resources'
   return path
 }
 
@@ -57,6 +61,7 @@ export function getAppRoute(pathname = window.location.pathname): AppRoute {
   if (path === '/demand') return 'demand'
   if (path === '/demands') return 'demands'
   if (path === '/faq') return 'faq'
+  if (path === '/resources') return 'resources'
   return 'landing'
 }
 
