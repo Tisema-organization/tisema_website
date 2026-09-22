@@ -78,7 +78,7 @@ const OPEN_SETTLE = 0.24
  * right before the cutout (densify leg was fast, cutout leg slow), which read
  * as a stall and a wobble as the grid and mask fought each other.
  */
-const CINEMATIC_MS = 8000
+const CINEMATIC_MS = 4500
 /** Hero scrollP reaches 1 here; handoff starts earlier so the join is continuous. */
 const CINEMATIC_HERO_END = 0.78
 const CINEMATIC_HANDOFF_START = 0.64
