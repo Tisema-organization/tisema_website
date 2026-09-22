@@ -828,13 +828,17 @@ function HeroCopy() {
       }}
     >
       <h1 className="max-w-[572px] font-serif text-[clamp(2rem,4.63vw,70px)] leading-[1.093] text-field">
-        <span>Declaring </span>
+        <span>Declare </span>
         <span className="text-oxblood">Violence Against </span>
         <span className="text-oxblood italic">Women and Girls </span>
-        <span>a National Crisis</span>
+        <span>a National Crisis in Ethiopia</span>
       </h1>
       <p className="max-w-[644px] text-[clamp(1rem,1.56vw,23.625px)] leading-[1.4444] font-normal text-field">
-        {HERO_SUBTITLE}
+        <>
+          <strong>Welcome to the #ትሰማ Movement!</strong>
+          <br />
+          We are a women-led, independent, and nonpartisan movement standing together against violence against women and girls in Ethiopia.
+        </>
       </p>
 
       <div className="pointer-events-auto relative z-20 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:gap-6">
@@ -845,7 +849,7 @@ function HeroCopy() {
             : {})}
           className="inline-flex shrink-0 items-center justify-center rounded-[3.5px] bg-oxblood px-5 py-2.5 text-[13.78px] leading-[24.5px] font-semibold whitespace-nowrap text-paper transition-opacity hover:opacity-90 sm:px-[28px] sm:py-[8.75px] sm:text-lime"
         >
-          Take Action
+          Take Action: Sign the Petition
         </a>
         {/* Temporarily disabled with the standalone Demands page.
         <a
