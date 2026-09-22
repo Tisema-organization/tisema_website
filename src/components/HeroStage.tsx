@@ -674,21 +674,19 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
         frameId = requestAnimationFrame(tickSettled)
       })
     } else {
-      setIntroState('waiting')
-      lockScroll()
-      layoutShell()
-      setPaperMaskSize(maskOversizePct)
-      setPaperMaskPosition(MASK_POS_START_X, MASK_POS_START_Y)
-      window.scrollTo(0, 0)
-      apply(0, 0, 0)
+  // Start the homepage cinematic automatically on first visit.
+  // No click, scroll, touch, or "Begin" action is required.
+  setIntroState('waiting')
+  lockScroll()
+  layoutShell()
+  setPaperMaskSize(maskOversizePct)
+  setPaperMaskPosition(MASK_POS_START_X, MASK_POS_START_Y)
+  window.scrollTo(0, 0)
+  apply(0, 0, 0)
 
-      window.addEventListener(HERO_BEGIN_EVENT, onBeginEvent)
-      sticky.addEventListener('pointerup', onPointerUp)
-      window.addEventListener('wheel', onWheel, { passive: false })
-      window.addEventListener('touchstart', onTouchStart, { passive: true })
-      window.addEventListener('touchmove', onTouchMove, { passive: false })
-    }
-
+  startCinematic()
+}
+    
     window.addEventListener('resize', layoutShell, { passive: true })
 
     if (import.meta.env.DEV) {
