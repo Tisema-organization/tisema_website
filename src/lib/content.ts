@@ -85,25 +85,21 @@ export const STATS: StatItem[] = [
   },
 ]
 
-export const ABOUT_EYEBROW = 'The Ask'
+export const ABOUT_INTRO = [
+  'Tisema (ትሰማ) means “let her be heard.”',
+  'Tisema is a public advocacy campaign born out of collective grief at the violence women and girls in Ethiopia are forced to live with. It began as a call for justice and accountability following the killings of individual women and girls whose names entered public conversation.',
+  'Today, Tisema is a public demand to recognize these deaths and acts of violence as part of a broader pattern of violence and miscarriage of justice.',
+] as const
+
+export const ABOUT_EYEBROW = 'We are calling on the Ethiopian government'
 
 export const ASK_LEAD =
-  'We demand that violence against women and girls, including femicide and sexual violence, be declared a National Crisis requiring a '
+  'to formally declare violence against women and girls, including femicide and sexual violence, a National Crisis requiring a '
 export const ASK_EMPHASIS = 'whole-of-government emergency response.'
 
-export const WHOLE_OF_GOVERNMENT = [
-  {
-    title: 'Coordination Above Line Ministries',
-    body: ' A coordinating body ranked equal to or above line ministries so it can compel cooperation across Justice, Health, Police, Education, and Finance.',
-  },
-  {
-    title: 'Dedicated Budgets & Targets',
-    body: 'Each ministry carries its own outcome targets and dedicated budget line, written into its own main plan rather than parked in a gender unit.',
-  },
-  {
-    title: 'Regional & Woreda Localization',
-    body: 'Structure replicated at regional and woreda levels where policing, health, and justice administration are physically delivered.',
-  },
+export const ABOUT_OUTRO = [
+  'Tisema is organized by volunteers and endorsed by a diverse group of individual advocates and women’s rights organizations in Ethiopia. It is nonpartisan and has no political or party affiliation. Our demand is addressed to whoever holds executive office.',
+  'This is not a single campaign moment. Tisema is a framework for sustained public pressure, accountability and solidarity for as long as it takes to make Ethiopia safer for women and girls.',
 ] as const
 
 export const WHO_CAN_DECLARE_INTRO_QUOTE = '“National crisis"'
@@ -112,28 +108,14 @@ export const WHO_CAN_DECLARE_INTRO_REST =
 
 export const AUTHORITIES = [
   {
-    due: 'Due 28 Aug 2026',
     title: 'Prime Minister',
-    body: 'Chief Executive and Chairman of the Council (Art. 74(1)); supervises the federal administration and takes corrective measures (Art. 74(8)). Highest executive power is vested jointly in the PM and the Council (Art. 72(1)).',
-    verdict: 'Makes the declaration. Can act alone.',
+    body: 'The National Crisis Response Council would be chaired by the Prime Minister, with a delivery unit and multi-ministry coordination.',
+    verdict: 'Provides executive leadership and ownership of the response.',
   },
   {
-    due: 'Due 28 Aug 2026',
     title: 'Council of Ministers',
-    body: 'Decides the organisational structure of ministries and other organs; coordinates them and provides leadership (Art. 77(2)); formulates social policies and strategies (Art. 77(6)); draws up the budget (Art. 77(3)).',
-    verdict: 'Creates the structure and the budget line.',
-  },
-  {
-    due: 'Due 28 Aug 2026',
-    title: 'Deputy Prime Minister',
-    body: 'Carries out responsibilities entrusted by the Prime Minister (Art. 75(1)(a)).',
-    verdict: 'Can chair the coordinating body.',
-  },
-  {
-    due: 'Due 28 Aug 2026',
-    title: 'Ministry of Women and Social Affairs',
-    body: 'Issues directives within its own sector only. Holds no authority over Justice, Health, Police, Education or Finance, which sit at equal rank.',
-    verdict: 'Cannot deliver this ask alone.',
+    body: 'The Tisema demand is addressed to the Council of Ministers together with the Prime Minister.',
+    verdict: 'Part of the executive response Tisema is calling for.',
   },
 ] as const
 
@@ -173,29 +155,54 @@ export type TimelineEntry = {
 export const TIMELINE: TimelineEntry[] = [
   {
     date: 'August 2023',
-    title: 'Brutal Crime Sparks Initial Local Mobilization',
-    body: 'Seven-year-old Heaven Awot is killed in Bahir Dar. Local rights groups begin tracking the legal process as the perpetrator appeals for sentence reductions.',
+    title: 'Heaven Awot — A Case That Sparked Public Outrage',
+    body: 'Seven-year-old Heaven Awot was sexually assaulted and killed in Bahir Dar. Her landlord, Getnet Baye, was convicted and sentenced to 25 years in prison. The sentence and subsequent legal proceedings sparked widespread outrage and helped give rise to #JusticeForHeaven, as women and advocates demanded justice and stronger accountability.',
   },
   {
-    date: 'Early 2024',
-    title: 'Sentence Reduction Ignites Online Petition',
-    body: "News spreads that Getnet Baye's sentence for Heaven's murder was reduced from 25 to 21 years. Digital campaigns under #JusticeForHeaven take off, demanding judicial accountability and stricter sentencing for child abuse and femicide.",
+    date: 'August 19, 2023',
+    title: 'Zewdu Haftu — Killed During Ashenda',
+    body: 'Thirty-two-year-old Zewdu Haftu was killed in Mekelle during the Ashenda season. Witness accounts described an attempted assault that Zewdu resisted before she was dragged and fatally struck by a vehicle. Her killing led to calls for justice and accountability in Tigray.',
   },
   {
-    date: 'March 2025',
-    title: 'A Pattern of Dismissed Cases',
-    body: 'Following the death of Keneni Adugna and the release of suspects in multiple murder cases due to "missing evidence" or "procedural gaps," outrage spreads across Ethiopian social media. Activists realize the issue extends beyond individual cases to systemic institutional failure.',
+    date: '2024',
+    title: '#JusticeForHeaven — A Wider Mobilization',
+    body: 'Public outrage over Heaven Awot’s case grew into #JusticeForHeaven. Women, advocates and rights organizations used social media and other forms of public advocacy to demand accountability, turning Heaven’s name into a wider call against violence toward women and girls.',
   },
   {
-    date: 'Late 2025 – Mid 2026',
-    title: 'Coalescing into #Tisema',
-    body: 'Individual hashtag campaigns (such as #JusticeForHeaven and #JusticeForKeneni) unify under the singular slogan #Tisema (#ትሰማ – "Let her be heard"). The scope expands from demanding justice for specific victims to pushing for structural legal reforms.',
+  date: 'March 10, 2025',
+  title: 'Keneni Adugna — #JusticeForKeneni',
+  body: 'Keneni Adugna, a 25-year-old engineer and social media creator, died after reportedly falling from the fifth floor of the Addis Ababa residence she shared with musician Andualem Gosa. After her death, photographs showing injuries, messages and other accounts surfaced indicating a history of intimate partner violence in the relationship. Andualem was initially detained in connection with her death but was later released for reported lack of evidence. #JusticeForKeneni grew as advocates demanded a thorough investigation, accountability and recognition of the documented pattern of abuse surrounding her case.',
+},
+  {
+    date: '2025',
+    title: 'Ikram — Another Call for Justice',
+    body: 'Ikram’s case became another focus of public advocacy as women continued raising concerns about violence, accountability and the repeated struggle for justice. Her name joined the growing number of women and girls whose cases were being discussed as part of a broader pattern rather than as isolated incidents.',
   },
   {
-    /* The brief gives this milestone a headline and a date but no body. */
+    date: '2026',
+    title: 'Liza Dessale — #JusticeForLiza',
+    body: 'Liza Dessale, a college student from Dessie, was reportedly sexually assaulted and killed while returning home after going to have her phone repaired. Her death led to #JusticeForLiza, as advocates again demanded justice and accountability for violence against women and girls.',
+  },
+  {
+    date: 'August 4, 2026',
+    title: 'Zewdu Haftu — The Case That Became a Turning Point',
+    body: 'Nearly three years after Zewdu was killed, her case returned to public attention. Two men who had been convicted of her killing and sentenced to life imprisonment in 2025 were acquitted and released. The decision became the immediate catalyst that brought advocates together around the need for a broader response to recurring violence and failures of accountability.',
+  },
+  {
     date: 'August 2026',
-    title: 'National Petitions and Crisis Demands: #Tisema Campaign started',
+    title: 'Individual Justice Campaigns Coalesce into #Tisema',
+    body: 'Years of advocacy around cases including Heaven, Keneni, Ikram, Liza and Zewdu had repeatedly brought women and advocates together to demand justice. Following the decision in Zewdu Haftu’s case, that accumulated advocacy began to coalesce into #Tisema — a broader public campaign addressing violence against women and girls as a systemic crisis.',
   },
+  {
+    date: 'August 2026',
+    title: '#Tisema — From Individual Cases to a National Demand',
+    body: 'Tisema calls on the Ethiopian government to formally declare violence against women and girls, including femicide and sexual violence, a National Crisis requiring a whole-of-government emergency response. The campaign turns recurring public outrage around individual cases into a sustained demand for accountability, implementation and public reporting.',
+  },
+{
+  date: 'October 28, 2025',
+  title: 'Sekina — Sexual Violence, Femicide and a Later Call for Justice',
+  body: 'Sekina was sexually assaulted and strangled to death in Dikona Kebele, Gurage Zone. Although her killing occurred before the formation of #Tisema, advocates learned about her case after the campaign had begun. Her case became part of Tisema’s continuing advocacy for women and girls whose experiences of violence and pursuit of justice might otherwise remain unheard.',
+},
 ]
 
 export const GALLERY_INTRO =
