@@ -1,4 +1,10 @@
-import { ABOUT_EYEBROW, ASK_EMPHASIS, ASK_LEAD } from '../../lib/content'
+import {
+  ABOUT_EYEBROW,
+  ABOUT_INTRO,
+  ABOUT_OUTRO,
+  ASK_EMPHASIS,
+  ASK_LEAD,
+} from '../../lib/content'
 import { Reveal, Typewriter } from '../motion'
 import { Eyebrow } from './primitives'
 
@@ -6,10 +12,20 @@ export function AboutCampaign() {
   return (
     <section
       id="about-the-campaign"
-      className="w-full scroll-mt-[68px] bg-paper py-[96px] lg:h-[635px] lg:py-0"
+      className="w-full scroll-mt-[68px] bg-paper py-[96px] lg:py-[120px]"
     >
       <div className="section-shell flex h-full flex-col justify-center">
         <div className="flex w-full max-w-[1031.625px] flex-col gap-[35px] lg:ml-[80.5px]">
+         <div className="flex max-w-[900px] flex-col gap-5">
+  {ABOUT_INTRO.map((paragraph) => (
+    <p
+      key={paragraph}
+      className="font-sans text-[clamp(1rem,1.4vw,20px)] leading-[1.6] text-oxblood"
+    >
+      {paragraph}
+    </p>
+  ))}
+      </div>
           <Eyebrow className="text-oxblood">{ABOUT_EYEBROW}</Eyebrow>
 
           {/* The campaign's central demand — the one line worth typing out,
@@ -24,6 +40,16 @@ export function AboutCampaign() {
               />
             </p>
           </Reveal>
+          <div className="flex max-w-[900px] flex-col gap-5">
+  {ABOUT_OUTRO.map((paragraph) => (
+    <p
+      key={paragraph}
+      className="font-sans text-[clamp(1rem,1.4vw,20px)] leading-[1.6] text-oxblood"
+    >
+      {paragraph}
+    </p>
+  ))}
+</div>
         </div>
       </div>
     </section>
