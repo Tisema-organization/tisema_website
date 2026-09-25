@@ -78,7 +78,7 @@ const OPEN_SETTLE = 0.24
  * right before the cutout (densify leg was fast, cutout leg slow), which read
  * as a stall and a wobble as the grid and mask fought each other.
  */
-const CINEMATIC_MS = 8000
+const CINEMATIC_MS = 4500
 /** Hero scrollP reaches 1 here; handoff starts earlier so the join is continuous. */
 const CINEMATIC_HERO_END = 0.78
 const CINEMATIC_HANDOFF_START = 0.64
@@ -674,21 +674,19 @@ export function HeroStage({ scrollRef }: HeroStageProps) {
         frameId = requestAnimationFrame(tickSettled)
       })
     } else {
-      setIntroState('waiting')
-      lockScroll()
-      layoutShell()
-      setPaperMaskSize(maskOversizePct)
-      setPaperMaskPosition(MASK_POS_START_X, MASK_POS_START_Y)
-      window.scrollTo(0, 0)
-      apply(0, 0, 0)
+  // Start the homepage cinematic automatically on first visit.
+  // No click, scroll, touch, or "Begin" action is required.
+  setIntroState('waiting')
+  lockScroll()
+  layoutShell()
+  setPaperMaskSize(maskOversizePct)
+  setPaperMaskPosition(MASK_POS_START_X, MASK_POS_START_Y)
+  window.scrollTo(0, 0)
+  apply(0, 0, 0)
 
-      window.addEventListener(HERO_BEGIN_EVENT, onBeginEvent)
-      sticky.addEventListener('pointerup', onPointerUp)
-      window.addEventListener('wheel', onWheel, { passive: false })
-      window.addEventListener('touchstart', onTouchStart, { passive: true })
-      window.addEventListener('touchmove', onTouchMove, { passive: false })
-    }
-
+  startCinematic()
+}
+    
     window.addEventListener('resize', layoutShell, { passive: true })
 
     if (import.meta.env.DEV) {
@@ -830,13 +828,17 @@ function HeroCopy() {
       }}
     >
       <h1 className="max-w-[572px] font-serif text-[clamp(2rem,4.63vw,70px)] leading-[1.093] text-field">
-        <span>Declaring </span>
+        <span>Declare </span>
         <span className="text-oxblood">Violence Against </span>
         <span className="text-oxblood italic">Women and Girls </span>
-        <span>a National Crisis</span>
+        <span>a National Crisis in Ethiopia</span>
       </h1>
       <p className="max-w-[644px] text-[clamp(1rem,1.56vw,23.625px)] leading-[1.4444] font-normal text-field">
-        {HERO_SUBTITLE}
+        <>
+          <strong>Welcome to the #ትሰማ Movement!</strong>
+          <br />
+          We are a women-led, independent, and nonpartisan movement standing together against violence against women and girls in Ethiopia.
+        </>
       </p>
 
       <div className="pointer-events-auto relative z-20 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:gap-6">
@@ -847,7 +849,7 @@ function HeroCopy() {
             : {})}
           className="inline-flex shrink-0 items-center justify-center rounded-[3.5px] bg-oxblood px-5 py-2.5 text-[13.78px] leading-[24.5px] font-semibold whitespace-nowrap text-paper transition-opacity hover:opacity-90 sm:px-[28px] sm:py-[8.75px] sm:text-lime"
         >
-          Take Action
+          Take Action: Sign the Petition
         </a>
         {/* Temporarily disabled with the standalone Demands page.
         <a

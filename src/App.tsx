@@ -7,8 +7,6 @@ import { GalleryPage } from './components/GalleryPage'
 // import { DemandsPage } from './components/DemandsPage'
 import { FaqPage } from './components/FaqPage'
 import { ResourcesPage } from './components/ResourcesPage'
-import { HeroScrollHint } from './components/HeroScrollHint'
-
 export default function App() {
   const { route } = useRouter()
 
@@ -21,7 +19,6 @@ export default function App() {
 
   return (
     <>
-      <HeroScrollHint />
       <LandingPage />
     </>
   )
