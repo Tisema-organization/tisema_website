@@ -4,7 +4,7 @@ import { Eyebrow } from './primitives'
 
 export function WhoCanDeclare() {
   return (
-    <section className="w-full bg-paper py-[96px] lg:h-[956px] lg:py-0">
+    <section className="w-full bg-paper py-[96px] lg:py-[120px]">
       <div className="section-shell flex h-full items-center">
         <div className="mx-auto flex w-full max-w-[1164.25px] flex-col gap-[40px] lg:gap-[56px]">
           <div className="flex flex-col gap-[21px]">
