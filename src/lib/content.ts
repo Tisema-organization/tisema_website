@@ -233,7 +233,7 @@ export const GALLERY_INTRO =
 export const FEED_INTRO =
   "Every case page brings together what's being said across social media; posts, comments, and shares from every platform; gathered in one place so no voice speaking up for these women gets lost or scattered."
 /** The one non-social channel the footer blurb points at. */
-export const CONTACT_EMAIL = 'info@tisemaethiopia.com'
+export const CONTACT_EMAIL = 'contact@tisemaethiopia.com'
 
 export const FOOTER_BLURB =
   'Have information, a story to share, or want to support this cause? Reach out through any of the channels below.'
