@@ -9,7 +9,7 @@ import {
   POSTER_FROM_HAND,
 } from '../lib/assets'
 import { buildHeroCells } from '../lib/victims'
-import { HERO_SUBTITLE, petitionUrl } from '../lib/content'
+import { petitionUrl } from '../lib/content'
 import {
   HERO_BEGIN_EVENT,
   markHeroIntroSeen,
