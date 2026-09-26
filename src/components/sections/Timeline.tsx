@@ -173,7 +173,7 @@ export function Timeline() {
          * the rail — dragging the parked panel and stem off with it. `clip`
          * cannot be scrolled at all.
          */
-        className="relative mx-auto h-[520px] [overflow:clip] lg:h-[640px] lg:w-[1512px]"
+        className="relative mx-auto h-[720px] [overflow:clip] sm:h-[680px] lg:h-[640px] lg:w-[1512px]"
         initial="hidden"
         /*
          * The reveal is held in state rather than left to `whileInView`, so
