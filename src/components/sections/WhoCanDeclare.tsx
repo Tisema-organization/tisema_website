@@ -1,9 +1,5 @@
-import {
-  AUTHORITIES,
-  WHO_CAN_DECLARE_INTRO_QUOTE,
-  WHO_CAN_DECLARE_INTRO_REST,
-} from '../../lib/content'
-import { Item, Reveal, Stagger } from '../motion'
+import { AUTHORITIES } from '../../lib/content'
+import { Item, Stagger } from '../motion'
 import { Eyebrow } from './primitives'
 
 export function WhoCanDeclare() {
@@ -15,12 +11,6 @@ export function WhoCanDeclare() {
             <Eyebrow className="text-field">
               Who Can Declare This National Crisis?{' '}
             </Eyebrow>
-            <Reveal delay={0.15}>
-              <p className="max-w-[1157.625px] text-[clamp(1.125rem,1.85vw,28px)] leading-[1.5625] text-field">
-                <span>{WHO_CAN_DECLARE_INTRO_QUOTE}</span>
-                <span>{WHO_CAN_DECLARE_INTRO_REST}</span>
-              </p>
-            </Reveal>
           </div>
 
           <Stagger className="grid gap-[40px] lg:grid-cols-2" gap={0.1}>
