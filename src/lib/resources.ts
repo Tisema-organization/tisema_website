@@ -63,7 +63,7 @@ export const RESOURCE_SECTIONS: ResourceSection[] = [
     index: '03',
     filter: "Women's shelters",
     title: "Women’s shelters (የሴቶች መጠለያ ማዕከላት)",
-    note: 'Free temporary shelter while a court case runs, when recovery time is needed, or when going home would put you at risk again. Most take women and mothers with their children. Some also take adolescent boys. For safety reasons, only city and phone details are provided. For more information, email info@tisemaethiopia.com.',
+    note: 'Free temporary shelter while a court case runs, when recovery time is needed, or when going home would put you at risk again. Most take women and mothers with their children. Some also take adolescent boys. For safety reasons, only city and phone details are provided. For more information, email contact@tisemaethiopia.com.',
     contacts: [
       { location: 'Addis Ababa', title: 'AWSAD', subtitle: "Association for Women's Sanctuary & Development", numbers: ['+251 11 667 2290'] },
       { location: 'Adama', title: 'AWSAD', subtitle: "Association for Women's Sanctuary & Development", numbers: ['+251 22 212 0044'] },
