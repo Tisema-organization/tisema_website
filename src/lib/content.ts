@@ -33,7 +33,7 @@ export function resolveNavHref(href: string, base = '') {
   return `${base}${href}`
 }
 
-export const PETITION_HREF = 'https://c.org/zKH2wvVRdr'
+export const PETITION_HREF = 'https://www.change.org/p/tisema-%E1%89%B5%E1%88%B0%E1%88%9B-campaign-petition-declare-violence-against-women-a-national-crisis'
 
 /** Resolves petition link — external URLs ignore the page base prefix. */
 export function petitionUrl(base = '') {
