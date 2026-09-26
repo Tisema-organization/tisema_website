@@ -7,7 +7,6 @@ import { AboutCampaign } from './sections/AboutCampaign'
 import { CampaignFeed } from './sections/CampaignFeed'
 import { FaqHighlight } from './sections/FaqHighlight'
 import { CampaignGallery } from './sections/CampaignGallery'
-import { DemandDeclaration } from './sections/DemandDeclaration'
 import { SiteFooter } from './sections/SiteFooter'
 import { Stat } from './sections/Stat'
 import { Timeline } from './sections/Timeline'
@@ -82,7 +81,6 @@ export function LandingPage() {
             <AboutCampaign />
             <WholeOfGovernment />
             <WhoCanDeclare />
-            <DemandDeclaration />
             <Timeline />
             <CampaignGallery />
             <CampaignFeed />
