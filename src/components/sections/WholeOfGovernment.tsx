@@ -4,14 +4,14 @@ import { Eyebrow } from './primitives'
 
 export function WholeOfGovernment() {
   return (
-    <section className="w-full bg-paper py-[96px] lg:h-[593.25px] lg:py-0">
+      <section className="w-full bg-paper py-[96px] lg:py-[120px]">
       <div className="section-shell flex h-full items-center">
         <div className="mx-auto flex w-full max-w-[1186.5px] flex-col gap-[35px]">
           <Eyebrow className="text-field">
             What “Whole-of-Government” Means
           </Eyebrow>
 
-          <Stagger className="flex flex-col items-stretch gap-4 lg:flex-row">
+        <Stagger className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {WHOLE_OF_GOVERNMENT.map((card) => (
               <Item
                 key={card.title}
