@@ -102,9 +102,32 @@ export const ABOUT_OUTRO = [
   'This is not a single campaign moment. Tisema is a framework for sustained public pressure, accountability and solidarity for as long as it takes to make Ethiopia safer for women and girls.',
 ] as const
 
-export const WHO_CAN_DECLARE_INTRO_QUOTE = '“National crisis"'
-export const WHO_CAN_DECLARE_INTRO_REST =
-  ' is a political designation—there is no procedural or legal obstacle to declaring it. Executive authority sits directly with leadership:'
+export const WHOLE_OF_GOVERNMENT = [
+  {
+    title: 'Recognition',
+    body: 'Violence against women and girls is formally declared a National Crisis by the executive. Femicide is named, counted and punished, with one standard definition used across police, prosecution and courts.',
+  },
+  {
+    title: 'Ownership',
+    body: 'A coordinating National Crisis Response Council, chaired by the Prime Minister, with a delivery unit and multi-ministry coordination, reporting and evaluated by public scorecards.',
+  },
+  {
+    title: 'Resourcing',
+    body: 'An earmarked, traceable federal budget line with matching regional lines, not a reallocation inside an existing envelope.',
+  },
+  {
+    title: 'Counting',
+    body: 'Publication at full disaggregation of 12-month prevalence, help-seeking, non-partner violence, perpetrator, injury and FGM data the government already holds, with nationwide tracking through coordinated data sharing.',
+  },
+  {
+    title: 'Reach',
+    body: 'A survivor guarantee reaching rural woreda and kebele, conflict-affected and displaced populations, and women and girls with disabilities, including shelter, medical care, legal aid and a functioning national hotline.',
+  },
+  {
+    title: 'Deadline',
+    body: 'A date by which the response is operating, not merely announced: the Council convened, the budget line opened and the first public report issued. Without a date, there is an announcement, not a response.',
+  },
+] as const
 
 export const AUTHORITIES = [
   {
@@ -169,19 +192,24 @@ export const TIMELINE: TimelineEntry[] = [
     body: 'Public outrage over Heaven Awot’s case grew into #JusticeForHeaven. Women, advocates and rights organizations used social media and other forms of public advocacy to demand accountability, turning Heaven’s name into a wider call against violence toward women and girls.',
   },
   {
-  date: 'March 10, 2025',
-  title: 'Keneni Adugna — #JusticeForKeneni',
-  body: 'Keneni Adugna, a 25-year-old engineer and social media creator, died after reportedly falling from the fifth floor of the Addis Ababa residence she shared with musician Andualem Gosa. After her death, photographs showing injuries, messages and other accounts surfaced indicating a history of intimate partner violence in the relationship. Andualem was initially detained in connection with her death but was later released for reported lack of evidence. #JusticeForKeneni grew as advocates demanded a thorough investigation, accountability and recognition of the documented pattern of abuse surrounding her case.',
-},
+    date: 'March 10, 2025',
+    title: 'Keneni Adugna — #JusticeForKeneni',
+    body: 'Keneni Adugna, a 25-year-old engineer and social media creator, died after reportedly falling from the fifth floor of the Addis Ababa residence she shared with musician Andualem Gosa. After her death, photographs showing injuries, messages and other accounts surfaced indicating allegations of a history of intimate partner violence in the relationship. Andualem was initially detained in connection with her death but was later released for reported lack of evidence. #JusticeForKeneni grew as advocates demanded a thorough investigation, accountability and greater scrutiny of the allegations of abuse surrounding her case.',
+  },
   {
     date: '2025',
     title: 'Ikram — Another Call for Justice',
     body: 'Ikram’s case became another focus of public advocacy as women continued raising concerns about violence, accountability and the repeated struggle for justice. Her name joined the growing number of women and girls whose cases were being discussed as part of a broader pattern rather than as isolated incidents.',
   },
   {
-    date: '2026',
+    date: 'October 7, 2025',
     title: 'Liza Dessale — #JusticeForLiza',
     body: 'Liza Dessale, a college student from Dessie, was reportedly sexually assaulted and killed while returning home after going to have her phone repaired. Her death led to #JusticeForLiza, as advocates again demanded justice and accountability for violence against women and girls.',
+  },
+  {
+    date: 'October 28, 2025',
+    title: 'Sekina — Sexual Violence, Femicide and a Later Call for Justice',
+    body: 'Sekina was sexually assaulted and strangled to death in Dikona Kebele, Gurage Zone. Although her killing occurred before the formation of #Tisema, advocates learned about her case after the campaign had begun. Her case became part of Tisema’s continuing advocacy for women and girls whose experiences of violence and pursuit of justice might otherwise remain unheard.',
   },
   {
     date: 'August 4, 2026',
@@ -189,20 +217,15 @@ export const TIMELINE: TimelineEntry[] = [
     body: 'Nearly three years after Zewdu was killed, her case returned to public attention. Two men who had been convicted of her killing and sentenced to life imprisonment in 2025 were acquitted and released. The decision became the immediate catalyst that brought advocates together around the need for a broader response to recurring violence and failures of accountability.',
   },
   {
-    date: 'August 2026',
+    date: 'August 6, 2026',
     title: 'Individual Justice Campaigns Coalesce into #Tisema',
     body: 'Years of advocacy around cases including Heaven, Keneni, Ikram, Liza and Zewdu had repeatedly brought women and advocates together to demand justice. Following the decision in Zewdu Haftu’s case, that accumulated advocacy began to coalesce into #Tisema — a broader public campaign addressing violence against women and girls as a systemic crisis.',
   },
   {
-    date: 'August 2026',
+    date: 'August 6, 2026',
     title: '#Tisema — From Individual Cases to a National Demand',
     body: 'Tisema calls on the Ethiopian government to formally declare violence against women and girls, including femicide and sexual violence, a National Crisis requiring a whole-of-government emergency response. The campaign turns recurring public outrage around individual cases into a sustained demand for accountability, implementation and public reporting.',
   },
-{
-  date: 'October 28, 2025',
-  title: 'Sekina — Sexual Violence, Femicide and a Later Call for Justice',
-  body: 'Sekina was sexually assaulted and strangled to death in Dikona Kebele, Gurage Zone. Although her killing occurred before the formation of #Tisema, advocates learned about her case after the campaign had begun. Her case became part of Tisema’s continuing advocacy for women and girls whose experiences of violence and pursuit of justice might otherwise remain unheard.',
-},
 ]
 
 export const GALLERY_INTRO =
