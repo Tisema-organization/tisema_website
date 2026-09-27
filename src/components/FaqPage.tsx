@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { domAnimation, LazyMotion, MotionConfig } from 'motion/react'
 import {
   FAQ_ITEMS,
@@ -111,7 +111,7 @@ export function FaqPage() {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     return FAQ_ITEMS.filter((item) => {
-      if (topic !== 'All' && item.topic !== topic) return false
+      if (!q && topic !== 'All' && item.topic !== topic) return false
       if (!q) return true
       const brand = item.brandCards
         ?.map((c) => `${c.title} ${c.body}`)
@@ -120,7 +120,15 @@ export function FaqPage() {
         `${item.question} ${item.tag ?? ''} ${item.answer ?? ''} ${brand ?? ''}`.toLowerCase()
       return hay.includes(q)
     })
-  }, [topic, query])
+    }, [topic, query])
+
+  useEffect(() => {
+    const q = query.trim()
+
+    if (q && filtered.length > 0) {
+      setOpenId(filtered[0].id)
+    }
+  }, [query, filtered])
 
   const sections = useMemo(() => {
     const order: string[] = []
