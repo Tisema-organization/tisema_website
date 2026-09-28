@@ -184,7 +184,7 @@ export function SiteNav({
                   : {})}
                 className="mb-2 flex items-center justify-center rounded-[3.5px] bg-oxblood px-5 py-2.5 text-[13px] font-semibold text-lime transition-opacity hover:opacity-90"
               >
-                Take Action
+                Take Action: Sign the #ትሰማ Petition
               </a>
             </li>
             {NAV_LINKS.map((link) => {
