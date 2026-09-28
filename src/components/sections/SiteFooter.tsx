@@ -42,7 +42,7 @@ export function SiteFooter({ base = '' }: { base?: string } = {}) {
                 : {})}
               className="flex items-center justify-center rounded-[4px] bg-lime px-6 py-2.5 font-serif text-[15px] leading-[24px] whitespace-nowrap text-clay-shadow transition-opacity hover:opacity-90 sm:text-[16px] lg:px-8 lg:py-3 lg:text-[17px] lg:leading-[28px]"
             >
-              TTake Action: Sign the #ትሰማ Petition
+              Take Action: Sign the #ትሰማ Petition
             </a>
           </Reveal>
         </div>
