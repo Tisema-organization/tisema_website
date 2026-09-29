@@ -1,7 +1,8 @@
+import { useState } from 'react'
 import { domAnimation, LazyMotion, MotionConfig } from 'motion/react'
 import { POSTER_MARK } from '../lib/assets'
 import {
-  DEMAND_BRIEF_CARDS,
+  DEMAND_ITEMS,
   DEMAND_PAGE_INTRO,
   DEMAND_PAGE_TITLE,
   DEMAND_THEME_DOCS,
@@ -17,7 +18,8 @@ import { Item, Reveal, Stagger } from './motion'
  */
 export function DemandPage() {
   const { navigate } = useRouter()
-
+  const [openDemand, setOpenDemand] = useState<string | null>(null)
+  
   return (
     <LazyMotion features={domAnimation} strict>
       <MotionConfig reducedMotion="user">
@@ -49,50 +51,78 @@ export function DemandPage() {
                   </Reveal>
                 </header>
 
-                <Stagger
-                  className="grid w-full gap-[24px] lg:grid-cols-3"
-                  gap={0.1}
-                >
-                  {DEMAND_BRIEF_CARDS.map((card) => (
-                    <Item
-                      key={card.id}
-                      className="flex flex-col gap-[13px] rounded-[20px] border-[0.5px] border-dashed border-oxblood px-[32px] py-[24px]"
-                    >
-                      <div className="flex flex-col gap-[16px]">
-                        <p className="text-[22px] leading-normal font-semibold text-field">
-                          {card.title}
-                        </p>
-                        <p className="text-[16px] leading-[28px] font-light text-field">
-                          {card.body}
-                        </p>
-                      </div>
+<div className="flex w-full flex-col gap-[24px]">
+  {DEMAND_ITEMS.map((item, index) => {
+    const isOpen = openDemand === item.id
+    const showPart =
+      index === 0 || DEMAND_ITEMS[index - 1].part !== item.part
 
-                      {card.href ? (
-                        <a
-                          href={card.href}
-                          onClick={(e) =>
-                            clientNavigate(e, card.href!, navigate)
-                          }
-                          className="mt-auto inline-flex w-fit items-center gap-[2px] rounded-[8px] bg-oxblood py-[4px] pr-[8px] pl-[16px] text-[14px] leading-[28px] text-paper capitalize transition-opacity hover:opacity-90"
-                        >
-                          Read more
-                          <span aria-hidden className="text-[16px]">
-                            ↗
-                          </span>
-                        </a>
-                      ) : (
-                        <span className="mt-auto inline-flex w-fit items-center gap-[2px] rounded-[8px] bg-oxblood py-[4px] pr-[8px] pl-[16px] text-[14px] leading-[28px] text-paper capitalize">
-                          Read more
-                          <span aria-hidden className="text-[16px]">
-                            ↗
-                          </span>
-                        </span>
-                      )}
-                    </Item>
-                  ))}
-                </Stagger>
+    return (
+      <div key={item.id} className="flex flex-col gap-[16px]">
+        {showPart && (
+          <h2 className="mt-[24px] font-serif text-[24px] leading-[32px] text-oxblood lg:text-[28px]">
+            {item.part}
+          </h2>
+        )}
 
-                <Stagger
+        <div className="overflow-hidden rounded-[20px] border-[0.5px] border-dashed border-oxblood">
+          <button
+            type="button"
+            onClick={() => setOpenDemand(isOpen ? null : item.id)}
+            aria-expanded={isOpen}
+            className="flex w-full items-center justify-between gap-[24px] px-[24px] py-[24px] text-left lg:px-[32px]"
+          >
+            <span className="flex items-start gap-[16px]">
+              <span className="font-serif text-[18px] text-oxblood">
+                {item.number}.
+              </span>
+              <span className="text-[18px] leading-[28px] font-semibold text-field lg:text-[20px]">
+                {item.title}
+              </span>
+            </span>
+
+            <span
+              aria-hidden
+              className="shrink-0 font-serif text-[28px] text-oxblood"
+            >
+              {isOpen ? '−' : '+'}
+            </span>
+          </button>
+
+          {isOpen && (
+            <div className="border-t border-oxblood/20 px-[24px] py-[28px] lg:px-[32px]">
+              <div className="flex max-w-[1084px] flex-col gap-[28px]">
+                <div className="whitespace-pre-line text-[16px] leading-[30px] text-field">
+                  {item.demand}
+                </div>
+
+                <div className="flex flex-col gap-[8px]">
+                  <p className="text-[14px] font-semibold uppercase tracking-[0.08em] text-oxblood">
+                    Owner
+                  </p>
+                  <p className="text-[16px] leading-[28px] text-field">
+                    {item.owner}
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-[8px]">
+                  <p className="text-[14px] font-semibold uppercase tracking-[0.08em] text-oxblood">
+                    100-day result
+                  </p>
+                  <p className="text-[16px] leading-[28px] text-field">
+                    {item.result}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  })}
+</div>
+
+        <Stagger
                   className="grid w-full grid-cols-2 gap-x-[16px] gap-y-[32px] lg:grid-cols-4 lg:gap-x-[24px]"
                   gap={0.08}
                 >
