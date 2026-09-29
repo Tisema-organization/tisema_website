@@ -24,6 +24,7 @@ export const NAV_LINKS: NavLink[] = [
   { label: 'Timeline', href: '#timeline' },
   { label: 'Cases', href: '#cases' },
   { label: 'Campaign Feed', href: '#campaign-feed' },
+  { label: 'Demand', href: '/demand' },
   { label: 'FAQ', href: FAQ_PAGE_HREF },
 ]
 
