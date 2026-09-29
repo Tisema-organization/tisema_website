@@ -1,16 +1,16 @@
 import { useState } from 'react'
 import { domAnimation, LazyMotion, MotionConfig } from 'motion/react'
-import { POSTER_MARK } from '../lib/assets'
+
 import {
   DEMAND_ITEMS,
   DEMAND_PAGE_INTRO,
   DEMAND_PAGE_TITLE,
-  DEMAND_THEME_DOCS,
+ 
 } from '../lib/demand'
 import { clientNavigate, useRouter } from '../lib/router'
 import { SiteNav } from './SiteNav'
 import { SiteFooter } from './sections/SiteFooter'
-import { Item, Reveal, Stagger } from './motion'
+import { Reveal } from './motion'
 
 /**
  * Demand & Declaration — Figma "The Demand and Declaration" (180:20).
@@ -122,82 +122,6 @@ export function DemandPage() {
   })}
 </div>
 
-        <Stagger
-                  className="grid w-full grid-cols-2 gap-x-[16px] gap-y-[32px] lg:grid-cols-4 lg:gap-x-[24px]"
-                  gap={0.08}
-                >
-                  {DEMAND_THEME_DOCS.map((doc) => (
-                    <Item key={doc.id}>
-                      {/*
-                        Download is a real link (keyboard + focus-within),
-                        matching GalleryTile hover/focus pattern.
-                      */}
-                      <figure className="group flex flex-col items-center gap-[16px] text-center">
-                        <div className="relative aspect-square w-full overflow-hidden bg-lime">
-                          <img
-                            src={POSTER_MARK}
-                            alt=""
-                            width={256}
-                            height={320}
-                            className="h-full w-full object-contain p-[18%]"
-                          />
-
-                          <div className="absolute inset-x-0 bottom-0 flex justify-center bg-field/85 px-3 py-3 lg:hidden">
-                            <a
-                              href={doc.file}
-                              download={doc.downloadName}
-                              aria-label={`Download ${doc.language} explainer`}
-                              className="inline-flex items-center gap-2 rounded-[8px] border border-lime px-4 py-1.5 text-lime"
-                            >
-                              <img
-                                src="/design/icon-download.svg"
-                                alt=""
-                                width={21}
-                                height={21}
-                                className="block size-[21px]"
-                              />
-                              <span className="text-[14px] font-light">
-                                Download
-                              </span>
-                            </a>
-                          </div>
-
-                          <div className="pointer-events-none absolute inset-0 hidden place-items-center bg-field/65 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-within:opacity-100 lg:grid">
-                            <a
-                              href={doc.file}
-                              download={doc.downloadName}
-                              aria-label={`Download ${doc.language} explainer`}
-                              className="pointer-events-auto inline-flex items-center gap-2 rounded-[8px] border border-lime px-4 py-1.5 text-lime transition-colors hover:bg-lime/10 focus-visible:ring-2 focus-visible:ring-lime focus-visible:outline-none"
-                            >
-                              <img
-                                src="/design/icon-download.svg"
-                                alt=""
-                                width={21}
-                                height={21}
-                                className="block size-[21px]"
-                              />
-                              <span className="text-[14px] font-light">
-                                Download
-                              </span>
-                            </a>
-                          </div>
-                        </div>
-
-                        <figcaption className="flex flex-col gap-[4px]">
-                          <p className="font-ethiopic text-[15.75px] leading-[28px] text-field">
-                            #ትሰማ!
-                          </p>
-                          <p className="text-[15.75px] leading-[26px] font-semibold text-oxblood">
-                            {doc.language}
-                          </p>
-                          <p className="text-[13px] leading-[22px] text-oxblood/80">
-                            {doc.title}
-                          </p>
-                        </figcaption>
-                      </figure>
-                    </Item>
-                  ))}
-                </Stagger>
               </div>
             </div>
           </main>
