@@ -24,7 +24,7 @@ export const NAV_LINKS: NavLink[] = [
   { label: 'Timeline', href: '#timeline' },
   { label: 'Cases', href: '#cases' },
   { label: 'Campaign Feed', href: '#campaign-feed' },
-  { label: 'Demand', href: '/demand' },
+  { label: 'The 12 Demands', href: '/demand' },
   { label: 'FAQ', href: FAQ_PAGE_HREF },
 ]
 
@@ -317,7 +317,7 @@ export const FOOTER_LINKS = [
   { label: 'Home', href: '#home' },
   // Temporarily disabled with the standalone Demand and Terms routes.
   // { label: 'The Demand & Declaration', href: '/demand' },
-  // { label: 'The 12 Demands', href: '/demands' },
+  { label: 'The 12 Demands', href: '/demands' },
   { label: 'FAQ', href: '/faq' },
   { label: 'Emergency Resources', href: '/resources' },
   // { label: 'Terms and Conditions', href: '/terms' },
