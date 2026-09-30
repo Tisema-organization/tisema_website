@@ -227,6 +227,16 @@ export const TIMELINE: TimelineEntry[] = [
     title: '#Tisema — From Individual Cases to a National Demand',
     body: 'Tisema calls on the Ethiopian government to formally declare violence against women and girls, including femicide and sexual violence, a National Crisis requiring a whole-of-government emergency response. The campaign turns recurring public outrage around individual cases into a sustained demand for accountability, implementation and public reporting.',
   },
+  {
+  date: 'Sep 1, 2026',
+  title: 'Open Letter to GBV Group',
+  body: '#ትሰማ formally reached out to the GBV Campaign Group EC, sharing our open letter, campaign overview, and draft demands as part of our efforts to build collaboration around a stronger, coordinated national response to violence against women and girls in Ethiopia.',
+},
+  {
+  date: 'Sep 29, 2026',
+  title: 'Open Letter to the Prime Minister',
+  body: '#ትሰማ formally submitted its call to Prime Minister Abiy Ahmed, backed by nearly 200,000 petition signatures and endorsed by the Anti-Gender-Based Violence Campaign Ethiopia (GBV-CE).\n\nThe submission calls on the Ethiopian government to formally declare violence against women and girls, including femicide and sexual violence, a National Crisis requiring a whole-of-government emergency response.',
+},
 ]
 
 export const GALLERY_INTRO =
