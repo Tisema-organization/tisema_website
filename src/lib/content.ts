@@ -23,7 +23,7 @@ export const NAV_LINKS: NavLink[] = [
   { label: 'About The Campaign', href: '#about-the-campaign' },
   { label: 'Timeline', href: '#timeline' },
   { label: 'Cases', href: '#cases' },
-  { label: 'Campaign Feed', href: '#campaign-feed' },
+  { label: '#ትሰማ on TikTok', href: 'https://www.tiktok.com/tag/%E1%89%B5%E1%88%B0%E1%88%9B' },
   { label: 'The 12 Demands', href: '/demand' },
   { label: 'FAQ', href: FAQ_PAGE_HREF },
 ]
