@@ -94,13 +94,30 @@ export function DemandPage() {
               <div className="flex max-w-[1084px] flex-col gap-[28px]">
                 <div className="whitespace-pre-line text-[16px] leading-[30px] text-field">
                   <>
-                  {item.boldLead && (
-                    <strong>{item.boldLead}</strong>
-                  )}
-                  {item.boldLead
-                    ? item.demand.slice(item.boldLead.length)
-                    : item.demand}
-                </>
+  {(() => {
+    const remaining = item.boldLead
+      ? item.demand.slice(item.boldLead.length)
+      : item.demand
+
+    const labels = item.boldLabels ?? []
+    const parts = labels.length
+      ? remaining.split(new RegExp(`(${labels.join('|')})`, 'g'))
+      : [remaining]
+
+    return (
+      <>
+        {item.boldLead && <strong>{item.boldLead}</strong>}
+        {parts.map((part, index) =>
+          labels.includes(part) ? (
+            <strong key={index}>{part}</strong>
+          ) : (
+            part
+          )
+        )}
+      </>
+    )
+  })()}
+</>
                 </div>
 
                 <div className="flex flex-col gap-[8px]">
