@@ -211,4 +211,19 @@ export const DEMAND_THEME_DOCS: DemandThemeDoc[] = [
     file: '/demands/tigrigna-vaw-national-crisis-explainer.pdf',
     downloadName: 'Tisema-VAW-National-Crisis-Explainer-Tigrigna.pdf',
   },
+  export const DEMAND_ABBREVIATIONS = [
+  { abbreviation: 'VAWG', meaning: 'Violence Against Women and Girls' },
+  { abbreviation: 'FGM', meaning: 'Female Genital Mutilation' },
+  { abbreviation: 'CEDAW', meaning: 'Convention on the Elimination of All Forms of Discrimination Against Women' },
+  { abbreviation: 'GBV', meaning: 'Gender-Based Violence' },
+  { abbreviation: 'SOPs', meaning: 'Standard Operating Procedures' },
+  { abbreviation: 'ILO', meaning: 'International Labour Organization' },
+  { abbreviation: 'GDP', meaning: 'Gross Domestic Product' },
+  { abbreviation: 'MoWSA', meaning: 'Ministry of Women and Social Affairs' },
+  { abbreviation: 'UNODC', meaning: 'United Nations Office on Drugs and Crime' },
+  { abbreviation: 'UN', meaning: 'United Nations' },
+  { abbreviation: 'HIV', meaning: 'Human Immunodeficiency Virus' },
+  { abbreviation: 'TVET', meaning: 'Technical and Vocational Education and Training' },
+  { abbreviation: 'No.', meaning: 'Number'
+  },
 ]
