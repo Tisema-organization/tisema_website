@@ -17,6 +17,7 @@ export type DemandItem = {
   title: string
   demand: string
   boldLead?: string
+  boldLabels?: string[]
   owner: string
   result: string
 }
@@ -126,6 +127,7 @@ The reforms must also establish free, same-day emergency protection orders, avai
     part: 'Part IV · Law, Prevention and Survivor Support',
     title: 'Health and Safety: Survivor Care and Time-Critical Treatment',
     boldLead: 'We demand the adoption, through an appropriate legal instrument, and full funding of a binding national minimum package of free, confidential, survivor-centred care for every woman and girl, wherever she lives and without requiring a prior police report.',
+    boldLabels: ['Time-critical care:', 'Continuing care:'],
     demand: `We demand the adoption, through an appropriate legal instrument, and full funding of a binding national minimum package of free, confidential, survivor-centred care for every woman and girl, wherever she lives and without requiring a prior police report.
 
 Time-critical care: Every designated facility must provide 24-hour post-rape care, including emergency contraception, HIV post-exposure prophylaxis, treatment of sexually transmitted infections and injuries, and, at the same visit, a consent-based medical-forensic examination on a uniform national form under chain-of-custody rules that preserve her option to report later. Any statutory reporting obligation must be disclosed to her before she consents, and no report may be made to police beyond what the law expressly requires.
