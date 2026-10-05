@@ -93,12 +93,19 @@ export function DemandPage() {
             <div className="border-t border-oxblood/20 px-[24px] py-[28px] lg:px-[32px]">
               <div className="flex max-w-[1084px] flex-col gap-[28px]">
                 <div className="whitespace-pre-line text-[16px] leading-[30px] text-field">
-                  {item.demand}
+                  <>
+                  {item.boldLead && (
+                    <strong>{item.boldLead}</strong>
+                  )}
+                  {item.boldLead
+                    ? item.demand.slice(item.boldLead.length)
+                    : item.demand}
+                </>
                 </div>
 
                 <div className="flex flex-col gap-[8px]">
                   <p className="text-[14px] font-semibold uppercase tracking-[0.08em] text-oxblood">
-                    Owner
+                    Owner:
                   </p>
                   <p className="text-[16px] leading-[28px] text-field">
                     {item.owner}
@@ -107,7 +114,7 @@ export function DemandPage() {
 
                 <div className="flex flex-col gap-[8px]">
                   <p className="text-[14px] font-semibold uppercase tracking-[0.08em] text-oxblood">
-                    100-day result
+                    100-day result:
                   </p>
                   <p className="text-[16px] leading-[28px] text-field">
                     {item.result}
