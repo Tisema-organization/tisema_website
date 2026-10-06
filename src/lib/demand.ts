@@ -211,6 +211,7 @@ export const DEMAND_THEME_DOCS: DemandThemeDoc[] = [
     file: '/demands/tigrigna-vaw-national-crisis-explainer.pdf',
     downloadName: 'Tisema-VAW-National-Crisis-Explainer-Tigrigna.pdf',
   },
+  ]
   export const DEMAND_ABBREVIATIONS = [
   { abbreviation: 'VAWG', meaning: 'Violence Against Women and Girls' },
   { abbreviation: 'FGM', meaning: 'Female Genital Mutilation' },
