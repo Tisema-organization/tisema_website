@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { domAnimation, LazyMotion, MotionConfig } from 'motion/react'
 
 import {
+  DEMAND_ABBREVIATIONS,
   DEMAND_ITEMS,
   DEMAND_PAGE_INTRO,
   DEMAND_PAGE_TITLE,
@@ -52,6 +53,23 @@ export function DemandPage() {
                 </header>
 
 <div className="flex w-full flex-col gap-[24px]">
+  <details className="w-full overflow-hidden rounded-[20px] border-[0.5px] border-dashed border-oxblood">
+  <summary className="cursor-pointer px-[24px] py-[24px] text-[18px] font-semibold text-field lg:px-[32px] lg:text-[20px]">
+    Abbreviation Key
+  </summary>
+
+  <div className="border-t border-oxblood/20 px-[24px] py-[28px] lg:px-[32px]">
+    <div className="grid gap-[16px] md:grid-cols-2">
+      {DEMAND_ABBREVIATIONS.map((item) => (
+        <div key={item.abbreviation} className="text-[16px] leading-[28px] text-field">
+          <strong className="text-oxblood">{item.abbreviation}</strong>
+          {' — '}
+          {item.meaning}
+        </div>
+      ))}
+    </div>
+  </div>
+</details>
   {DEMAND_ITEMS.map((item, index) => {
     const isOpen = openDemand === item.id
     const showPart =
