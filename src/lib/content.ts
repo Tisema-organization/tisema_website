@@ -265,7 +265,39 @@ export const GALLERY_PAGE_HREF = '/cases'
 /** How many tiles the landing-page carousel shows before linking to the full gallery. */
 export const GALLERY_LANDING_PREVIEW = 4
 
+
+
 const GALLERY_SOURCE: GalleryItem[] = [
+  {
+    id: 'poster-nov-22-1',
+    src: '/victims/gallery/photo_2026-11-22_13-33-42.jpg',
+    title: 'TISEMA Remembrance 1',
+    file: '/victims/gallery/photo_2026-11-22_13-33-42.jpg',
+  },
+  {
+    id: 'poster-nov-22-2',
+    src: '/victims/gallery/photo_2026-11-22_13-54-31.jpg',
+    title: 'TISEMA Remembrance 2',
+    file: '/victims/gallery/photo_2026-11-22_13-54-31.jpg',
+  },
+  {
+    id: 'poster-nov-22-3',
+    src: '/victims/gallery/photo_2026-11-22_13-54-36.jpg',
+    title: 'TISEMA Remembrance 3',
+    file: '/victims/gallery/photo_2026-11-22_13-54-36.jpg',
+  },
+  {
+    id: 'poster-nov-22-4',
+    src: '/victims/gallery/photo_2026-11-22_13-54-52.jpg',
+    title: 'TISEMA Remembrance 4',
+    file: '/victims/gallery/photo_2026-11-22_13-54-52.jpg',
+  },
+  {
+    id: 'poster-nov-22-5',
+    src: '/victims/gallery/photo_2026-11-22_13-54-56.jpg',
+    title: 'TISEMA Remembrance 5',
+    file: '/victims/gallery/photo_2026-11-22_13-54-56.jpg',
+  },
   {
     id: 'tisema',
     src: '/assets/tisema-640.webp',
@@ -290,8 +322,6 @@ const GALLERY_SOURCE: GalleryItem[] = [
     file: `${VICTIM_IMAGE_BASE}/${victim.slug}-full.${VICTIM_DOWNLOAD_EXT}`,
   })),
 ]
-
-export const GALLERY_ITEMS: GalleryItem[] = GALLERY_SOURCE
 
 /**
  * The landing preview carries only tiles that have a story to tell — slicing
