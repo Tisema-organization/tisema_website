@@ -263,7 +263,7 @@ export type GalleryItem = {
 export const GALLERY_PAGE_HREF = '/cases'
 
 /** How many tiles the landing-page carousel shows before linking to the full gallery. */
-export const GALLERY_LANDING_PREVIEW = 4
+export const GALLERY_LANDING_PREVIEW = 5
 
 const GALLERY_SOURCE: GalleryItem[] = [
   {
@@ -327,9 +327,22 @@ export const GALLERY_ITEMS: GalleryItem[] = GALLERY_SOURCE
  * The landing preview carries only tiles that have a story to tell.
  * The full list lives on the gallery page behind "View all stories".
  */
-export const GALLERY_LANDING_ITEMS: GalleryItem[] = GALLERY_ITEMS.filter(
-  (item) => Boolean(item.body),
-).slice(0, GALLERY_LANDING_PREVIEW)
+
+export const GALLERY_LANDING_ITEMS: GalleryItem[] =
+  GALLERY_ITEMS.slice(0, GALLERY_LANDING_PREVIEW)
+
+export type FeedPost = {
+  id: string
+  src: string
+  name: string
+  handle: string
+  age: string
+  body: string
+  url: string
+  avatarSrc?: string
+  /** Unix seconds, used for sorting scraped posts. */
+  createdAt?: number
+}
 
 
 export { FEED_POSTS } from './feed'
