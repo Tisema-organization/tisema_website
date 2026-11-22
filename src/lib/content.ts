@@ -263,39 +263,10 @@ export type GalleryItem = {
 export const GALLERY_PAGE_HREF = '/cases'
 
 /** How many tiles the landing-page carousel shows before linking to the full gallery. */
-export const GALLERY_LANDING_PREVIEW = 5
+
+export const GALLERY_LANDING_PREVIEW = 4
 
 const GALLERY_SOURCE: GalleryItem[] = [
-  {
-    id: 'poster-nov-22-1',
-    src: '/victims/gallery/photo_2026-11-22_13-33-42.jpg',
-    title: 'TISEMA Remembrance 1',
-    file: '/victims/gallery/photo_2026-11-22_13-33-42.jpg',
-  },
-  {
-    id: 'poster-nov-22-2',
-    src: '/victims/gallery/photo_2026-11-22_13-54-31.jpg',
-    title: 'TISEMA Remembrance 2',
-    file: '/victims/gallery/photo_2026-11-22_13-54-31.jpg',
-  },
-  {
-    id: 'poster-nov-22-3',
-    src: '/victims/gallery/photo_2026-11-22_13-54-36.jpg',
-    title: 'TISEMA Remembrance 3',
-    file: '/victims/gallery/photo_2026-11-22_13-54-36.jpg',
-  },
-  {
-    id: 'poster-nov-22-4',
-    src: '/victims/gallery/photo_2026-11-22_13-54-52.jpg',
-    title: 'TISEMA Remembrance 4',
-    file: '/victims/gallery/photo_2026-11-22_13-54-52.jpg',
-  },
-  {
-    id: 'poster-nov-22-5',
-    src: '/victims/gallery/photo_2026-11-22_13-54-56.jpg',
-    title: 'TISEMA Remembrance 5',
-    file: '/victims/gallery/photo_2026-11-22_13-54-56.jpg',
-  },
   {
     id: 'tisema',
     src: '/assets/tisema-640.webp',
@@ -304,10 +275,11 @@ const GALLERY_SOURCE: GalleryItem[] = [
     body: 'Tisema means "let her be heard", a promise these stories will not be met with silence.',
     file: '/assets/tisema.png',
   },
+
   /*
-   * The portraits are served as WebP at two widths. A tile renders at roughly
-   * 302x365 CSS px, so 640 already covers 2x DPR; the 1080 variant is only
-   * ever fetched by the Download link, never by the page.
+   * Existing women's portraits.
+   * All original portraits, names, stories and downloads
+   * remain unchanged and in their original order.
    */
   ...VICTIMS.map<GalleryItem>((victim) => ({
     id: victim.slug,
@@ -319,17 +291,59 @@ const GALLERY_SOURCE: GalleryItem[] = [
     body: VICTIM_STORIES[victim.slug],
     file: `${VICTIM_IMAGE_BASE}/${victim.slug}-full.${VICTIM_DOWNLOAD_EXT}`,
   })),
+
+  /*
+   * Five new TISEMA cases.
+   * Added after all existing portraits.
+   */
+
+  {
+    id: 'milan',
+    src: '/victims/gallery/photo_2026-11-22_13-33-42.jpg',
+    title: 'Milan',
+    file: '/victims/gallery/photo_2026-11-22_13-33-42.jpg',
+  },
+
+  {
+    id: 'wosenyelesh',
+    src: '/victims/gallery/photo_2026-11-22_13-54-31.jpg',
+    title: 'Wosenyelesh',
+    file: '/victims/gallery/photo_2026-11-22_13-54-31.jpg',
+  },
+
+  {
+    id: 'samira',
+    src: '/victims/gallery/photo_2026-11-22_13-54-36.jpg',
+    title: 'Samira',
+    file: '/victims/gallery/photo_2026-11-22_13-54-36.jpg',
+  },
+
+  {
+    id: 'webanchi',
+    src: '/victims/gallery/photo_2026-11-22_13-54-52.jpg',
+    title: 'Webanchi',
+    file: '/victims/gallery/photo_2026-11-22_13-54-52.jpg',
+  },
+
+  {
+    id: 'meselech',
+    src: '/victims/gallery/photo_2026-11-22_13-54-56.jpg',
+    title: 'Meselech',
+    file: '/victims/gallery/photo_2026-11-22_13-54-56.jpg',
+  },
 ]
 
 export const GALLERY_ITEMS: GalleryItem[] = GALLERY_SOURCE
 
 /**
- * The landing preview carries only tiles that have a story to tell.
- * The full list lives on the gallery page behind "View all stories".
+ * Keep the original homepage Cases preview unchanged.
+ * The full Cases gallery includes all existing portraits
+ * followed by the five new cases.
  */
+export const GALLERY_LANDING_ITEMS: GalleryItem[] = GALLERY_ITEMS.filter(
+  (item) => Boolean(item.body),
+).slice(0, GALLERY_LANDING_PREVIEW)
 
-export const GALLERY_LANDING_ITEMS: GalleryItem[] =
-  GALLERY_ITEMS.slice(0, GALLERY_LANDING_PREVIEW)
 
 export type FeedPost = {
   id: string
